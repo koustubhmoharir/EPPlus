@@ -59,6 +59,11 @@ namespace OfficeOpenXml.Packaging
     /// </summary>
     public class ZipPackage : ZipPackageRelationshipBase
     {
+        private string tempFolder;
+        public string GetTempFile()
+        {
+            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
+        }
         internal class ContentType
         {
             internal string Name;
@@ -73,8 +78,9 @@ namespace OfficeOpenXml.Packaging
         }
         Dictionary<string, ZipPackagePart> Parts = new Dictionary<string, ZipPackagePart>(StringComparer.InvariantCultureIgnoreCase);
         internal Dictionary<string, ContentType> _contentTypes = new Dictionary<string, ContentType>(StringComparer.InvariantCultureIgnoreCase);
-        internal ZipPackage()
+        internal ZipPackage(string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             AddNew();
         }
 
@@ -84,8 +90,9 @@ namespace OfficeOpenXml.Packaging
             _contentTypes.Add("rels", new ContentType(ExcelPackage.schemaRelsExtension, true, "rels"));
         }
 
-        internal ZipPackage(Stream stream)
+        internal ZipPackage(Stream stream, string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             bool hasContentTypeXml = false;
             if (stream == null || stream.Length == 0)
             {
@@ -94,7 +101,7 @@ namespace OfficeOpenXml.Packaging
             else
             {
                 var rels = new Dictionary<string, string>();
-                stream.Seek(0, SeekOrigin.Begin);                
+                stream.Seek(0, SeekOrigin.Begin);
                 using (ZipInputStream zip = new ZipInputStream(stream))
                 {
                     var e = zip.GetNextEntry();
@@ -102,28 +109,34 @@ namespace OfficeOpenXml.Packaging
                     {
                         if (e.UncompressedSize > 0)
                         {
-                            var b = new byte[e.UncompressedSize];
-                            var size = zip.Read(b, 0, (int)e.UncompressedSize);
                             if (e.FileName.Equals("[content_types].xml", StringComparison.InvariantCultureIgnoreCase))
                             {
+                                var b = new byte[e.UncompressedSize];
+                                var size = zip.Read(b, 0, (int)e.UncompressedSize);
                                 AddContentTypes(Encoding.UTF8.GetString(b));
                                 hasContentTypeXml = true;
                             }
-                            else if (e.FileName.Equals("_rels/.rels", StringComparison.InvariantCultureIgnoreCase)) 
+                            else if (e.FileName.Equals("_rels/.rels", StringComparison.InvariantCultureIgnoreCase))
                             {
+                                var b = new byte[e.UncompressedSize];
+                                var size = zip.Read(b, 0, (int)e.UncompressedSize);
                                 ReadRelation(Encoding.UTF8.GetString(b), "");
                             }
                             else
                             {
                                 if (e.FileName.EndsWith(".rels", StringComparison.InvariantCultureIgnoreCase))
                                 {
+                                    var b = new byte[e.UncompressedSize];
+                                    var size = zip.Read(b, 0, (int)e.UncompressedSize);
                                     rels.Add(GetUriKey(e.FileName), Encoding.UTF8.GetString(b));
                                 }
                                 else
                                 {
                                     var part = new ZipPackagePart(this, e);
-                                    part.Stream = new MemoryStream();
-                                    part.Stream.Write(b, 0, b.Length);
+                                    //part.Stream = new MemoryStream();
+                                    //part.Stream.Write(b, 0, b.Length);
+                                    Stream fs = part.GetStream();
+                                    ExcelPackage.CopyStream(zip, ref fs);
                                     Parts.Add(GetUriKey(e.FileName), part);
                                 }
                             }
@@ -206,7 +219,7 @@ namespace OfficeOpenXml.Packaging
         {
             if (PartExists(partUri))
             {
-                return Parts.Single(x => x.Key.Equals(GetUriKey(partUri.OriginalString),StringComparison.InvariantCultureIgnoreCase)).Value;
+                return Parts.Single(x => x.Key.Equals(GetUriKey(partUri.OriginalString), StringComparison.InvariantCultureIgnoreCase)).Value;
             }
             else
             {
@@ -232,14 +245,14 @@ namespace OfficeOpenXml.Packaging
 
         internal void DeletePart(Uri Uri)
         {
-            var delList=new List<object[]>(); 
+            var delList = new List<object[]>();
             foreach (var p in Parts.Values)
             {
                 foreach (var r in p.GetRelationships())
                 {
                     if (UriHelper.ResolvePartUri(p.Uri, r.TargetUri).OriginalString.Equals(Uri.OriginalString, StringComparison.InvariantCultureIgnoreCase))
-                    {                        
-                        delList.Add(new object[]{r.Id, p});
+                    {
+                        delList.Add(new object[] { r.Id, p });
                     }
                 }
             }
@@ -252,25 +265,25 @@ namespace OfficeOpenXml.Packaging
             {
                 rels.Remove(rels.First().Id);
             }
-            rels=null;
+            rels = null;
             _contentTypes.Remove(GetUriKey(Uri.OriginalString));
             //remove all relations
             Parts.Remove(GetUriKey(Uri.OriginalString));
-            
+
         }
         internal void Save(Stream stream)
         {
             var enc = Encoding.UTF8;
             ZipOutputStream os = new ZipOutputStream(stream, true);
-            os.CompressionLevel = (OfficeOpenXml.Packaging.Ionic.Zlib.CompressionLevel)_compression;            
+            os.CompressionLevel = (OfficeOpenXml.Packaging.Ionic.Zlib.CompressionLevel)_compression;
             /**** ContentType****/
             var entry = os.PutNextEntry("[Content_Types].xml");
             byte[] b = enc.GetBytes(GetContentTypeXml());
             os.Write(b, 0, b.Length);
             /**** Top Rels ****/
             _rels.WriteZip(os, "_rels\\.rels");
-            ZipPackagePart ssPart=null;
-            foreach(var part in Parts.Values)
+            ZipPackagePart ssPart = null;
+            foreach (var part in Parts.Values)
             {
                 if (part.ContentType != ExcelPackage.contentTypeSharedString)
                 {
@@ -288,8 +301,8 @@ namespace OfficeOpenXml.Packaging
             }
             os.Flush();
             os.Close();
-            os.Dispose();  
-            
+            os.Dispose();
+
             //return ms;
         }
 
@@ -316,11 +329,11 @@ namespace OfficeOpenXml.Packaging
         }
         internal void Close()
         {
-            
+
         }
         CompressionLevel _compression = CompressionLevel.Default;
-        public CompressionLevel Compression 
-        { 
+        public CompressionLevel Compression
+        {
             get
             {
                 return _compression;

@@ -45,11 +45,15 @@ namespace EPPlusSamples
                 //Leave this blank if you don't have access to the Adventureworks database 
                 string SqlServerName = "";
 
-                FileInfo templateFile = new FileInfo(@"C:\Users\QP-107\Desktop\test.xlsx");
-                FileInfo saveFile = new FileInfo(@"C:\Users\QP-107\Desktop\test1.xlsx");
+                //FileInfo templateFile = new FileInfo(@"C:\Users\QP-107\Desktop\test.xlsx");
+                FileInfo templateFile = new FileInfo(@"C:\Users\QP-107\Desktop\test - Copy.xlsx");
+                //FileInfo saveFile = new FileInfo(@"C:\Users\QP-107\Desktop\test1.xlsx");
+                FileInfo saveFile = new FileInfo(@"C:\Users\QP-107\Desktop\test1 - Copy.xlsx");
                 using (ExcelPackage package = new ExcelPackage(templateFile, "abc"))
+                    //, "abc"
                 {
                     package.SaveAs(saveFile, "xyz");
+                    //, "xyz"
                 }
                 return;
 

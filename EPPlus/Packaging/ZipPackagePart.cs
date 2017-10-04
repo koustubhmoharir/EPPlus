@@ -40,7 +40,7 @@ namespace OfficeOpenXml.Packaging
     internal class ZipPackagePart : ZipPackageRelationshipBase, IDisposable
     {
         internal delegate void SaveHandlerDelegate(ZipOutputStream stream, CompressionLevel compressionLevel, string fileName);
-
+        
         internal ZipPackagePart(ZipPackage package, ZipEntry entry)
         {
             Package = package;
@@ -60,8 +60,8 @@ namespace OfficeOpenXml.Packaging
         internal ZipPackage Package { get; set; }
         internal ZipEntry Entry { get; set; }
         internal CompressionLevel CompressionLevel;
-        MemoryStream _stream = null;
-        internal MemoryStream Stream
+        FileStream _stream = null;
+        internal FileStream Stream
         {
             get
             {
@@ -79,22 +79,27 @@ namespace OfficeOpenXml.Packaging
             rel.SourceUri = Uri;
             return rel;
         }
-        internal MemoryStream GetStream()
+        internal FileStream GetStream()
         {
             return GetStream(FileMode.OpenOrCreate, FileAccess.ReadWrite);
         }
-        internal MemoryStream GetStream(FileMode fileMode)
+        internal FileStream GetStream(FileMode fileMode)
         {
             return GetStream(FileMode.Create, FileAccess.ReadWrite);
         }
-        internal MemoryStream GetStream(FileMode fileMode, FileAccess fileAccess)
+        internal FileStream GetStream(FileMode fileMode, FileAccess fileAccess)
         {
             if (_stream == null || fileMode == FileMode.CreateNew || fileMode == FileMode.Create)
             {
-                _stream = new MemoryStream();
+                _stream = new FileStream(Package.GetTempFile(), fileMode, fileAccess);
             }
             else
             {
+                if (!_stream.CanRead)
+                {
+                    _stream.Close();
+                    _stream = new FileStream(_stream.Name, FileMode.Open, FileAccess.Read);
+                }
                 _stream.Seek(0, SeekOrigin.Begin);                
             }
             return _stream;
@@ -134,17 +139,19 @@ namespace OfficeOpenXml.Packaging
         }
         internal void WriteZip(ZipOutputStream os)
         {
-            byte[] b;
+            //byte[] b;
             if (SaveHandler == null)
             {
-                b = GetStream().ToArray();
-                if (b.Length == 0)   //Make sure the file isn't empty. DotNetZip streams does not seems to handle zero sized files.
-                {
-                    return;
-                }
+                //b = GetStream().ToArray();
+                //if (b.Length == 0)   //Make sure the file isn't empty. DotNetZip streams does not seems to handle zero sized files.
+                //{
+                //    return;
+                //}
                 os.CompressionLevel = (OfficeOpenXml.Packaging.Ionic.Zlib.CompressionLevel)CompressionLevel;
                 os.PutNextEntry(Uri.OriginalString);
-                os.Write(b, 0, b.Length);
+                var osStream = (Stream)os;
+                ExcelPackage.CopyStream(GetStream(), ref osStream);
+                //os.Write(b, 0, b.Length);
             }
             else
             {
@@ -157,7 +164,7 @@ namespace OfficeOpenXml.Packaging
                 var name = Path.GetFileName(f);
                 _rels.WriteZip(os, (string.Format("{0}_rels/{1}.rels", f.Substring(0, f.Length - name.Length), name)));
             }
-            b = null;
+            //b = null;
         }
 
 

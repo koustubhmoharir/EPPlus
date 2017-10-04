@@ -43,6 +43,11 @@ namespace OfficeOpenXml.Utils
 #if !MONO
     internal class CompoundDocument
     {
+        private string tempFolder;
+        private string GetTempFile()
+        {
+            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
+        }
         internal class StoragePart
         {
             public StoragePart()
@@ -50,24 +55,28 @@ namespace OfficeOpenXml.Utils
 
             }
             internal Dictionary<string, StoragePart> SubStorage = new Dictionary<string, StoragePart>();
-            internal Dictionary<string, byte[]> DataStreams = new Dictionary<string, byte[]>();
-            internal Dictionary<string, FileStream> FileStreams = new Dictionary<string, FileStream>();
+            //internal Dictionary<string, byte[]> DataStreams = new Dictionary<string, byte[]>();
+            internal Dictionary<string, Stream> Streams = new Dictionary<string, Stream>();
         }
         internal StoragePart Storage = null;
-        internal CompoundDocument()
+        internal CompoundDocument(string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             Storage = new CompoundDocument.StoragePart();
         }
-        internal CompoundDocument(FileInfo fi)
+        internal CompoundDocument(FileInfo fi, string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             Read(fi);
         }
-        internal CompoundDocument(ILockBytes lb)
+        internal CompoundDocument(ILockBytes lb, string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             Read(lb);
         }
-        internal CompoundDocument(byte[] doc)
+        internal CompoundDocument(byte[] doc, string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             Read(doc);
         }
         internal void Read(FileInfo fi)
@@ -633,7 +642,7 @@ namespace OfficeOpenXml.Utils
                     }
                     else
                     {
-                        storagePart.FileStreams.Add(item.pwcsName, GetOleStream(storage, item));
+                        storagePart.Streams.Add(item.pwcsName, GetOleStream(storage, item));
                     }
                 }
                 res = pIEnumStatStg.Next(1, regelt, out fetched);
@@ -697,7 +706,7 @@ namespace OfficeOpenXml.Utils
             FileStream outputStream = null;
             try
             {
-                outputStream = new FileStream(Guid.NewGuid().ToString(), FileMode.Create);
+                outputStream = new FileStream(GetTempFile(), FileMode.Create);
                 CopyStream(pIStream, (int)statstg.cbSize, ref outputStream);
             }
             finally
@@ -726,7 +735,7 @@ namespace OfficeOpenXml.Utils
         }
 
         [SecuritySafeCritical]
-        internal byte[] Save()
+        internal void Save(ref Stream outputStream)
         {
             ILockBytes lb;
             var iret = CreateILockBytesOnHGlobal(IntPtr.Zero, true, out lb);
@@ -761,7 +770,7 @@ namespace OfficeOpenXml.Utils
             Marshal.ReleaseComObject(storage);
             Marshal.ReleaseComObject(lb);
 
-            return ret;
+            ExcelPackage.CopyStream(new MemoryStream(ret), ref outputStream);
         }
 
         private void CreateStore(string name, StoragePart subStore, IStorage storage)
@@ -779,41 +788,19 @@ namespace OfficeOpenXml.Utils
 
         private void CreateStreams(StoragePart subStore, IStorage subStorage)
         {
-            foreach (var ds in subStore.FileStreams)
+            foreach (var ds in subStore.Streams)
             {
                 comTypes.IStream stream;
                 subStorage.CreateStream(ds.Key, (uint)(STGM.CREATE | STGM.WRITE | STGM.DIRECT | STGM.SHARE_EXCLUSIVE), 0, 0, out stream);
-                WriteBuffered(ds.Value, stream);
+                ExcelPackage.CopyStream(ds.Value, ref stream);
                 //stream.Write(ds.Value, ds.Value.Length, IntPtr.Zero);
             }
             subStorage.Commit(0);
-        }
-
-        private void WriteBuffered(Stream ds, comTypes.IStream stream)
-        {
-            int minSize = 4096;
-            int maxSize = 65536;
-            int blockSize = minSize;
-            ulong bytesRead = 0;
-            byte[] block = new byte[blockSize];
-            while (ds.Read(block, 0, blockSize) > 0)
-            {
-                stream.Write(block, 0, IntPtr.Zero);
-                if (blockSize < maxSize && (int)bytesRead == blockSize)
-                {
-                    blockSize = blockSize * 16;
-                    block = new byte[blockSize];
-                }
-            }
         }
     }
 
     public static class FileStreamExtensions
     {
-        public static byte[] GetAllBytes(this FileStream f)
-        {
-            return File.ReadAllBytes(f.Name);
-        }
     }
 #endif
 }
