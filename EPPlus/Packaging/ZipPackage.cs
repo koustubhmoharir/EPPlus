@@ -136,7 +136,7 @@ namespace OfficeOpenXml.Packaging
                                     //part.Stream = new MemoryStream();
                                     //part.Stream.Write(b, 0, b.Length);
                                     Stream fs = part.GetStream();
-                                    ExcelPackage.CopyStream(zip, ref fs);
+                                    ExcelPackage.CopyStream(zip, fs);
                                     Parts.Add(GetUriKey(e.FileName), part);
                                 }
                             }

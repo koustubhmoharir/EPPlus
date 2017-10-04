@@ -150,7 +150,7 @@ namespace OfficeOpenXml.Packaging
                 os.CompressionLevel = (OfficeOpenXml.Packaging.Ionic.Zlib.CompressionLevel)CompressionLevel;
                 os.PutNextEntry(Uri.OriginalString);
                 var osStream = (Stream)os;
-                ExcelPackage.CopyStream(GetStream(), ref osStream);
+                ExcelPackage.CopyStream(GetStream(), osStream);
                 //os.Write(b, 0, b.Length);
             }
             else

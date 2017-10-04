@@ -56,7 +56,7 @@ namespace OfficeOpenXml.Utils
             }
             internal Dictionary<string, StoragePart> SubStorage = new Dictionary<string, StoragePart>();
             //internal Dictionary<string, byte[]> DataStreams = new Dictionary<string, byte[]>();
-            internal Dictionary<string, Stream> Streams = new Dictionary<string, Stream>();
+            internal Dictionary<string, Stream> DataStreams = new Dictionary<string, Stream>();
         }
         internal StoragePart Storage = null;
         internal CompoundDocument(string tempFolder = null)
@@ -642,7 +642,7 @@ namespace OfficeOpenXml.Utils
                     }
                     else
                     {
-                        storagePart.Streams.Add(item.pwcsName, GetOleStream(storage, item));
+                        storagePart.DataStreams.Add(item.pwcsName, GetOleStream(storage, item));
                     }
                 }
                 res = pIEnumStatStg.Next(1, regelt, out fetched);
@@ -735,7 +735,7 @@ namespace OfficeOpenXml.Utils
         }
 
         [SecuritySafeCritical]
-        internal void Save(ref Stream outputStream)
+        internal void Save(Stream outputStream)
         {
             ILockBytes lb;
             var iret = CreateILockBytesOnHGlobal(IntPtr.Zero, true, out lb);
@@ -770,7 +770,7 @@ namespace OfficeOpenXml.Utils
             Marshal.ReleaseComObject(storage);
             Marshal.ReleaseComObject(lb);
 
-            ExcelPackage.CopyStream(new MemoryStream(ret), ref outputStream);
+            ExcelPackage.CopyStream(new MemoryStream(ret), outputStream);
         }
 
         private void CreateStore(string name, StoragePart subStore, IStorage storage)
@@ -788,11 +788,11 @@ namespace OfficeOpenXml.Utils
 
         private void CreateStreams(StoragePart subStore, IStorage subStorage)
         {
-            foreach (var ds in subStore.Streams)
+            foreach (var ds in subStore.DataStreams)
             {
                 comTypes.IStream stream;
                 subStorage.CreateStream(ds.Key, (uint)(STGM.CREATE | STGM.WRITE | STGM.DIRECT | STGM.SHARE_EXCLUSIVE), 0, 0, out stream);
-                ExcelPackage.CopyStream(ds.Value, ref stream);
+                ExcelPackage.CopyStream(ds.Value, stream);
                 //stream.Write(ds.Value, ds.Value.Length, IntPtr.Zero);
             }
             subStorage.Commit(0);

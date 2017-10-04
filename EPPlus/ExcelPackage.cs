@@ -544,7 +544,7 @@ namespace OfficeOpenXml
                     try
                     {
                         outputStream = new FileStream(outputFile.FullName, FileMode.Create);
-                        encrHandler.DecryptPackage(template, Encryption, ref outputStream);
+                        encrHandler.DecryptPackage(template, Encryption, outputStream);
                         encrHandler = null;
                     }
                     finally
@@ -611,7 +611,7 @@ namespace OfficeOpenXml
                     try
                     {
                         outputStream = new FileStream(outputFile.FullName, FileMode.Create);
-                        encrHandler.DecryptPackage(File, Encryption, ref outputStream);
+                        encrHandler.DecryptPackage(File, Encryption, outputStream);
                     }
                     finally
                     {
@@ -845,7 +845,7 @@ namespace OfficeOpenXml
                         var file = new FileStream(GetTempFile(), FileMode.Create);
                         _package.Save(file);
                         EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
-                        eph.EncryptPackage(file, Encryption, ref _stream);
+                        eph.EncryptPackage(file, Encryption, _stream);
 #endif
 #if MONO
                         throw new NotSupportedException("Encryption is not supported under Mono.");
@@ -883,7 +883,7 @@ namespace OfficeOpenXml
 #if !MONO
                             byte[] file = ((MemoryStream)Stream).ToArray();
                             EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
-                            eph.EncryptPackage(new MemoryStream(file), Encryption, ref fi);
+                            eph.EncryptPackage(new MemoryStream(file), Encryption, fi);
 
                             //fi.Write(ms.GetBuffer(), 0, (int)ms.Length);
 #endif
@@ -909,11 +909,11 @@ namespace OfficeOpenXml
                             if (Encryption.IsEncrypted)
                             {
                                 EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
-                                eph.EncryptPackage(Stream, Encryption, ref outputStream);
+                                eph.EncryptPackage(Stream, Encryption, outputStream);
                             }
                             else
                             {
-                                CopyStream(Stream, ref outputStream);
+                                CopyStream(Stream, outputStream);
                             }
                         }
                         finally
@@ -994,7 +994,7 @@ namespace OfficeOpenXml
                     Stream.Seek(0, SeekOrigin.Begin);
                     Stream.Read(file, 0, (int)Stream.Length);
                     EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
-                    eph.EncryptPackage(new MemoryStream(file), Encryption, ref OutputStream);
+                    eph.EncryptPackage(new MemoryStream(file), Encryption, OutputStream);
                     //CopyStream(ms, ref );
 #endif
 #if MONO
@@ -1003,7 +1003,7 @@ namespace OfficeOpenXml
                 }
                 else
                 {
-                    CopyStream(_stream, ref OutputStream);
+                    CopyStream(_stream, OutputStream);
                 }
             }
         }
@@ -1157,7 +1157,7 @@ namespace OfficeOpenXml
                 {
                     EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
                     Stream outputStream = new MemoryStream();
-                    eph.EncryptPackage(Stream, Encryption, ref outputStream);
+                    eph.EncryptPackage(Stream, Encryption, outputStream);
                     byRet = ((MemoryStream)outputStream).GetBuffer();
                 }
                 finally
@@ -1223,7 +1223,7 @@ namespace OfficeOpenXml
                 {
 #if !MONO
                     Stream encrStream = new MemoryStream();
-                    CopyStream(input, ref encrStream);
+                    CopyStream(input, encrStream);
                     EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
                     Encryption.Password = Password;
                     outputFile = new FileInfo(GetTempFile());
@@ -1231,7 +1231,7 @@ namespace OfficeOpenXml
                     try
                     {
                         outputStream = new FileStream(outputFile.FullName, FileMode.Create);
-                        eph.DecryptPackage((MemoryStream)encrStream, Encryption, ref outputStream);
+                        eph.DecryptPackage((MemoryStream)encrStream, Encryption, outputStream);
                     }
                     finally
                     {
@@ -1250,7 +1250,7 @@ namespace OfficeOpenXml
                     try
                     {
                         outputStream = new FileStream(outputFile.FullName, FileMode.Create);
-                        CopyStream(input, ref outputStream);
+                        CopyStream(input, outputStream);
                     }
                     finally
                     {
@@ -1300,7 +1300,7 @@ namespace OfficeOpenXml
         /// </summary>
         /// <param name="inputStream">The input stream.</param>
         /// <param name="outputStream">The output stream.</param>
-        internal static void CopyStream(Stream inputStream, ref Stream outputStream)
+        internal static void CopyStream(Stream inputStream, Stream outputStream)
         {
             if (!inputStream.CanRead)
             {
@@ -1329,7 +1329,7 @@ namespace OfficeOpenXml
                 outputStream.Flush();
             }
         }
-        internal static void CopyStream(Stream inputStream, ref CryptoStream outputStream)
+        internal static void CopyStream(Stream inputStream, CryptoStream outputStream)
         {
             if (!inputStream.CanRead)
             {
@@ -1358,7 +1358,7 @@ namespace OfficeOpenXml
                 outputStream.Flush();
             }
         }
-        internal static void CopyStream(Stream inputStream, ref IStream outputStream)
+        internal static void CopyStream(Stream inputStream, IStream outputStream)
         {
             if (!inputStream.CanRead)
             {
