@@ -46,7 +46,7 @@ namespace OfficeOpenXml.Encryption
     /// <summary>
     /// Handels encrypted Excel documents 
     /// </summary>
-    internal class EncryptedPackageHandler
+    public class EncryptedPackageHandler
     {
         public EncryptedPackageHandler(string tempFolder)
         {
@@ -58,6 +58,14 @@ namespace OfficeOpenXml.Encryption
         {
             return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
         }
+
+        public Stream DecryptPackage(string fileName, string password)
+        {
+            Stream outStream = new FileStream(GetTempFile(), FileMode.Create);
+            DecryptPackage(new FileInfo(fileName), new ExcelEncryption() { IsEncrypted = true, Password = password }, ref outStream);
+            return outStream;
+        }
+
 #if !MONO
         /// <summary>
         /// Read the package from the OLE document and decrypt it using the supplied password
