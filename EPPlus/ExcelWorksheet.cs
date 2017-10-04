@@ -3798,7 +3798,7 @@ namespace OfficeOpenXml
                               else
                                 v = string.Empty;
                             }
-                            if ((v.GetType().IsPrimitive || v is double || v is decimal || v is DateTime || v is TimeSpan))
+                            if (v.GetType().IsPrimitive || v is double || v is decimal || v is DateTime || v is TimeSpan || v is ExcelErrorValue)
                             {
                                 //string sv = GetValueForXml(v);
                                 cache.AppendFormat("<c r=\"{0}\" s=\"{1}\"{2}>", cse.CellAddress, styleID < 0 ? 0 : styleID, GetCellType(v));

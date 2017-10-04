@@ -38,7 +38,11 @@ namespace OfficeOpenXml
         /// <summary>
         /// Value error
         /// </summary>
-        Value
+        Value,
+        /// <summary>
+        /// Getting Data error
+        /// </summary>
+        GettingData
     }
 
     /// <summary>
@@ -60,6 +64,8 @@ namespace OfficeOpenXml
             public const string Num = "#NUM!";
             public const string Ref = "#REF!";
             public const string Value = "#VALUE!";
+            public const string GettingData = "#GETTING_DATA";
+
 
             private static Dictionary<string, eErrorType> _values = new Dictionary<string, eErrorType>()
                 {
@@ -69,7 +75,8 @@ namespace OfficeOpenXml
                     {Null, eErrorType.Null},
                     {Num, eErrorType.Num},
                     {Ref, eErrorType.Ref},
-                    {Value, eErrorType.Value}
+                    {Value, eErrorType.Value},
+                    {GettingData, eErrorType.GettingData}
                 };
 
             /// <summary>
@@ -110,16 +117,44 @@ namespace OfficeOpenXml
             }
         }
 
-        internal static ExcelErrorValue Create(eErrorType errorType)
+        public static ExcelErrorValue Create(eErrorType errorType)
         {
+            switch (errorType)
+            {
+                case eErrorType.Div0:
+                    return Div0;
+                case eErrorType.NA:
+                    return NA;
+                case eErrorType.Name:
+                    return Name;
+                case eErrorType.Null:
+                    return Null;
+                case eErrorType.Num:
+                    return Num;
+                case eErrorType.Ref:
+                    return Ref;
+                case eErrorType.Value:
+                    return Value;
+                case eErrorType.GettingData:
+                    return GettingData;
+            }
             return new ExcelErrorValue(errorType);
         }
 
-        internal static ExcelErrorValue Parse(string val)
+        public static readonly ExcelErrorValue Null = new ExcelErrorValue(eErrorType.Null);
+        public static readonly ExcelErrorValue Div0 = new ExcelErrorValue(eErrorType.Div0);
+        public static readonly ExcelErrorValue Value = new ExcelErrorValue(eErrorType.Value);
+        public static readonly ExcelErrorValue Ref = new ExcelErrorValue(eErrorType.Ref);
+        public static readonly ExcelErrorValue Name = new ExcelErrorValue(eErrorType.Name);
+        public static readonly ExcelErrorValue Num = new ExcelErrorValue(eErrorType.Num);
+        public static readonly ExcelErrorValue NA = new ExcelErrorValue(eErrorType.NA);
+        public static readonly ExcelErrorValue GettingData = new ExcelErrorValue(eErrorType.GettingData);
+
+        public static ExcelErrorValue Parse(string val)
         {
             if (Values.StringIsErrorValue(val))
             {
-                return new ExcelErrorValue(Values.ToErrorType(val));
+                return Create(Values.ToErrorType(val));
             }
             if(string.IsNullOrEmpty(val)) throw new ArgumentNullException("val");
             throw new ArgumentException("Not a valid error value: " + val);
@@ -157,6 +192,8 @@ namespace OfficeOpenXml
                     return Values.Ref;
                 case eErrorType.Value:
                     return Values.Value;
+                case eErrorType.GettingData:
+                    return Values.GettingData;
                 default:
                     throw(new ArgumentException("Invalid errortype"));
             }
