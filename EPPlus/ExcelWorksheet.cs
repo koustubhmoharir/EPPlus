@@ -3423,11 +3423,17 @@ namespace OfficeOpenXml
 
                 //Rewrite the pivottable address again if any rows or columns have been inserted or deleted
                 pt.SetXmlNodeString("d:location/@ref", pt.Address.Address);
-                var ws = Workbook.Worksheets[pt.CacheDefinition.SourceRange.WorkSheet];
-                var t = ws.Tables.GetFromRange(pt.CacheDefinition.SourceRange);
-                if (pt.CacheDefinition.SourceRange!=null && !pt.CacheDefinition.SourceRange.IsName && t==null)
+                var sourceRange = pt.CacheDefinition.SourceRange;
+                if (sourceRange.IsName && sourceRange.WorkSheet == null)
                 {
-                    pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceAddressPath, pt.CacheDefinition.SourceRange.Address);
+                    var sourceRangeInfo = Workbook.FormulaParser.Parse(sourceRange.Formula) as OfficeOpenXml.FormulaParsing.EpplusExcelDataProvider.RangeInfo;
+                    sourceRange = new ExcelRange(sourceRangeInfo.Worksheet, sourceRangeInfo.Address.Start.Row, sourceRangeInfo.Address.Start.Column, sourceRangeInfo.Address.End.Row, sourceRangeInfo.Address.End.Column);
+                }
+                var ws = Workbook.Worksheets[sourceRange.WorkSheet];
+                var t = ws.Tables.GetFromRange(sourceRange);
+                if (sourceRange !=null && !sourceRange.IsName && t==null)
+                {
+                    pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceAddressPath, sourceRange.Address);
                 }
 
                 var fields =
@@ -3439,12 +3445,12 @@ namespace OfficeOpenXml
                     var flds = new HashSet<string>();
                     foreach (XmlElement node in fields)
                     {
-                        if (ix >= pt.CacheDefinition.SourceRange.Columns) break;
+                        if (ix >= sourceRange.Columns) break;
                         var fldName = node.GetAttribute("name");                        //Fixes issue 15295 dup name error
                         if (string.IsNullOrEmpty(fldName))
                         {
                             fldName = (t == null
-                                ? pt.CacheDefinition.SourceRange.Offset(0, ix++, 1, 1).Value.ToString()
+                                ? sourceRange.Offset(0, ix++, 1, 1).Value.ToString()
                                 : t.Columns[ix++].Name);
                         }
                         if (flds.Contains(fldName))
