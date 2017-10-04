@@ -668,7 +668,7 @@ namespace OfficeOpenXml
             get;
             set;
         }
-        private XmlNamespaceManager CreateDefaultNSM()
+        public XmlNamespaceManager CreateDefaultNSM()
         {
             //  Create a NamespaceManager to handle the default namespace, 
             //  and create a prefix for the default namespace:
