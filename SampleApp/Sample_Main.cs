@@ -35,15 +35,23 @@ using OfficeOpenXml;
 
 namespace EPPlusSamples
 {
-	class Sample_Main
-	{
-		static void Main(string[] args)
-		{
-			try
-			{
+    class Sample_Main
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
                 //Sample 3, 4 and 12 uses the Adventureworks database. Enter then name of your SQL server into the variable below...
                 //Leave this blank if you don't have access to the Adventureworks database 
                 string SqlServerName = "";
+
+                FileInfo templateFile = new FileInfo(@"C:\Users\QP-107\Desktop\test.xlsx");
+                FileInfo saveFile = new FileInfo(@"C:\Users\QP-107\Desktop\test1.xlsx");
+                using (ExcelPackage package = new ExcelPackage(templateFile, "abc"))
+                {
+                    package.SaveAs(saveFile, "xyz");
+                }
+                return;
 
                 // change this line to contain the path to the output folder
                 DirectoryInfo outputDir = new DirectoryInfo(@"c:\temp\SampleApp");
@@ -167,13 +175,13 @@ namespace EPPlusSamples
                 Sample_AddFormulaFunction.RunSample_AddFormulaFunction();
                 Console.WriteLine();
             }
-			catch (Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error: {0}", ex.Message);
-			}
-			Console.WriteLine();
-			Console.WriteLine("Press the return key to exit...");
-			Console.Read();
-		}
-	}
+            }
+            Console.WriteLine();
+            Console.WriteLine("Press the return key to exit...");
+            Console.Read();
+        }
+    }
 }
