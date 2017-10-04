@@ -4442,6 +4442,23 @@ namespace OfficeOpenXml
             }
         }
 
+        /// <summary>
+        /// Gets the range corresponding to an array formula or null if the formula is not an array formula
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <returns></returns>
+        public ExcelRange GetArrayFormulaRange(int row, int col)
+        {
+            var v = _formulas.GetValue(row, col);
+            if (v is int)
+            {
+                var f = _sharedFormulas[(int)v];
+                if (f.IsArray) return new ExcelRange(this, f.Address);
+            }
+            return null;
+        }
+
         private void DisposeInternal(IDisposable candidateDisposable)
         {
             if (candidateDisposable != null)
