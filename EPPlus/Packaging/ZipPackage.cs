@@ -78,7 +78,7 @@ namespace OfficeOpenXml.Packaging
         }
         Dictionary<string, ZipPackagePart> Parts = new Dictionary<string, ZipPackagePart>(StringComparer.InvariantCultureIgnoreCase);
         internal Dictionary<string, ContentType> _contentTypes = new Dictionary<string, ContentType>(StringComparer.InvariantCultureIgnoreCase);
-        internal ZipPackage(string tempFolder = null)
+        internal ZipPackage(string tempFolder)
         {
             this.tempFolder = tempFolder;
             AddNew();
@@ -90,7 +90,7 @@ namespace OfficeOpenXml.Packaging
             _contentTypes.Add("rels", new ContentType(ExcelPackage.schemaRelsExtension, true, "rels"));
         }
 
-        internal ZipPackage(Stream stream, string tempFolder = null)
+        internal ZipPackage(Stream stream, string tempFolder)
         {
             this.tempFolder = tempFolder;
             bool hasContentTypeXml = false;

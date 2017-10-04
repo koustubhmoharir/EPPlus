@@ -240,7 +240,7 @@ namespace OfficeOpenXml
         #endregion
         
 
-        private string tempFolder;
+        internal string tempFolder;
         private string GetTempFile()
         {
             return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -379,7 +379,7 @@ namespace OfficeOpenXml
                 _stream = newStream;
                 _isExternalStream = true;
                 //_package = Package.Open(_stream, FileMode.Create, FileAccess.ReadWrite); TODO:Remove
-                _package = new Packaging.ZipPackage(_stream);
+                _package = new Packaging.ZipPackage(_stream, this.tempFolder);
                 CreateBlankWb();
             }
         }
@@ -569,7 +569,7 @@ namespace OfficeOpenXml
                     try
                     {
                         //_package = Package.Open(_stream, FileMode.Open, FileAccess.ReadWrite);
-                        _package = new Packaging.ZipPackage(outputStream);
+                        _package = new Packaging.ZipPackage(outputStream, this.tempFolder);
                     }
                     catch (Exception ex)
                     {
@@ -635,7 +635,7 @@ namespace OfficeOpenXml
                     try
                     {
                         //_package = Package.Open(_stream, FileMode.Open, FileAccess.ReadWrite);
-                        _package = new Packaging.ZipPackage(outputStream);
+                        _package = new Packaging.ZipPackage(outputStream, this.tempFolder);
                     }
                     catch (Exception ex)
                     {
@@ -658,7 +658,7 @@ namespace OfficeOpenXml
             else
             {
                 //_package = Package.Open(_stream, FileMode.Create, FileAccess.ReadWrite);
-                _package = new Packaging.ZipPackage(new MemoryStream(), Path.GetTempPath());
+                _package = new Packaging.ZipPackage(new MemoryStream(), this.tempFolder);
                 CreateBlankWb();
             }
         }
@@ -1265,7 +1265,7 @@ namespace OfficeOpenXml
                     {
                         //this._package = Package.Open(this._stream, FileMode.Open, FileAccess.ReadWrite);
                         outputStream = new FileStream(outputFile.FullName, FileMode.Open);
-                        _package = new Packaging.ZipPackage(outputStream);
+                        _package = new Packaging.ZipPackage(outputStream, this.tempFolder);
                     }
                     catch (Exception ex)
                     {

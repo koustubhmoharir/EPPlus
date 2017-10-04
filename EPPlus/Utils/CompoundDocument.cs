@@ -59,22 +59,22 @@ namespace OfficeOpenXml.Utils
             internal Dictionary<string, Stream> DataStreams = new Dictionary<string, Stream>();
         }
         internal StoragePart Storage = null;
-        internal CompoundDocument(string tempFolder = null)
+        internal CompoundDocument(string tempFolder)
         {
             this.tempFolder = tempFolder;
             Storage = new CompoundDocument.StoragePart();
         }
-        internal CompoundDocument(FileInfo fi, string tempFolder = null)
+        internal CompoundDocument(FileInfo fi, string tempFolder)
         {
             this.tempFolder = tempFolder;
             Read(fi);
         }
-        internal CompoundDocument(ILockBytes lb, string tempFolder = null)
+        internal CompoundDocument(ILockBytes lb, string tempFolder)
         {
             this.tempFolder = tempFolder;
             Read(lb);
         }
-        internal CompoundDocument(byte[] doc, string tempFolder = null)
+        internal CompoundDocument(byte[] doc, string tempFolder)
         {
             this.tempFolder = tempFolder;
             Read(doc);

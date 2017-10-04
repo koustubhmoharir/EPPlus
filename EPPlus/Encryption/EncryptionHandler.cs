@@ -75,7 +75,7 @@ namespace OfficeOpenXml.Encryption
         /// <returns></returns>
         internal void DecryptPackage(FileInfo fi, ExcelEncryption encryption, Stream outputStream)
         {
-            CompoundDocument doc = new CompoundDocument(fi);
+            CompoundDocument doc = new CompoundDocument(fi, this.tempFolder);
 
             //Stream ret = null;
             if (CompoundDocument.IsStorageFile(fi.FullName) == 0)
@@ -120,7 +120,7 @@ namespace OfficeOpenXml.Encryption
 
                 if (CompoundDocument.IsStorageILockBytes(lb) == 0)
                 {
-                    var doc = new CompoundDocument(lb);
+                    var doc = new CompoundDocument(lb, this.tempFolder);
                     GetStreamFromPackage(doc, encryption, outputStream);
                 }
                 else

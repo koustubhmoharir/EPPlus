@@ -163,7 +163,7 @@ namespace OfficeOpenXml.VBA
             byte[] vba;
             vba = new byte[stream.Length];
             stream.Read(vba, 0, (int)stream.Length);
-            Document = new CompoundDocument(vba);
+            Document = new CompoundDocument(vba, this._wb._package.tempFolder);
 
             ReadDirStream();
             ProjectStreamText = Encoding.GetEncoding(CodePage).GetString(((MemoryStream)Document.Storage.DataStreams["PROJECT"]).GetBuffer());
@@ -560,7 +560,7 @@ namespace OfficeOpenXml.VBA
         {
             if (Validate())
             {
-                CompoundDocument doc = new CompoundDocument();
+                CompoundDocument doc = new CompoundDocument(this._wb._package.tempFolder);
                 doc.Storage = new CompoundDocument.StoragePart();
                 var store = new CompoundDocument.StoragePart();
                 doc.Storage.SubStorage.Add("VBA", store);
