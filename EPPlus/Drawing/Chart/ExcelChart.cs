@@ -576,7 +576,11 @@ namespace OfficeOpenXml.Drawing.Chart
        //    }
        //}
        internal virtual eChartType GetChartType(string name)
-       {
+        {
+            return GetChartTypeBase(name);
+        }
+       internal eChartType GetChartTypeBase(string name)
+        {
            
            switch (name)
            {
