@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>EPPlusSK</id>
+    <version>1.0.7</version>
+    <authors>Koustubh Moharir, Chetan Lalwani, Swanand Nirgudkar</authors>
+    <owners>Quantum Phinance</owners>
+    <projectUrl>https://epplus.codeplex.com/SourceControl/network/forks/koustubhmoharir/epplussk</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>EPPlus fork for SheetKraft</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>Excel</tags>
+    <dependencies></dependencies>
+  </metadata>
+  <files>
+	<file src="bin\Release\EPPlus.dll" target="lib\net40\EPPlus.dll"/>
+	<file src="bin\Release\EPPlus.pdb" target="lib\net40\EPPlus.pdb"/>
+	<file src="bin\Release\EPPlus.XML" target="lib\net40\EPPlus.XML"/>
+  </files>
+</package>
