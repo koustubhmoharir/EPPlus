@@ -935,7 +935,12 @@ namespace OfficeOpenXml
 					sheetsNode.RemoveChild(sheetNode);
 				}
 			}
-			_worksheets.Remove(Index);
+            XmlNode headingPairsVector2ndVariantI4Node = _pck.Workbook.Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:HeadingPairs/vt:vector/vt:variant[2]/vt:i4", _namespaceManager);
+            headingPairsVector2ndVariantI4Node.InnerText = (_worksheets.Count - 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+            XmlNode titlesOfPartsVectorNode = _pck.Workbook.Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:TitlesOfParts/vt:vector", _namespaceManager);
+            titlesOfPartsVectorNode.Attributes["size"].Value = (_worksheets.Count - 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+            titlesOfPartsVectorNode.RemoveChild(titlesOfPartsVectorNode.ChildNodes[Index - 1]);
+            _worksheets.Remove(Index);
             if (_pck.Workbook.VbaProject != null)
             {
                 _pck.Workbook.VbaProject.Modules.Remove(worksheet.CodeModule);

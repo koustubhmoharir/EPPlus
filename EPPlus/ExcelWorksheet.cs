@@ -519,7 +519,7 @@ namespace OfficeOpenXml
                 }
                 _package.Workbook.SetXmlNodeString(string.Format("d:sheets/d:sheet[@sheetId={0}]/@name", _sheetID), value);
                 ChangeNames(value);
-
+                _package.Workbook.Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:TitlesOfParts/vt:vector", NameSpaceManager).ChildNodes[Index - 1].InnerText = value;
                 _name = value;
             }
         }
