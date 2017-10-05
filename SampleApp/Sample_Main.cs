@@ -46,7 +46,19 @@ namespace EPPlusSamples
                 //Leave this blank if you don't have access to the Adventureworks database 
                 string SqlServerName = "";
 
-                // change this line to contain the path to the output folder<
+                //FileInfo templateFile = new FileInfo(@"C:\Users\QP-107\Desktop\test.xlsx");
+                FileInfo templateFile = new FileInfo(@"C:\Users\QP-107\Desktop\test - Copy.xlsx");
+                //FileInfo saveFile = new FileInfo(@"C:\Users\QP-107\Desktop\test1.xlsx");
+                FileInfo saveFile = new FileInfo(@"C:\Users\QP-107\Desktop\test1 - Copy.xlsx");
+                using (ExcelPackage package = new ExcelPackage(templateFile, "abc"))
+                    //, "abc"
+                {
+                    package.SaveAs(saveFile, "xyz");
+                    //, "xyz"
+                }
+                return;
+
+                // change this line to contain the path to the output folder
                 DirectoryInfo outputDir = new DirectoryInfo(@"c:\temp\SampleApp");
                 if (!outputDir.Exists) throw new Exception("outputDir does not exist!");
 

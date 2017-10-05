@@ -42,7 +42,12 @@ using System.Security;
 namespace OfficeOpenXml.Utils.CompundDocument
 {
     internal class CompoundDocument
-    {        
+    {
+        private string tempFolder;
+        private string GetTempFile()
+        {
+            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
+        }
         internal class StoragePart
         {
             public StoragePart()
@@ -50,19 +55,22 @@ namespace OfficeOpenXml.Utils.CompundDocument
 
             }
             internal Dictionary<string, StoragePart> SubStorage = new Dictionary<string, StoragePart>();
-            internal Dictionary<string, byte[]> DataStreams = new Dictionary<string, byte[]>();
+            internal Dictionary<string, Stream> DataStreams = new Dictionary<string, Stream>();
         }
         internal StoragePart Storage = null;
-        internal CompoundDocument()
+        internal CompoundDocument(string tempFolder)
         {
-            Storage = new StoragePart();
+            this.tempFolder = tempFolder;
+            Storage = new CompoundDocument.StoragePart();
         }
-        internal CompoundDocument(MemoryStream ms)
+        internal CompoundDocument(MemoryStream ms, string tempFolder)
         {
+            this.tempFolder = tempFolder;
             Read(ms);
         }
-        internal CompoundDocument(FileInfo fi)
+        internal CompoundDocument(FileInfo fi, string tempFolder)
         {
+            this.tempFolder = tempFolder;
             Read(fi);
         }
 
@@ -84,7 +92,7 @@ namespace OfficeOpenXml.Utils.CompundDocument
             var b = File.ReadAllBytes(fi.FullName);
             Read(b);
         }
-        internal void Read(byte[] doc) 
+        internal void Read(byte[] doc)
         {
             Read(new MemoryStream(doc));
         }
@@ -99,21 +107,21 @@ namespace OfficeOpenXml.Utils.CompundDocument
 
         private void GetStorageAndStreams(StoragePart storage, CompoundDocumentItem parent)
         {
-            foreach(var item in parent.Children)
+            foreach (var item in parent.Children)
             {
-                if(item.ObjectType==1)  //Substorage
+                if (item.ObjectType == 1)  //Substorage
                 {
                     var part = new StoragePart();
                     storage.SubStorage.Add(item.Name, part);
                     GetStorageAndStreams(part, item);
                 }
-                else if(item.ObjectType==2) //Stream
+                else if (item.ObjectType == 2) //Stream
                 {
                     storage.DataStreams.Add(item.Name, item.Stream);
                 }
             }
         }
-        internal void Save(MemoryStream ms)
+        internal void Save(Stream ms)
         {
             var doc = new CompoundDocumentFile();
             WriteStorageAndStreams(Storage, doc.RootItem);
@@ -122,7 +130,7 @@ namespace OfficeOpenXml.Utils.CompundDocument
 
         private void WriteStorageAndStreams(StoragePart storage, CompoundDocumentItem parent)
         {
-            foreach(var item in storage.SubStorage)
+            foreach (var item in storage.SubStorage)
             {
                 var c = new CompoundDocumentItem() { Name = item.Key, ObjectType = 1, Stream = null, StreamSize = 0, Parent = parent };
                 parent.Children.Add(c);

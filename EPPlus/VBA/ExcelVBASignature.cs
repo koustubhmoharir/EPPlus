@@ -236,7 +236,7 @@ namespace OfficeOpenXml.VBA
                 }
                 finally
                 {
-                    store.Dispose();
+                    //store.Dispose();
                     store.Close();
                 }
             }

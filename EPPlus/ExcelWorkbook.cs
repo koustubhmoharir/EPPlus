@@ -758,6 +758,7 @@ namespace OfficeOpenXml
 				throw new InvalidOperationException("The workbook must contain at least one worksheet");
 
 			DeleteCalcChain();
+            ClearBookViews();
 
             if (_vba == null && !_package.Package.PartExists(new Uri(ExcelVbaProject.PartUri, UriKind.Relative)))
             {
@@ -849,7 +850,18 @@ namespace OfficeOpenXml
 			}
 		}
 
-		private void ValidateDataValidations()
+        private void ClearBookViews()
+        {
+            var node = WorkbookXml.SelectSingleNode("//d:bookViews/d:workbookView", NameSpaceManager);
+            if (node != null)
+            {
+                var firstSheet = node.Attributes["firstSheet"];
+                if (firstSheet != null)
+                    node.Attributes.Remove(firstSheet);
+            }
+        }
+
+        private void ValidateDataValidations()
 		{
 			foreach (var sheet in _package.Workbook.Worksheets)
 			{

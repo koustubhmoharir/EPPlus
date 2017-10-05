@@ -519,7 +519,7 @@ namespace OfficeOpenXml
                 }
                 _package.Workbook.SetXmlNodeString(string.Format("d:sheets/d:sheet[@sheetId={0}]/@name", _sheetID), value);
                 ChangeNames(value);
-
+                _package.Workbook.Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:TitlesOfParts/vt:vector", NameSpaceManager).ChildNodes[Index - 1].InnerText = value;
                 _name = value;
             }
         }
@@ -897,7 +897,7 @@ namespace OfficeOpenXml
 
             // now release stream buffer (already converted whole Xml into XmlDocument Object and String)
             stream.Dispose();
-            packPart.Stream = new MemoryStream();
+            //packPart.GetStream();
 
             //first char is invalid sometimes?? 
             if (xml[0] != '<')
@@ -2501,52 +2501,8 @@ namespace OfficeOpenXml
         /// <param name="rows">Number of rows to delete</param>
         public void DeleteRow(int rowFrom, int rows)
         {
-            CheckSheetType();
-            if (rowFrom < 1 || rowFrom + rows > ExcelPackage.MaxRows)
-            {
-                throw(new ArgumentException("Row out of range. Spans from 1 to " + ExcelPackage.MaxRows.ToString(CultureInfo.InvariantCulture)));
+            DeleteRow(rowFrom, rows, true);
             }
-            lock (this)
-            {
-                _values.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
-                _formulas.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
-                _flags.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
-                _commentsStore.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
-                _hyperLinks.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
-                _names.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
-
-                Comments.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
-                Workbook.Names.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns, n => n.Worksheet == this);
-
-                AdjustFormulasRow(rowFrom, rows);
-                FixMergedCellsRow(rowFrom, rows, true);
-
-                foreach (var tbl in Tables)
-                {
-                    tbl.Address = tbl.Address.DeleteRow(rowFrom, rows);
-                }
-                foreach (var ptbl in PivotTables)
-                {
-                    if (ptbl.Address.Start.Row > rowFrom + rows)
-                    {
-                        ptbl.Address = ptbl.Address.DeleteRow(rowFrom, rows);
-                    }
-                }
-                //Issue 15573
-                foreach (ExcelDataValidation dv in DataValidations)
-                {
-                    var addr = dv.Address;
-                    if (addr.Start.Row > rowFrom + rows)
-                    {
-                        var newAddr = addr.DeleteRow(rowFrom, rows).Address;
-                        if (addr.Address != newAddr)
-                        {
-                            dv.SetAddress(newAddr);
-                        }
-                    }
-                }
-            }
-        }
         /// <summary>
         /// Delete the specified column from the worksheet.
         /// </summary>
@@ -2742,10 +2698,62 @@ namespace OfficeOpenXml
         /// </summary>
         /// <param name="rowFrom">The number of the start row to be deleted</param>
         /// <param name="rows">Number of rows to delete</param>
-        /// <param name="shiftOtherRowsUp">Not used. Rows are always shifted</param>
+        /// <param name="shiftOtherRowsUp">True if not specified</param>
         public void DeleteRow(int rowFrom, int rows, bool shiftOtherRowsUp)
 		{
-            DeleteRow(rowFrom, rows);
+            CheckSheetType();
+            if (rowFrom < 1 || rowFrom + rows - 1 > ExcelPackage.MaxRows)
+            {
+                throw (new ArgumentException("Row out of range. Spans from 1 to " + ExcelPackage.MaxRows.ToString(CultureInfo.InvariantCulture)));
+        }
+            lock (this)
+            {
+                _values.Clear(rowFrom, 0, rows, ExcelPackage.MaxColumns);
+                _formulas.Clear(rowFrom, 0, rows, ExcelPackage.MaxColumns);
+                _flags.Clear(rowFrom, 0, rows, ExcelPackage.MaxColumns);
+                _commentsStore.Clear(rowFrom, 0, rows, ExcelPackage.MaxColumns);
+                _hyperLinks.Clear(rowFrom, 0, rows, ExcelPackage.MaxColumns);
+                _names.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
+
+                Comments.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
+                Workbook.Names.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns, n => n.Worksheet == this);
+
+                if (!shiftOtherRowsUp) return;
+
+                _values.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
+                _formulas.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
+                _flags.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
+                _commentsStore.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
+                _hyperLinks.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
+                
+                AdjustFormulasRow(rowFrom, rows);
+                FixMergedCellsRow(rowFrom, rows, true);
+
+                foreach (var tbl in Tables)
+                {
+                    tbl.Address = tbl.Address.DeleteRow(rowFrom, rows);
+                }
+                foreach (var ptbl in PivotTables)
+                {
+                    if (ptbl.Address.Start.Row > rowFrom + rows)
+                    {
+                        ptbl.Address = ptbl.Address.DeleteRow(rowFrom, rows);
+                    }
+                }
+                //Issue 15573
+                foreach (ExcelDataValidation dv in DataValidations)
+                {
+                    var addr = dv.Address;
+                    if (addr.Start.Row > rowFrom + rows)
+                    {
+                        var newAddr = addr.DeleteRow(rowFrom, rows).Address;
+                        if (addr.Address != newAddr)
+                        {
+                            dv.SetAddress(newAddr);
+                        }
+                    }
+                }
+            }
         }
 #endregion
         /// <summary>
@@ -3306,11 +3314,17 @@ namespace OfficeOpenXml
 
                 //Rewrite the pivottable address again if any rows or columns have been inserted or deleted
                 pt.SetXmlNodeString("d:location/@ref", pt.Address.Address);
-                var ws = Workbook.Worksheets[pt.CacheDefinition.SourceRange.WorkSheet];
-                var t = ws.Tables.GetFromRange(pt.CacheDefinition.SourceRange);
-                if (pt.CacheDefinition.SourceRange!=null && !pt.CacheDefinition.SourceRange.IsName && t==null)
+                var sourceRange = pt.CacheDefinition.SourceRange;
+                if (sourceRange.IsName && sourceRange.WorkSheet == null)
                 {
-                    pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceAddressPath, pt.CacheDefinition.SourceRange.Address);
+                    var sourceRangeInfo = Workbook.FormulaParser.Parse(sourceRange.Formula) as OfficeOpenXml.FormulaParsing.EpplusExcelDataProvider.RangeInfo;
+                    sourceRange = new ExcelRange(sourceRangeInfo.Worksheet, sourceRangeInfo.Address.Start.Row, sourceRangeInfo.Address.Start.Column, sourceRangeInfo.Address.End.Row, sourceRangeInfo.Address.End.Column);
+                }
+                var ws = Workbook.Worksheets[sourceRange.WorkSheet];
+                var t = ws.Tables.GetFromRange(sourceRange);
+                if (sourceRange !=null && !sourceRange.IsName && t==null)
+                {
+                    pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceAddressPath, sourceRange.Address);
                 }
 
                 var fields =
@@ -3322,12 +3336,12 @@ namespace OfficeOpenXml
                     var flds = new HashSet<string>();
                     foreach (XmlElement node in fields)
                     {
-                        if (ix >= pt.CacheDefinition.SourceRange.Columns) break;
+                        if (ix >= sourceRange.Columns) break;
                         var fldName = node.GetAttribute("name");                        //Fixes issue 15295 dup name error
                         if (string.IsNullOrEmpty(fldName))
                         {
                             fldName = (t == null
-                                ? pt.CacheDefinition.SourceRange.Offset(0, ix++, 1, 1).Value.ToString()
+                                ? sourceRange.Offset(0, ix++, 1, 1).Value.ToString()
                                 : t.Columns[ix++].Name);
                         }
                         if (flds.Contains(fldName))
@@ -3681,7 +3695,7 @@ namespace OfficeOpenXml
                               else
                                 v = string.Empty;
                             }
-                            if ((TypeCompat.IsPrimitive(v) || v is double || v is decimal || v is DateTime || v is TimeSpan))
+                            if ((TypeCompat.IsPrimitive(v) || v is double || v is decimal || v is DateTime || v is TimeSpan || v is ExcelErrorValue))
                             {
                                 //string sv = GetValueForXml(v);
                                 cache.AppendFormat("<c r=\"{0}\" s=\"{1}\"{2}>", cse.CellAddress, styleID < 0 ? 0 : styleID, GetCellType(v));
@@ -4317,6 +4331,23 @@ namespace OfficeOpenXml
             {
                 return "";
             }
+        }
+
+        /// <summary>
+        /// Gets the range corresponding to an array formula or null if the formula is not an array formula
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <returns></returns>
+        public ExcelRange GetArrayFormulaRange(int row, int col)
+        {
+            var v = _formulas.GetValue(row, col);
+            if (v is int)
+            {
+                var f = _sharedFormulas[(int)v];
+                if (f.IsArray) return new ExcelRange(this, f.Address);
+            }
+            return null;
         }
 
         private void DisposeInternal(IDisposable candidateDisposable)

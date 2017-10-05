@@ -42,6 +42,7 @@ namespace OfficeOpenXml.Encryption
         internal short MajorVersion;
         internal short MinorVersion;
         internal abstract void Read(byte[] data);
+        internal abstract void Read(FileStream dataStream);
 
         internal static EncryptionInfo ReadBinary(byte[] data)
         {
@@ -52,7 +53,7 @@ namespace OfficeOpenXml.Encryption
             {
                 ret = new EncryptionInfoBinary();
             }
-            else if (majorVersion == 4 && minorVersion==4)
+            else if (majorVersion == 4 && minorVersion == 4)
             {
                 ret = new EncryptionInfoAgile();
             }
@@ -63,6 +64,34 @@ namespace OfficeOpenXml.Encryption
             ret.MajorVersion = majorVersion;
             ret.MinorVersion = minorVersion;
             ret.Read(data);
+            return ret;
+        }
+
+        internal static EncryptionInfo ReadFile(FileStream dataStream)
+        {
+            EncryptionInfo ret;
+            using (var fs = new FileStream(dataStream.Name, FileMode.Open))
+            {
+                var bytes = new byte[8];
+                fs.Read(bytes, 0, 8);
+                var majorVersion = BitConverter.ToInt16(bytes, 0);
+                var minorVersion = BitConverter.ToInt16(bytes, 2);
+                if ((minorVersion == 2 || minorVersion == 3) && majorVersion <= 4) // minorVersion==1 is RC4, not supported.
+                {
+                    ret = new EncryptionInfoBinary();
+                }
+                else if (majorVersion == 4 && minorVersion == 4)
+                {
+                    ret = new EncryptionInfoAgile();
+                }
+                else
+                {
+                    throw (new NotSupportedException("Unsupported encryption format"));
+                }
+                ret.MajorVersion = majorVersion;
+                ret.MinorVersion = minorVersion;
+                ret.Read(fs);
+            }
             return ret;
         }
     }
@@ -93,7 +122,7 @@ namespace OfficeOpenXml.Encryption
         /// </summary>
         TRIPLE_DES,
         /// 3DES_112 MUST conform to the [RFC1851] algorithm. 
-        TRIPLE_DES_112        
+        TRIPLE_DES_112
     }
     internal enum eChainingMode
     {
@@ -214,7 +243,7 @@ namespace OfficeOpenXml.Encryption
                     default:
                         try
                         {
-                            return (eHashAlogorithm)Enum.Parse(typeof(eHashAlogorithm),v);
+                            return (eHashAlogorithm)Enum.Parse(typeof(eHashAlogorithm), v);
                         }
                         catch
                         {
@@ -233,7 +262,7 @@ namespace OfficeOpenXml.Encryption
                         return "RIPEMD-160";
                     case eHashAlogorithm.SHA1:
                         return "SHA-1";
-                    default: 
+                    default:
                         return value.ToString();
                 }
             }
@@ -241,7 +270,7 @@ namespace OfficeOpenXml.Encryption
             {
                 get
                 {
-                    var v=GetXmlNodeString("@cipherChaining");
+                    var v = GetXmlNodeString("@cipherChaining");
                     try
                     {
                         return (eChainingMode)Enum.Parse(typeof(eChainingMode), v);
@@ -295,7 +324,7 @@ namespace OfficeOpenXml.Encryption
                     case eCipherAlgorithm.TRIPLE_DES:
                         return "3DES";
                     case eCipherAlgorithm.TRIPLE_DES_112:
-                        return "3DES_112";                    
+                        return "3DES_112";
                     default:
                         return alg.ToString();
                 }
@@ -466,7 +495,7 @@ namespace OfficeOpenXml.Encryption
                       <p:encryptedKey spinCount="100000" saltSize="16" blockSize="16" keyBits="256" hashSize="64" cipherAlgorithm="AES" cipherChaining="ChainingModeCBC" hashAlgorithm="SHA512" saltValue="u2BNFAuHYn3M/WRja3/uPg==" encryptedVerifierHashInput="M0V+fRolJMRgFyI9w+AVxQ==" encryptedVerifierHashValue="V/6l9pFH7AaXFqEbsnFBfHe7gMOqFeRwaNMjc7D3LNdw6KgZzOOQlt5sE8/oG7GPVBDGfoQMTxjQydVPVy4qng==" encryptedKeyValue="B0/rbSQRiIKG5CQDH6AKYSybdXzxgKAfX1f+S5k7mNE=" />
                    </keyEncryptor></keyEncryptors></encryption>
         */
-        
+
         /***
          * <?xml version="1.0" encoding="UTF-8" standalone="true"?>
             <encryption xmlns:c="http://schemas.microsoft.com/office/2006/keyEncryptor/certificate" xmlns:p="http://schemas.microsoft.com/office/2006/keyEncryptor/password" xmlns="http://schemas.microsoft.com/office/2006/encryption">
@@ -487,7 +516,7 @@ namespace OfficeOpenXml.Encryption
             private set;
         }
 
-        internal XmlDocument Xml {get;set;}
+        internal XmlDocument Xml { get; set; }
         internal override void Read(byte[] data)
         {
             var byXml = new byte[data.Length - 8];
@@ -495,10 +524,38 @@ namespace OfficeOpenXml.Encryption
             var xml = Encoding.UTF8.GetString(byXml);
             ReadFromXml(xml);
         }
+        internal override void Read(FileStream dataStream)
+        {
+            using (XmlReader xmlReader = XmlReader.Create(dataStream))
+            {
+                ReadFromXmlReader(xmlReader);
+            }
+        }
         internal void ReadFromXml(string xml)
         {
             Xml = new XmlDocument();
             XmlHelper.LoadXmlSafe(Xml, xml, Encoding.UTF8);
+            var node = Xml.SelectSingleNode("/d:encryption/d:keyData", _nsm);
+            KeyData = new EncryptionKeyData(_nsm, node);
+            node = Xml.SelectSingleNode("/d:encryption/d:dataIntegrity", _nsm);
+            DataIntegrity = new EncryptionDataIntegrity(_nsm, node);
+            KeyEncryptors = new List<EncryptionKeyEncryptor>();
+
+            var list = Xml.SelectNodes("/d:encryption/d:keyEncryptors/d:keyEncryptor/p:encryptedKey", _nsm);
+            if (list != null)
+            {
+                foreach (XmlNode n in list)
+                {
+                    KeyEncryptors.Add(new EncryptionKeyEncryptor(_nsm, n));
+                }
+            }
+
+        }
+        internal void ReadFromXmlReader(XmlReader xmlReader)
+        {
+            Xml = new XmlDocument();
+            Xml.Load(xmlReader);
+            //XmlHelper.LoadXmlSafe(Xml, xml, Encoding.UTF8);
             var node = Xml.SelectSingleNode("/d:encryption/d:keyData", _nsm);
             KeyData = new EncryptionKeyData(_nsm, node);
             node = Xml.SelectSingleNode("/d:encryption/d:dataIntegrity", _nsm);
@@ -562,6 +619,10 @@ namespace OfficeOpenXml.Encryption
             Verifier.VerifierHashSize = (uint)BitConverter.ToInt32(data, pos + 36);
             Verifier.EncryptedVerifierHash = new byte[Verifier.VerifierHashSize];
             Array.Copy(data, pos + 40, Verifier.EncryptedVerifierHash, 0, (int)Verifier.VerifierHashSize);
+        }
+        internal override void Read(FileStream dataStream)
+        {
+            throw new NotImplementedException();
         }
         internal byte[] WriteBinary()
         {

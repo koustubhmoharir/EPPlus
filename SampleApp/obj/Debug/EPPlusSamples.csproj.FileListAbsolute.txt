@@ -16,3 +16,12 @@ C:\Development\git\EPPlus\SampleApp\bin\Debug\EPPlus.xml
 C:\Development\git\EPPlus\SampleApp\obj\Debug\EPPlusSamples.csprojResolveAssemblyReference.cache
 C:\Development\git\EPPlus\SampleApp\obj\Debug\EPPlusSamples.exe
 C:\Development\git\EPPlus\SampleApp\obj\Debug\EPPlusSamples.pdb
+C:\Users\QP-107\Desktop\Code\EPPlus\SampleApp\obj\Debug\EPPlusSamples.csprojResolveAssemblyReference.cache
+C:\Users\QP-107\Desktop\Code\EPPlus\SampleApp\bin\Debug\EPPlusSamples.exe.config
+C:\Users\QP-107\Desktop\Code\EPPlus\SampleApp\bin\Debug\EPPlusSamples.exe
+C:\Users\QP-107\Desktop\Code\EPPlus\SampleApp\bin\Debug\EPPlusSamples.pdb
+C:\Users\QP-107\Desktop\Code\EPPlus\SampleApp\bin\Debug\EPPlus.dll
+C:\Users\QP-107\Desktop\Code\EPPlus\SampleApp\bin\Debug\EPPlus.pdb
+C:\Users\QP-107\Desktop\Code\EPPlus\SampleApp\bin\Debug\EPPlus.xml
+C:\Users\QP-107\Desktop\Code\EPPlus\SampleApp\obj\Debug\EPPlusSamples.exe
+C:\Users\QP-107\Desktop\Code\EPPlus\SampleApp\obj\Debug\EPPlusSamples.pdb

@@ -48,7 +48,7 @@ namespace OfficeOpenXml.Drawing
     public class ExcelDrawings : IEnumerable<ExcelDrawing>, IDisposable
     {
         private XmlDocument _drawingsXml=new XmlDocument();
-        private Dictionary<string, int> _drawingNames;
+        private Dictionary<string, List<int>> _drawingNames;
         private List<ExcelDrawing> _drawings;
         internal class ImageCompare
         {
@@ -81,7 +81,8 @@ namespace OfficeOpenXml.Drawing
                 _drawingsXml = new XmlDocument();                
                 _drawingsXml.PreserveWhitespace = false;
                 _drawings = new List<ExcelDrawing>();
-                _drawingNames = new Dictionary<string,int>(StringComparer.OrdinalIgnoreCase);
+                _drawingNames = new Dictionary<string, List<int>>(StringComparer.InvariantCultureIgnoreCase);
+				// Conflict OrdinalIgnoreCase
                 _package = xlPackage;
                 Worksheet = sheet;
                 XmlNode node = sheet.WorksheetXml.SelectSingleNode("//d:drawing", sheet.NameSpaceManager);
@@ -144,8 +145,9 @@ namespace OfficeOpenXml.Drawing
                     _drawings.Add(dr);
                     if (!_drawingNames.ContainsKey(dr.Name))
                     {
-                        _drawingNames.Add(dr.Name, _drawings.Count - 1);
+                        _drawingNames.Add(dr.Name, new List<int>());
                     }
+                    _drawingNames[dr.Name].Add(_drawings.Count - 1);
                 }
             }
         }
@@ -215,7 +217,7 @@ namespace OfficeOpenXml.Drawing
             {
                 if (_drawingNames.ContainsKey(Name))
                 {
-                    return _drawings[_drawingNames[Name]];
+                    return _drawings[_drawingNames[Name][0]];
                 }
                 else
                 {
@@ -285,7 +287,7 @@ namespace OfficeOpenXml.Drawing
                 ExcelChart chart = ExcelChart.GetNewChart(this, drawNode, ChartType, null, PivotTableSource);
                 chart.Name = Name;
                 _drawings.Add(chart);
-                _drawingNames.Add(Name, _drawings.Count - 1);
+                _drawingNames.Add(Name, new List<int> { _drawings.Count - 1 });
                 return chart;
             }
             /// <summary>
@@ -329,7 +331,7 @@ namespace OfficeOpenXml.Drawing
                     ExcelPicture pic = new ExcelPicture(this, drawNode, image, Hyperlink);
                     pic.Name = Name;
                     _drawings.Add(pic);
-                    _drawingNames.Add(Name, _drawings.Count - 1);
+                    _drawingNames.Add(Name, new List<int> { _drawings.Count - 1 });
                     return pic;
                 }
                 throw (new Exception("AddPicture: Image can't be null"));
@@ -368,7 +370,7 @@ namespace OfficeOpenXml.Drawing
                   ExcelPicture pic = new ExcelPicture(this, drawNode, ImageFile, Hyperlink);
                   pic.Name = Name;
                   _drawings.Add(pic);
-                  _drawingNames.Add(Name, _drawings.Count - 1);
+                  _drawingNames.Add(Name, new List<int> { _drawings.Count - 1 });
                   return pic;
                }
                throw (new Exception("AddPicture: ImageFile can't be null"));
@@ -397,7 +399,7 @@ namespace OfficeOpenXml.Drawing
                 shape.Name = Name;
                 shape.Style = Style;
                 _drawings.Add(shape);
-                _drawingNames.Add(Name, _drawings.Count - 1);
+                _drawingNames.Add(Name, new List<int> { _drawings.Count - 1 });
                 return shape;
             }
         /// <summary>
@@ -423,7 +425,7 @@ namespace OfficeOpenXml.Drawing
             shape.Name = Name;
             shape.Style = Source.Style;
             _drawings.Add(shape);
-            _drawingNames.Add(Name, _drawings.Count - 1);
+            _drawingNames.Add(Name, new List<int> { _drawings.Count - 1 });
             return shape;
         }
             private XmlElement CreateDrawingXml()
@@ -501,8 +503,15 @@ namespace OfficeOpenXml.Drawing
             draw.DeleteMe();
             for (int i = Index + 1; i < _drawings.Count; i++)
             {
-                _drawingNames[_drawings[i].Name]--;
+                var indicesList = _drawingNames[_drawings[i].Name];
+                for (int j = 0; j < indicesList.Count; j++)
+                {
+                    if (indicesList[j] == i)
+                        indicesList[j]--;
             }
+            }
+            _drawingNames[draw.Name].Remove(Index);
+            if (_drawingNames[draw.Name].Count == 0)
             _drawingNames.Remove(draw.Name);
             _drawings.Remove(draw);
         }
@@ -512,7 +521,7 @@ namespace OfficeOpenXml.Drawing
         /// <param name="Drawing">The drawing</param>
         public void Remove(ExcelDrawing Drawing)
         {
-            Remove(_drawingNames[Drawing.Name]);
+            Remove(_drawingNames[Drawing.Name][0]);
         }
         /// <summary>
         /// Removes a drawing.
@@ -520,7 +529,7 @@ namespace OfficeOpenXml.Drawing
         /// <param name="Name">The name of the drawing</param>
         public void Remove(string Name)
         {
-            Remove(_drawingNames[Name]);
+            Remove(_drawingNames[Name][0]);
         }
         /// <summary>
         /// Removes all drawings from the collection
