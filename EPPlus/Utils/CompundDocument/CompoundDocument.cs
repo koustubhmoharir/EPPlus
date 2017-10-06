@@ -44,10 +44,6 @@ namespace OfficeOpenXml.Utils.CompundDocument
     internal class CompoundDocument
     {
         private string tempFolder;
-        private string GetTempFile()
-        {
-            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
-        }
         internal class StoragePart
         {
             public StoragePart()
@@ -73,6 +69,11 @@ namespace OfficeOpenXml.Utils.CompundDocument
             this.tempFolder = tempFolder;
             Read(fi);
         }
+        internal CompoundDocument(byte[] doc, string tempFolder)
+        {
+            this.tempFolder = tempFolder;
+            Read(doc);
+        }
 
         internal static bool IsCompoundDocument(FileInfo fi)
         {
@@ -82,23 +83,22 @@ namespace OfficeOpenXml.Utils.CompundDocument
         {
             return CompoundDocumentFile.IsCompoundDocument(ms);
         }
-
-        internal CompoundDocument(byte[] doc)
-        {
-            Read(doc);
-        }
         internal void Read(FileInfo fi)
         {
-            var b = File.ReadAllBytes(fi.FullName);
-            Read(b);
+            using (var doc = new CompoundDocumentFile(fi, tempFolder))
+            {
+                Storage = new StoragePart();
+                GetStorageAndStreams(Storage, doc.RootItem);
+            }
         }
         internal void Read(byte[] doc)
         {
             Read(new MemoryStream(doc));
         }
+
         internal void Read(MemoryStream ms)
         {
-            using (var doc = new CompoundDocumentFile(ms))
+            using (var doc = new CompoundDocumentFile(ms, tempFolder))
             {
                 Storage = new StoragePart();
                 GetStorageAndStreams(Storage, doc.RootItem);
@@ -123,7 +123,7 @@ namespace OfficeOpenXml.Utils.CompundDocument
         }
         internal void Save(Stream ms)
         {
-            var doc = new CompoundDocumentFile();
+            var doc = new CompoundDocumentFile(tempFolder);
             WriteStorageAndStreams(Storage, doc.RootItem);
             doc.Write(ms);
         }

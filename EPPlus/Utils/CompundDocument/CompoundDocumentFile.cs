@@ -42,8 +42,15 @@ namespace OfficeOpenXml.Utils.CompundDocument
     /// </summary>
     internal class CompoundDocumentFile : IDisposable
     {
-        public CompoundDocumentFile()
+        private string tempFolder;
+        private string GetTempFile()
         {
+            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
+        }
+
+        public CompoundDocumentFile(string tempFolder)
+        {
+            this.tempFolder = tempFolder;
             RootItem = new CompoundDocumentItem() { Name = "<Root>", Children = new List<CompoundDocumentItem>(), ObjectType = 5 };
             minorVersion = 0x3E;
             majorVersion = 3;
@@ -54,16 +61,18 @@ namespace OfficeOpenXml.Utils.CompundDocument
             _miniSectorSize = 1 << minSectorShift;
             _sectorSizeInt = _sectorSize / 4;
         }
-        internal CompoundDocumentFile(FileInfo fi) : this(File.ReadAllBytes(fi.FullName))
+        internal CompoundDocumentFile(FileInfo fi, string tempFolder)
         {
-
+            this.tempFolder = tempFolder;
+            Read(new BinaryReader(fi.OpenRead()));
         }
-        public CompoundDocumentFile(byte[] file) : this(new MemoryStream(file))
+        public CompoundDocumentFile(byte[] file, string tempFolder) : this(new MemoryStream(file), tempFolder)
         {
+            this.tempFolder = tempFolder;
         }
-        public CompoundDocumentFile(MemoryStream ms)
+        public CompoundDocumentFile(MemoryStream ms, string tempFolder)
         {
-
+            this.tempFolder = tempFolder;
             Read(new BinaryReader(ms));
         }
         private struct DocWriteInfo
@@ -207,11 +216,11 @@ namespace OfficeOpenXml.Utils.CompundDocument
                 {
                     if (d.StreamSize < _miniStreamCutoffSize)
                     {
-                        d.Stream = new MemoryStream(GetStream(d.StartingSectorLocation, d.StreamSize, dwi.miniFAT, _miniSectors));
+                        d.Stream = GetStream(d.StartingSectorLocation, d.StreamSize, dwi.miniFAT, _miniSectors);
                     }
                     else
                     {
-                        d.Stream = new MemoryStream(GetStream(d.StartingSectorLocation, d.StreamSize, dwi.FAT, _sectors));
+                        d.Stream = GetStream(d.StartingSectorLocation, d.StreamSize, dwi.FAT, _sectors);
                         //File.WriteAllBytes(@"c:\temp\"+DateTime.Now.ToString("HHmmss")+".bin",d.Stream.ToArray());
                     }
                 }
@@ -247,22 +256,23 @@ namespace OfficeOpenXml.Utils.CompundDocument
         private void LoadMinSectors(ref DocWriteInfo dwi, List<CompoundDocumentItem> dir)
         {
             dwi.miniFAT = ReadMiniFAT(_sectors, dwi);
-            dir[0].Stream = new MemoryStream(GetStream(dir[0].StartingSectorLocation, dir[0].StreamSize, dwi.FAT, _sectors));
-            GetMiniSectors(((MemoryStream)dir[0].Stream).GetBuffer());
+            dir[0].Stream = GetStream(dir[0].StartingSectorLocation, dir[0].StreamSize, dwi.FAT, _sectors);
+            GetMiniSectors(dir[0].Stream);
         }
-        private void GetMiniSectors(byte[] miniFATStream)
+        private void GetMiniSectors(Stream stream)
         {
-            var br = new BinaryReader(new MemoryStream(miniFATStream));
+            var br = new BinaryReader(stream);
             _miniSectors = new List<byte[]>();
             while (br.BaseStream.Position < br.BaseStream.Length)
             {
                 _miniSectors.Add(br.ReadBytes(_miniSectorSize));
             }
         }
-        private byte[] GetStream(int startingSectorLocation, long streamSize, List<int> FAT, List<byte[]> sectors)
+        private FileStream GetStream(int startingSectorLocation, long streamSize, List<int> FAT, List<byte[]> sectors)
         {
-            var ms = new MemoryStream();
-            var bw = new BinaryWriter(ms);
+            var tempFile = GetTempFile();
+            var fs = File.OpenWrite(tempFile);
+            var bw = new BinaryWriter(fs);
 
             var size = 0;
             var nextSector = startingSectorLocation;
@@ -283,7 +293,9 @@ namespace OfficeOpenXml.Utils.CompundDocument
                 nextSector = FAT[nextSector];
             }
             bw.Flush();
-            return ms.ToArray();
+            fs.Close();
+            var ofs = File.OpenRead(tempFile);
+            return ofs;
         }
         private List<int> ReadMiniFAT(List<byte[]> sectors, DocWriteInfo dwi)
         {
@@ -559,7 +571,7 @@ namespace OfficeOpenXml.Utils.CompundDocument
             {
                 if (entity.ObjectType == 5 || entity.StreamSize > _miniStreamCutoffSize)
                 {
-                    entity.StartingSectorLocation = WriteStream(bw, ((MemoryStream)entity.Stream).GetBuffer());
+                    entity.StartingSectorLocation = WriteStream(bw, entity.Stream);
                 }
                 WriteDir(bw, entity);
             }
@@ -583,17 +595,18 @@ namespace OfficeOpenXml.Utils.CompundDocument
                     //Write overflowing FAT sectors
                     var b = new byte[miniFAT.Length - _sectorSize];
                     Array.Copy(miniFAT, _sectorSize, b, 0, b.Length);
-                    WriteStream(bw, b);
+                    WriteStream(bw, new MemoryStream(b));
                 }
                 _numberofMiniFATSectors = (miniFAT.Length + 1) / _sectorSize;
             }
         }
 
-        private int WriteStream(BinaryWriter bw, byte[] stream)
+        private int WriteStream(BinaryWriter bw, Stream stream)
         {
             bw.Seek(0, SeekOrigin.End);
             var start = (int)bw.BaseStream.Position / _sectorSize - 1;
-            bw.Write(stream);
+            ExcelPackage.CopyStream(stream, bw.BaseStream);
+            
             WriteStreamFullSector(bw, _sectorSize);
             WriteFAT(bw, start, stream.Length);
             return start;
@@ -788,7 +801,7 @@ namespace OfficeOpenXml.Utils.CompundDocument
             {
                 if (entity.ObjectType != 5 && entity.StreamSize > 0 && entity.StreamSize <= _miniStreamCutoffSize)
                 {
-                    bwMiniFATStream.Write(((MemoryStream)entity.Stream).GetBuffer());
+                    bwMiniFATStream.Write(((MemoryStream)entity.Stream).ToArray());
                     WriteStreamFullSector(bwMiniFATStream, miniFATSectorSize);
                     int size = _miniSectorSize;
                     entity.StartingSectorLocation = pos;

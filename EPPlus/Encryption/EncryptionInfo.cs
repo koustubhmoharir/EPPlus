@@ -70,28 +70,25 @@ namespace OfficeOpenXml.Encryption
         internal static EncryptionInfo ReadFile(FileStream dataStream)
         {
             EncryptionInfo ret;
-            using (var fs = new FileStream(dataStream.Name, FileMode.Open))
+            var bytes = new byte[8];
+            dataStream.Read(bytes, 0, 8);
+            var majorVersion = BitConverter.ToInt16(bytes, 0);
+            var minorVersion = BitConverter.ToInt16(bytes, 2);
+            if ((minorVersion == 2 || minorVersion == 3) && majorVersion <= 4) // minorVersion==1 is RC4, not supported.
             {
-                var bytes = new byte[8];
-                fs.Read(bytes, 0, 8);
-                var majorVersion = BitConverter.ToInt16(bytes, 0);
-                var minorVersion = BitConverter.ToInt16(bytes, 2);
-                if ((minorVersion == 2 || minorVersion == 3) && majorVersion <= 4) // minorVersion==1 is RC4, not supported.
-                {
-                    ret = new EncryptionInfoBinary();
-                }
-                else if (majorVersion == 4 && minorVersion == 4)
-                {
-                    ret = new EncryptionInfoAgile();
-                }
-                else
-                {
-                    throw (new NotSupportedException("Unsupported encryption format"));
-                }
-                ret.MajorVersion = majorVersion;
-                ret.MinorVersion = minorVersion;
-                ret.Read(fs);
+                ret = new EncryptionInfoBinary();
             }
+            else if (majorVersion == 4 && minorVersion == 4)
+            {
+                ret = new EncryptionInfoAgile();
+            }
+            else
+            {
+                throw (new NotSupportedException("Unsupported encryption format"));
+            }
+            ret.MajorVersion = majorVersion;
+            ret.MinorVersion = minorVersion;
+            ret.Read(dataStream);
             return ret;
         }
     }

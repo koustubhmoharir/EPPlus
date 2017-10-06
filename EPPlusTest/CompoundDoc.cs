@@ -67,7 +67,7 @@ namespace EPPlusTest
         {
            //var doc = File.ReadAllBytes(@"c:\temp\vbaProject.bin");
            var doc = File.ReadAllBytes(@"c:\temp\vba.bin");
-           var cd = new CompoundDocumentFile(doc);
+           var cd = new CompoundDocumentFile(doc, @"c:\temp\");
            var ms = new MemoryStream();
            cd.Write(ms);
            printitems(cd.RootItem);
@@ -87,7 +87,7 @@ namespace EPPlusTest
         public void ReadEncLong()
         {
             var doc=File.ReadAllBytes(@"c:\temp\EncrDocRead.xlsx");
-            var cd = new CompoundDocumentFile(doc);
+            var cd = new CompoundDocumentFile(doc, @"c:\temp\");
             var ms = new MemoryStream();
             cd.Write(ms);
 

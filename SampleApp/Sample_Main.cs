@@ -50,7 +50,7 @@ namespace EPPlusSamples
                 FileInfo templateFile = new FileInfo(@"C:\Users\QP-107\Desktop\test - Copy.xlsx");
                 //FileInfo saveFile = new FileInfo(@"C:\Users\QP-107\Desktop\test1.xlsx");
                 FileInfo saveFile = new FileInfo(@"C:\Users\QP-107\Desktop\test1 - Copy.xlsx");
-                using (ExcelPackage package = new ExcelPackage(templateFile, "abc"))
+                using (ExcelPackage package = new ExcelPackage(templateFile, "abc", tempFolder: @"C:\Users\QP-107\Desktop\abc"))
                     //, "abc"
                 {
                     package.SaveAs(saveFile, "xyz");
