@@ -59,14 +59,16 @@ namespace OfficeOpenXml.Drawing.Chart
            _node=node;
            _ns=ns;
            SchemaNodeOrder = new string[] { "idx", "order","spPr", "tx", "marker", "trendline", "explosion","invertIfNegative", "dLbls", "cat", "val", "xVal", "yVal", "bubbleSize", "bubble3D", "smooth" };
-
-           if (chartSeries.Chart.ChartType == eChartType.XYScatter ||
-               chartSeries.Chart.ChartType == eChartType.XYScatterLines ||
-               chartSeries.Chart.ChartType == eChartType.XYScatterLinesNoMarkers ||
-               chartSeries.Chart.ChartType == eChartType.XYScatterSmooth ||
-               chartSeries.Chart.ChartType == eChartType.XYScatterSmoothNoMarkers ||
-               chartSeries.Chart.ChartType == eChartType.Bubble ||
-               chartSeries.Chart.ChartType == eChartType.Bubble3DEffect)
+           var chartType = chartSeries.Chart.ChartType;
+           if (chartType == 0)
+               chartType = chartSeries.Chart.GetChartTypeBase(chartSeries.Chart.ChartNode.LocalName);
+           if (chartType == eChartType.XYScatter ||
+               chartType == eChartType.XYScatterLines ||
+               chartType == eChartType.XYScatterLinesNoMarkers ||
+               chartType == eChartType.XYScatterSmooth ||
+               chartType == eChartType.XYScatterSmoothNoMarkers ||
+               chartType == eChartType.Bubble ||
+               chartType == eChartType.Bubble3DEffect)
            {
                _seriesTopPath = "c:yVal";
                _xSeriesTopPath = "c:xVal";

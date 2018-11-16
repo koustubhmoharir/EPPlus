@@ -109,8 +109,8 @@ namespace OfficeOpenXml
 			base(xlWorksheet == null ? "" : xlWorksheet.Name, address)
 		{
 			_worksheet = xlWorksheet;
-            _workbook = _worksheet.Workbook;
-            base.SetRCFromTable(_worksheet._package, null);
+            _workbook = _worksheet?.Workbook;
+            if (_worksheet != null) base.SetRCFromTable(_worksheet._package, null);
 			if (string.IsNullOrEmpty(_ws)) _ws = _worksheet == null ? "" : _worksheet.Name;
             SetDelegate();
 		}

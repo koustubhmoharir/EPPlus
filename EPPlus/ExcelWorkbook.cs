@@ -26,15 +26,9 @@
  * 
  * Author							Change						Date
  * ******************************************************************************
-<<<<<<< HEAD
- * Jan K�llman		    Initial Release		       2011-01-01
- * Jan K�llman		    License changed GPL-->LGPL 2011-12-27
- * Richard Tallent		Fix escaping of quotes     2012-10-31
-=======
  * Jan Källman		    Initial Release		       2011-01-01
  * Jan Källman		    License changed GPL-->LGPL 2011-12-27
  * Richard Tallent		Fix escaping of quotes					2012-10-31
->>>>>>> 21c1f80b2e27bc423e3de7f9f2e2b8c9d63934f2
  *******************************************************************************/
 using System;
 using System.Xml;
@@ -791,6 +785,7 @@ namespace OfficeOpenXml
 				throw new InvalidOperationException("The workbook must contain at least one worksheet");
 
 			DeleteCalcChain();
+            ClearBookViews();
 
             if (_vba == null && !_package.Package.PartExists(new Uri(ExcelVbaProject.PartUri, UriKind.Relative)))
             {
@@ -881,6 +876,17 @@ namespace OfficeOpenXml
 				_package.Package.DeletePart(uriCalcChain);
 			}
 		}
+
+        private void ClearBookViews()
+        {
+            var node = WorkbookXml.SelectSingleNode("//d:bookViews/d:workbookView", NameSpaceManager);
+            if (node != null)
+            {
+                var firstSheet = node.Attributes["firstSheet"];
+                if (firstSheet != null)
+                    node.Attributes.Remove(firstSheet);
+            }
+        }
 
 		private void ValidateDataValidations()
 		{
