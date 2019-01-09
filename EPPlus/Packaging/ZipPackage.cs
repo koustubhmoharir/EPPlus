@@ -57,7 +57,7 @@ namespace OfficeOpenXml.Packaging
     /// <summary>
     /// Represent an OOXML Zip package.
     /// </summary>
-    public class ZipPackage : ZipPackageRelationshipBase
+    public class ZipPackage : ZipPackageRelationshipBase, IDisposable
     {
         private string tempFolder;
         public string GetTempFile()
@@ -329,7 +329,7 @@ namespace OfficeOpenXml.Packaging
         }
         internal void Close()
         {
-
+            Dispose();
         }
         CompressionLevel _compression = CompressionLevel.Default;
         public CompressionLevel Compression
@@ -348,6 +348,14 @@ namespace OfficeOpenXml.Packaging
                     }
                 }
                 _compression = value;
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach (var part in Parts.Values)
+            {
+                part.Dispose();
             }
         }
     }

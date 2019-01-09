@@ -61,17 +61,7 @@ namespace OfficeOpenXml.Packaging
         internal ZipEntry Entry { get; set; }
         internal CompressionLevel CompressionLevel;
         FileStream _stream = null;
-        internal FileStream Stream
-        {
-            get
-            {
-                return _stream;
-            }
-            set
-            {
-                _stream = value;
-            }
-        }
+
         internal override ZipPackageRelationship CreateRelationship(Uri targetUri, TargetMode targetMode, string relationshipType)
         {
 
@@ -91,15 +81,11 @@ namespace OfficeOpenXml.Packaging
         {
             if (_stream == null || fileMode == FileMode.CreateNew || fileMode == FileMode.Create)
             {
-                _stream = new FileStream(Package.GetTempFile(), fileMode, fileAccess);
+                _stream?.Dispose();
+                _stream = new FileStream(Package.GetTempFile(), fileMode, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose);
             }
             else
             {
-                if (!_stream.CanRead)
-                {
-                    _stream.Close();
-                    _stream = new FileStream(_stream.Name, FileMode.Open, FileAccess.Read);
-                }
                 _stream.Seek(0, SeekOrigin.Begin);                
             }
             return _stream;
@@ -170,8 +156,7 @@ namespace OfficeOpenXml.Packaging
 
         public void Dispose()
         {
-            _stream.Close();
-            _stream.Dispose();
+            _stream?.Dispose();
         }
     }
 }

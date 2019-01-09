@@ -1120,7 +1120,11 @@ namespace OfficeOpenXml
                 _sharedStringsList.Clear();
                 _sharedStringsList = null;
             }
-            _vba = null;
+            if (_vba != null)
+            {
+                _vba.Dispose();
+                _vba = null;
+            }
             if (_worksheets != null)
             {
                 _worksheets.Dispose();

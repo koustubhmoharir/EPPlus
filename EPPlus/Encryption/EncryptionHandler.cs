@@ -61,7 +61,7 @@ namespace OfficeOpenXml.Encryption
 
         public Stream DecryptPackage(string fileName, string password)
         {
-            Stream outStream = new FileStream(GetTempFile(), FileMode.Create);
+            Stream outStream = ExcelPackage.CreateTempStream(GetTempFile());
             DecryptPackage(new FileInfo(fileName), new ExcelEncryption() { IsEncrypted = true, Password = password }, outStream);
             return outStream;
         }
@@ -75,18 +75,18 @@ namespace OfficeOpenXml.Encryption
         /// <returns></returns>
         internal void DecryptPackage(FileInfo fi, ExcelEncryption encryption, Stream outputStream)
         {
-            CompoundDocument doc = new CompoundDocument(fi, this.tempFolder);
-
-            //Stream ret = null;
-            if (CompoundDocument.IsStorageFile(fi.FullName) == 0)
+            using (CompoundDocument doc = new CompoundDocument(fi, this.tempFolder))
             {
-                GetStreamFromPackage(doc, encryption, outputStream);
+                //Stream ret = null;
+                if (CompoundDocument.IsStorageFile(fi.FullName) == 0)
+                {
+                    GetStreamFromPackage(doc, encryption, outputStream);
+                }
+                else
+                {
+                    throw (new InvalidDataException(string.Format("File {0} is not an encrypted package", fi.FullName)));
+                }
             }
-            else
-            {
-                throw (new InvalidDataException(string.Format("File {0} is not an encrypted package", fi.FullName)));
-            }
-            //return ret;
         }
 
         //Helpmethod to output the streams in the storage
@@ -120,18 +120,15 @@ namespace OfficeOpenXml.Encryption
 
                 if (CompoundDocument.IsStorageILockBytes(lb) == 0)
                 {
-                    var doc = new CompoundDocument(lb, this.tempFolder);
-                    GetStreamFromPackage(doc, encryption, outputStream);
+                    using (var doc = new CompoundDocument(lb, this.tempFolder))
+                    {
+                        GetStreamFromPackage(doc, encryption, outputStream);
+                    }
                 }
                 else
                 {
-                    Marshal.ReleaseComObject(lb);
                     throw (new InvalidDataException("The stream is not an valid/supported encrypted document."));
                 }
-            }
-            catch// (Exception ex)
-            {
-                throw;
             }
             finally
             {
@@ -233,16 +230,17 @@ namespace OfficeOpenXml.Encryption
             ms.Write(BitConverter.GetBytes((uint)0x40), 0, 4); //Reserved
             ms.Write(byXml, 0, byXml.Length);
 
-            var doc = new CompoundDocument(tempFolder);
+            using (var doc = new CompoundDocument(tempFolder))
+            {
+                //Add the dataspace streams
+                CreateDataSpaces(doc);
+                //EncryptionInfo...
+                doc.Storage.DataStreams.Add("EncryptionInfo", ms);
+                //...and the encrypted package
+                doc.Storage.DataStreams.Add("EncryptedPackage", encrDataStream);
 
-            //Add the dataspace streams
-            CreateDataSpaces(doc);
-            //EncryptionInfo...
-            doc.Storage.DataStreams.Add("EncryptionInfo", ms);
-            //...and the encrypted package
-            doc.Storage.DataStreams.Add("EncryptedPackage", encrDataStream);
-
-            doc.Save(outputStream);
+                doc.Save(outputStream);
+            }
         }
 
         private FileStream EncryptDataAgile(Stream dataStream, EncryptionInfoAgile encryptionInfo, HashAlgorithm hashProvider)
@@ -257,7 +255,7 @@ namespace OfficeOpenXml.Encryption
             int segment = 0;
 
             //Encrypt the data
-            var fs = new FileStream(GetTempFile(), FileMode.Create);
+            var fs = ExcelPackage.CreateTempStream(GetTempFile());
             fs.Write(BitConverter.GetBytes(dataStream.Length), 0, 8);
             while (pos < dataStream.Length)
             {
@@ -331,19 +329,21 @@ namespace OfficeOpenXml.Encryption
             //IStorage storage = null;
             //MemoryStream ret = null;
 
-            var doc = new CompoundDocument(tempFolder);
-            CreateDataSpaces(doc);
+            using (var doc = new CompoundDocument(tempFolder))
+            {
+                CreateDataSpaces(doc);
 
-            doc.Storage.DataStreams.Add("EncryptionInfo", new MemoryStream(encryptionInfo.WriteBinary()));
+                doc.Storage.DataStreams.Add("EncryptionInfo", new MemoryStream(encryptionInfo.WriteBinary()));
 
-            //Encrypt the package
-            byte[] encryptedPackage = EncryptData(encryptionKey, package, false);
-            MemoryStream ms = new MemoryStream();
-            ms.Write(BitConverter.GetBytes((ulong)package.Length), 0, 8);
-            ms.Write(encryptedPackage, 0, encryptedPackage.Length);
-            doc.Storage.DataStreams.Add("EncryptedPackage", ms);
+                //Encrypt the package
+                byte[] encryptedPackage = EncryptData(encryptionKey, package, false);
+                MemoryStream ms = new MemoryStream();
+                ms.Write(BitConverter.GetBytes((ulong)package.Length), 0, 8);
+                ms.Write(encryptedPackage, 0, encryptedPackage.Length);
+                doc.Storage.DataStreams.Add("EncryptedPackage", ms);
 
-            doc.Save(outputStream);
+                doc.Save(outputStream);
+            }
         }
         #region "Dataspaces Stream methods"
         private void CreateDataSpaces(CompoundDocument doc)
@@ -547,23 +547,21 @@ namespace OfficeOpenXml.Encryption
         /// <returns></returns>
         private void DecryptDocument(FileStream dataStream, EncryptionInfo encryptionInfo, string password, Stream outputStream)
         {
-            using (var fs = new FileStream(dataStream.Name, FileMode.Open))
+            dataStream.Seek(0, SeekOrigin.Begin);
+            var bytes = new byte[8];
+            dataStream.Read(bytes, 0, 8);
+            long size = BitConverter.ToInt64(bytes, 0);
+
+            //var encryptedData = new byte[data.Length - 8];
+            //Array.Copy(data, 8, encryptedData, 0, encryptedData.Length);
+
+            if (encryptionInfo is EncryptionInfoBinary)
             {
-                var bytes = new byte[8];
-                fs.Read(bytes, 0, 8);
-                long size = BitConverter.ToInt64(bytes, 0);
-
-                //var encryptedData = new byte[data.Length - 8];
-                //Array.Copy(data, 8, encryptedData, 0, encryptedData.Length);
-
-                if (encryptionInfo is EncryptionInfoBinary)
-                {
-                    DecryptBinary((EncryptionInfoBinary)encryptionInfo, password, size, fs, outputStream);
-                }
-                else
-                {
-                    DecryptAgile((EncryptionInfoAgile)encryptionInfo, password, size, fs, outputStream);
-                }
+                DecryptBinary((EncryptionInfoBinary)encryptionInfo, password, size, dataStream, outputStream);
+            }
+            else
+            {
+                DecryptAgile((EncryptionInfoAgile)encryptionInfo, password, size, dataStream, outputStream);
             }
         }
 

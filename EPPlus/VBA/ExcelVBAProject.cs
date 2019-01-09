@@ -35,7 +35,7 @@ namespace OfficeOpenXml.VBA
     /// <summary>
     /// Represents the VBA project part of the package
     /// </summary>
-    public class ExcelVbaProject
+    public class ExcelVbaProject : IDisposable
     {
         const string schemaRelVba = "http://schemas.microsoft.com/office/2006/relationships/vbaProject";
         internal const string PartUri = @"/xl/vbaProject.bin";
@@ -560,62 +560,57 @@ namespace OfficeOpenXml.VBA
         {
             if (Validate())
             {
-                CompoundDocument doc = new CompoundDocument(this._wb._package.tempFolder);
-                doc.Storage = new CompoundDocument.StoragePart();
-                var store = new CompoundDocument.StoragePart();
-                doc.Storage.SubStorage.Add("VBA", store);
-
-                store.DataStreams.Add("_VBA_PROJECT", new MemoryStream(CreateVBAProjectStream()));
-                store.DataStreams.Add("dir", new MemoryStream(CreateDirStream()));
-                foreach (var module in Modules)
+                using (CompoundDocument doc = new CompoundDocument(this._wb._package.tempFolder))
                 {
-                    store.DataStreams.Add(module.Name, new MemoryStream(CompoundDocument.CompressPart(Encoding.GetEncoding(CodePage).GetBytes(module.Attributes.GetAttributeText() + module.Code))));
-                }
+                    doc.Storage = new CompoundDocument.StoragePart();
+                    var store = new CompoundDocument.StoragePart();
+                    doc.Storage.SubStorage.Add("VBA", store);
 
-                //Copy streams from the template, if used.
-                if (Document != null)
-                {
-                    foreach (var ss in Document.Storage.SubStorage)
+                    store.DataStreams.Add("_VBA_PROJECT", new MemoryStream(CreateVBAProjectStream()));
+                    store.DataStreams.Add("dir", new MemoryStream(CreateDirStream()));
+                    foreach (var module in Modules)
                     {
-                        if (ss.Key != "VBA")
+                        store.DataStreams.Add(module.Name, new MemoryStream(CompoundDocument.CompressPart(Encoding.GetEncoding(CodePage).GetBytes(module.Attributes.GetAttributeText() + module.Code))));
+                    }
+
+                    //Copy streams from the template, if used.
+                    if (Document != null)
+                    {
+                        foreach (var ss in Document.Storage.SubStorage)
                         {
-                            doc.Storage.SubStorage.Add(ss.Key, ss.Value);
+                            if (ss.Key != "VBA")
+                            {
+                                doc.Storage.SubStorage.Add(ss.Key, ss.Value);
+                            }
+                        }
+                        foreach (var s in Document.Storage.DataStreams)
+                        {
+                            if (s.Key != "dir" && s.Key != "PROJECT" && s.Key != "PROJECTwm")
+                            {
+                                doc.Storage.DataStreams.Add(s.Key, s.Value);
+                            }
                         }
                     }
-                    foreach (var s in Document.Storage.DataStreams)
+
+                    doc.Storage.DataStreams.Add("PROJECT", new MemoryStream(CreateProjectStream()));
+                    doc.Storage.DataStreams.Add("PROJECTwm", new MemoryStream(CreateProjectwmStream()));
+
+                    if (Part == null)
                     {
-                        if (s.Key != "dir" && s.Key != "PROJECT" && s.Key != "PROJECTwm")
-                        {
-                            doc.Storage.DataStreams.Add(s.Key, s.Value);
-                        }
+                        Uri = new Uri(PartUri, UriKind.Relative);
+                        Part = _pck.CreatePart(Uri, ExcelPackage.schemaVBA);
+                        var rel = _wb.Part.CreateRelationship(Uri, Packaging.TargetMode.Internal, schemaRelVba);
                     }
-                }
 
-                doc.Storage.DataStreams.Add("PROJECT", new MemoryStream(CreateProjectStream()));
-                doc.Storage.DataStreams.Add("PROJECTwm", new MemoryStream(CreateProjectwmStream()));
-
-                if (Part == null)
-                {
-                    Uri = new Uri(PartUri, UriKind.Relative);
-                    Part = _pck.CreatePart(Uri, ExcelPackage.schemaVBA);
-                    var rel = _wb.Part.CreateRelationship(Uri, Packaging.TargetMode.Internal, schemaRelVba);
+                    using (var fs = ExcelPackage.CreateTempStream(_pck.GetTempFile()))
+                    {
+                        doc.Save(fs);
+                        Stream st = Part.GetStream(FileMode.Create);
+                        ExcelPackage.CopyStream(fs, st);
+                    }
+                    //Save the digital signture
+                    Signature.Save(this);
                 }
-
-                Stream fs = null;
-                try
-                {
-                    fs = new FileStream(_pck.GetTempFile(), FileMode.Create);
-                    doc.Save(fs);
-                }
-                finally
-                {
-                    if (fs != null)
-                        fs.Dispose();
-                }
-                Stream st = Part.GetStream(FileMode.Create);
-                ExcelPackage.CopyStream(fs, st);
-                //Save the digital signture
-                Signature.Save(this);
             }
         }
 
@@ -1150,6 +1145,12 @@ namespace OfficeOpenXml.VBA
         public override string ToString()
         {
             return Name;
+        }
+
+        public void Dispose()
+        {
+            Document?.Dispose();
+            Document = null;
         }
     }
 }

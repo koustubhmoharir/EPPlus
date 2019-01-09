@@ -41,14 +41,14 @@ using System.Security;
 namespace OfficeOpenXml.Utils
 {
 #if !MONO
-    internal class CompoundDocument
+    internal class CompoundDocument : IDisposable
     {
         private string tempFolder;
         private string GetTempFile()
         {
             return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
         }
-        internal class StoragePart
+        internal class StoragePart : IDisposable
         {
             public StoragePart()
             {
@@ -57,6 +57,18 @@ namespace OfficeOpenXml.Utils
             internal Dictionary<string, StoragePart> SubStorage = new Dictionary<string, StoragePart>();
             //internal Dictionary<string, byte[]> DataStreams = new Dictionary<string, byte[]>();
             internal Dictionary<string, Stream> DataStreams = new Dictionary<string, Stream>();
+
+            public void Dispose()
+            {
+                foreach (var part in SubStorage.Values)
+                {
+                    part.Dispose();
+                }
+                foreach (var stream in DataStreams.Values)
+                {
+                    stream.Dispose();
+                }
+            }
         }
         internal StoragePart Storage = null;
         internal CompoundDocument(string tempFolder)
@@ -610,9 +622,8 @@ namespace OfficeOpenXml.Utils
             return lb;
         }
         [SecuritySafeCritical]
-        private MemoryStream ReadParts(IStorage storage, StoragePart storagePart)
+        private void ReadParts(IStorage storage, StoragePart storagePart)
         {
-            MemoryStream ret = null;
             comTypes.STATSTG statstg;
 
             storage.Stat(out statstg, (uint)STATFLAG.STATFLAG_DEFAULT);
@@ -648,7 +659,6 @@ namespace OfficeOpenXml.Utils
                 res = pIEnumStatStg.Next(1, regelt, out fetched);
             }
             Marshal.ReleaseComObject(pIEnumStatStg);
-            return ret;
         }
         // Help method to print a storage part binary to c:\temp
         //private void PrintStorage(IStorage storage, System.Runtime.InteropServices.ComTypes.STATSTG sTATSTG, string topName)
@@ -706,13 +716,15 @@ namespace OfficeOpenXml.Utils
             FileStream outputStream = null;
             try
             {
-                outputStream = new FileStream(GetTempFile(), FileMode.Create);
-                CopyStream(pIStream, (int)statstg.cbSize, ref outputStream);
+                outputStream = ExcelPackage.CreateTempStream(GetTempFile());
+                CopyStream(pIStream, (int)statstg.cbSize, outputStream);
             }
             finally
             {
                 if (outputStream != null)
-                    outputStream.Dispose();
+                {
+                    outputStream.Seek(0, SeekOrigin.Begin);
+                }
             }
             //pIStream.Read(data, (int)statstg.cbSize, IntPtr.Zero);
             Marshal.ReleaseComObject(pIStream);
@@ -720,7 +732,7 @@ namespace OfficeOpenXml.Utils
         }
 
         private const int bufferSize = 4096;
-        public static void CopyStream(comTypes.IStream inputStream, int size, ref FileStream outStream)
+        public static void CopyStream(comTypes.IStream inputStream, int size, FileStream outStream)
         {
             var amtRead = Marshal.AllocCoTaskMem(Marshal.SizeOf(typeof(int)));
             Marshal.WriteInt32(amtRead, bufferSize);
@@ -796,6 +808,11 @@ namespace OfficeOpenXml.Utils
                 //stream.Write(ds.Value, ds.Value.Length, IntPtr.Zero);
             }
             subStorage.Commit(0);
+        }
+
+        public void Dispose()
+        {
+            if (Storage != null) Storage.Dispose();
         }
     }
 
