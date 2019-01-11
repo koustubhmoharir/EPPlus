@@ -2589,9 +2589,9 @@ namespace OfficeOpenXml
         /// <summary>
         /// Clear all cells
         /// </summary>
-        public void Clear()
+        public void Clear(bool retainFormats = false)
 		{
-			Delete(this, false);
+			Delete(this, false, retainFormats);
 		}
 		/// <summary>
 		/// Creates an array-formula.
@@ -2609,7 +2609,7 @@ namespace OfficeOpenXml
         //{
         //    Clear(Range, true);
         //}
-        internal void Delete(ExcelAddressBase Range, bool shift)
+        internal void Delete(ExcelAddressBase Range, bool shift, bool retainFormats)
 		{
             //DeleteCheckMergedCells(Range);
             _worksheet.MergedCells.Clear(Range);
@@ -2635,8 +2635,15 @@ namespace OfficeOpenXml
 
             var rows = Range._toRow - fromRow + 1;
             var cols = Range._toCol - fromCol + 1;
-            
-            _worksheet._values.Delete(fromRow, fromCol, rows, cols, shift);
+
+            if (shift || !retainFormats)
+                _worksheet._values.Delete(fromRow, fromCol, rows, cols, shift);
+            else
+            {
+                _worksheet._values.SetRangeValueSpecial(fromRow, fromCol, fromRow + rows - 1, fromCol + cols - 1,
+                      (List<ExcelCoreValue> list, int index, int rowIx, int columnIx, object value) =>
+                      list[index] = new ExcelCoreValue { _value = null, _styleId = list[index]._styleId }, null);
+            }
             //_worksheet._types.Delete(fromRow, fromCol, rows, cols, shift);
             //_worksheet._styles.Delete(fromRow, fromCol, rows, cols, shift);
             _worksheet._formulas.Delete(fromRow, fromCol, rows, cols, shift);
@@ -2649,7 +2656,7 @@ namespace OfficeOpenXml
 			{
 				foreach (var sub in Addresses)
 				{
-					Delete(sub, shift);
+					Delete(sub, shift, retainFormats);
 				}
             }
         }
