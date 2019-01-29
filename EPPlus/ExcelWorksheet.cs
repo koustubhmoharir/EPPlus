@@ -1714,7 +1714,7 @@ namespace OfficeOpenXml
                 if (_values.PrevCell(ref r, ref c))
                 {
                     column = GetValueInner(0, c) as ExcelColumn;
-                    int maxCol = column.ColumnMax;
+                    int maxCol = column?.ColumnMax ?? -1;
                     if (maxCol >= col)
                     {
                         column.ColumnMax = col - 1;
