@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>EPPlusSK</id>
-    <version>1.0.17</version>
+    <version>1.0.18</version>
     <authors>Koustubh Moharir, Chetan Lalwani, Swanand Nirgudkar</authors>
     <owners>Quantum Phinance</owners>
     <projectUrl>https://epplus.codeplex.com/SourceControl/network/forks/koustubhmoharir/epplussk</projectUrl>
