@@ -801,7 +801,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         public bool ContainsEntry(string name)
         {
             // workitem 12534
-            return _entries.ContainsKey(SharedUtilities.NormalizePathForUseInZipFile(name));
+            return RetrievalEntries.ContainsKey(SharedUtilities.NormalizePathForUseInZipFile(name));
         }
 
 
@@ -828,13 +828,32 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
             set
             {
-                // workitem 9868
-                if (value != _CaseSensitiveRetrieval)
-                {
-                    _CaseSensitiveRetrieval = value;
-                    _initEntriesDictionary();
-                }
+                _CaseSensitiveRetrieval = value;
             }
+        }
+
+
+        private Dictionary<string, ZipEntry> RetrievalEntries
+        {
+            get { return CaseSensitiveRetrieval ? _entries : _entriesInsensitive; }
+        }
+
+
+        /// <summary>
+        ///   Indicates whether to ignore duplicate files (report only the first entry)
+        ///   when loading a zipfile.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The default value is <c>false</c>, which will try to make all files
+        ///   available (duplicates will have a "copy" suffix appended to their name).
+        ///   Setting this to <c>true</c> prior to using <c>Initialize</c> to read a
+        ///   zipfile will prevent this and instead just ignore the duplicates.
+        /// </remarks>
+        public bool IgnoreDuplicateFiles
+        {
+            get { return _IgnoreDuplicateFiles; }
+            set { _IgnoreDuplicateFiles = value; }
         }
 
 
@@ -2018,6 +2037,10 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         /// </summary>
         /// <remarks>
         ///   <para>
+        ///     Make sure you do not read from this field if you've set the value using <see cref="MaxOutputSegmentSize64"/>
+        ///   </para>
+        ///   
+        ///   <para>
         ///     Set this to a non-zero value before calling <see cref="Save()"/> or <see
         ///     cref="Save(String)"/> to specify that the ZipFile should be saved as a
         ///     split archive, also sometimes called a spanned archive. Some also
@@ -2090,6 +2113,106 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         ///
         /// <seealso cref="NumberOfSegmentsForMostRecentSave"/>
         public Int32 MaxOutputSegmentSize
+        {
+            get
+            {
+                if (_maxOutputSegmentSize > Int32.MaxValue)
+                {
+                    throw new ZipException("MaxOutputSegmentSize is too large, use MaxOutputSegmentSize64 instead.");
+                }
+
+                return (Int32)_maxOutputSegmentSize;
+            }
+            set
+            {
+                if (value < 65536 && value != 0)
+                    throw new ZipException("The minimum acceptable segment size is 65536.");
+                _maxOutputSegmentSize = value;
+            }
+        }
+
+
+        /// <summary>
+        /// The maximum size of an output segment, when saving a split Zip file.
+        /// </summary>
+        /// <remarks>
+        ///   <para>
+        ///     If you set this value, make sure you do not accidently use <see cref="MaxOutputSegmentSize"/> in your code
+        ///   </para>
+        ///   
+        ///   <para>
+        ///     Set this to a non-zero value before calling <see cref="Save()"/> or <see
+        ///     cref="Save(String)"/> to specify that the ZipFile should be saved as a
+        ///     split archive, also sometimes called a spanned archive. Some also
+        ///     call them multi-file archives.
+        ///   </para>
+        ///
+        ///   <para>
+        ///     A split zip archive is saved in a set of discrete filesystem files,
+        ///     rather than in a single file. This is handy when transmitting the
+        ///     archive in email or some other mechanism that has a limit to the size of
+        ///     each file.  The first file in a split archive will be named
+        ///     <c>basename.z01</c>, the second will be named <c>basename.z02</c>, and
+        ///     so on. The final file is named <c>basename.zip</c>. According to the zip
+        ///     specification from PKWare, the minimum value is 65536, for a 64k segment
+        ///     size. The maximum number of segments allows in a split archive is 99.
+        ///   </para>
+        ///
+        ///   <para>
+        ///     The value of this property determines the maximum size of a split
+        ///     segment when writing a split archive.  For example, suppose you have a
+        ///     <c>ZipFile</c> that would save to a single file of 200k. If you set the
+        ///     <c>MaxOutputSegmentSize</c> to 65536 before calling <c>Save()</c>, you
+        ///     will get four distinct output files. On the other hand if you set this
+        ///     property to 256k, then you will get a single-file archive for that
+        ///     <c>ZipFile</c>.
+        ///   </para>
+        ///
+        ///   <para>
+        ///     The size of each split output file will be as large as possible, up to
+        ///     the maximum size set here. The zip specification requires that some data
+        ///     fields in a zip archive may not span a split boundary, and an output
+        ///     segment may be smaller than the maximum if necessary to avoid that
+        ///     problem. Also, obviously the final segment of the archive may be smaller
+        ///     than the maximum segment size. Segments will never be larger than the
+        ///     value set with this property.
+        ///   </para>
+        ///
+        ///   <para>
+        ///     You can save a split Zip file only when saving to a regular filesystem
+        ///     file. It's not possible to save a split zip file as a self-extracting
+        ///     archive, nor is it possible to save a split zip file to a stream. When
+        ///     saving to a SFX or to a Stream, this property is ignored.
+        ///   </para>
+        ///
+        ///   <para>
+        ///     About interoperability: Split or spanned zip files produced by DotNetZip
+        ///     can be read by WinZip or PKZip, and vice-versa. Segmented zip files may
+        ///     not be readable by other tools, if those other tools don't support zip
+        ///     spanning or splitting.  When in doubt, test.  I don't believe Windows
+        ///     Explorer can extract a split archive.
+        ///   </para>
+        ///
+        ///   <para>
+        ///     This property has no effect when reading a split archive. You can read
+        ///     a split archive in the normal way with DotNetZip.
+        ///   </para>
+        ///
+        ///   <para>
+        ///     When saving a zip file, if you want a regular zip file rather than a
+        ///     split zip file, don't set this property, or set it to Zero.
+        ///   </para>
+        ///
+        ///   <para>
+        ///     If you read a split archive, with <see cref="ZipFile.Read(string)"/> and
+        ///     then subsequently call <c>ZipFile.Save()</c>, unless you set this
+        ///     property before calling <c>Save()</c>, you will get a normal,
+        ///     single-file archive.
+        ///   </para>
+        /// </remarks>
+        ///
+        /// <seealso cref="NumberOfSegmentsForMostRecentSave"/>
+        public Int64 MaxOutputSegmentSize64
         {
             get
             {
@@ -2357,10 +2480,19 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                 // read in the just-saved zip archive
                 using (ZipFile x = new ZipFile())
                 {
-                    // workitem 10735
-                    x._readName = x._name = whileSaving
-                        ? (this._readName ?? this._name)
-                        : this._name;
+                    if (File.Exists(this._readName ?? this._name))
+                    {
+                        // workitem 10735
+                        x._readName = x._name = whileSaving
+                            ? (this._readName ?? this._name)
+                            : this._name;
+                    }
+                    else // if we just saved to a stream no file is available to read from
+                    {
+                        if (_readstream.CanSeek)
+                            _readstream.Seek(0, SeekOrigin.Begin);
+                        x._readstream = _readstream;
+                    }
                     x.AlternateEncoding = this.AlternateEncoding;
                     x.AlternateEncodingUsage = this.AlternateEncodingUsage;
                     ReadIntoInstance(x);
@@ -2372,7 +2504,8 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                         {
                             if (e1.FileName == e2.FileName)
                             {
-                                e2.CopyMetaData(e1);
+                                if (!e2.IsChanged)
+                                    e2.CopyMetaData(e1);
                                 break;
                             }
                         }
@@ -2819,18 +2952,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                 throw new ZipException(String.Format("{0} is not a valid zip file", fileName), e1);
             }
         }
-
-
-
-        private void _initEntriesDictionary()
-        {
-            // workitem 9868
-            StringComparer sc = (CaseSensitiveRetrieval) ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
-            _entries = (_entries == null)
-                ? new Dictionary<String, ZipEntry>(sc)
-                : new Dictionary<String, ZipEntry>(_entries, sc);
-        }
-
+        
 
         private void _InitInstance(string zipFileName, TextWriter statusMessageWriter)
         {
@@ -2844,7 +2966,8 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             ParallelDeflateThreshold = 512 * 1024;
 #endif
             // workitem 7685, 9868
-            _initEntriesDictionary();
+            _entries = new Dictionary<string, ZipEntry>(StringComparer.Ordinal);
+            _entriesInsensitive = new Dictionary<string, ZipEntry>(StringComparer.OrdinalIgnoreCase);
 
             if (File.Exists(_name))
             {
@@ -3004,13 +3127,14 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         {
             get
             {
+                var entries = RetrievalEntries;
                 var key = SharedUtilities.NormalizePathForUseInZipFile(fileName);
-                if (_entries.ContainsKey(key))
-                    return _entries[key];
+                if (entries.ContainsKey(key))
+                    return entries[key];
                 // workitem 11056
                 key = key.Replace("/", "\\");
-                if (_entries.ContainsKey(key))
-                    return _entries[key];
+                if (entries.ContainsKey(key))
+                    return entries[key];
                 return null;
 
 #if MESSY
@@ -3317,7 +3441,10 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             if (entry == null)
                 throw new ArgumentNullException("entry");
 
-            _entries.Remove(SharedUtilities.NormalizePathForUseInZipFile(entry.FileName));
+            var path = SharedUtilities.NormalizePathForUseInZipFile(entry.FileName);
+            _entries.Remove(path);
+            if (!AnyCaseInsensitiveMatches(path))
+                _entriesInsensitive.Remove(path);
             _zipEntriesAsList = null;
 
 #if NOTNEEDED
@@ -3342,6 +3469,16 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         }
 
 
+        private bool AnyCaseInsensitiveMatches(string path)
+        {
+            // this has to search _entries rather than _caseInsensitiveEntries because it's used to determine whether to update the latter
+            foreach (var entry in _entries.Values)
+            {
+                if (String.Equals(entry.FileName, path, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return false;
+        }
 
 
         /// <summary>
@@ -3595,17 +3732,19 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         #region private fields
         private TextWriter _StatusMessageTextWriter;
         private bool _CaseSensitiveRetrieval;
+        private bool _IgnoreDuplicateFiles;
         private Stream _readstream;
         private Stream _writestream;
         private UInt16 _versionMadeBy;
         private UInt16 _versionNeededToExtract;
         private UInt32 _diskNumberWithCd;
-        private Int32 _maxOutputSegmentSize;
+        private Int64 _maxOutputSegmentSize;
         private UInt32 _numberOfSegmentsForMostRecentSave;
         private ZipErrorAction _zipErrorAction;
         private bool _disposed;
         //private System.Collections.Generic.List<ZipEntry> _entries;
         private System.Collections.Generic.Dictionary<String, ZipEntry> _entries;
+        private System.Collections.Generic.Dictionary<String, ZipEntry> _entriesInsensitive;
         private List<ZipEntry> _zipEntriesAsList;
         private string _name;
         private string _readName;

@@ -41,7 +41,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         public static Int64 GetFileLength(string fileName)
         {
             if (!File.Exists(fileName))
-                throw new System.IO.FileNotFoundException(fileName);
+                throw new FileNotFoundException(String.Format("Could not find file '{0}'.", fileName), fileName);
 
             long fileLength = 0L;
             FileShare fs = FileShare.ReadWrite;

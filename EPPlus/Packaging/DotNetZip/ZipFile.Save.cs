@@ -208,9 +208,30 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                 _OutputUsesZip64 = new Nullable<bool>(thisSaveUsedZip64);
 
 
+                if (_fileAlreadyExists && this._readstream != null)
+                {
+                    // This means we opened and read a zip file.
+                    // If we are now saving to the same file, we need to close the
+                    // orig file, first.
+                    this._readstream.Close();
+                    this._readstream = null;
+                }
+                // the archiveStream for each entry needs to be null
+                foreach (var e in c)
+                {
+                    var zss1 = e._archiveStream as ZipSegmentedStream;
+                    if (zss1 != null)
+#if NETCF
+                                zss1.Close();
+#else
+                        zss1.Dispose();
+#endif
+                    e._archiveStream = null;
+                }
+
                 // do the rename as necessary
                 if (_name != null &&
-                    (_temporaryFileName!=null || zss != null))
+                    (_temporaryFileName != null || zss != null))
                 {
                     // _temporaryFileName may remain null if we are writing to a stream.
                     // only close the stream if there is a file behind it.
@@ -221,27 +242,6 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 #endif
                     if (_saveOperationCanceled)
                         return;
-
-                    if (_fileAlreadyExists && this._readstream != null)
-                    {
-                        // This means we opened and read a zip file.
-                        // If we are now saving to the same file, we need to close the
-                        // orig file, first.
-                        this._readstream.Close();
-                        this._readstream = null;
-                        // the archiveStream for each entry needs to be null
-                        foreach (var e in c)
-                        {
-                            var zss1 = e._archiveStream as ZipSegmentedStream;
-                            if (zss1 != null)
-#if NETCF
-                                zss1.Close();
-#else
-                                zss1.Dispose();
-#endif
-                            e._archiveStream = null;
-                        }
-                    }
 
                     string tmpName = null;
                     if (File.Exists(_name))
@@ -313,6 +313,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                     }
                     _fileAlreadyExists = true;
                 }
+                _readName = _name;
 
                 NotifyEntriesSaveComplete(c);
                 OnSaveCompleted();
@@ -473,7 +474,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             if (Directory.Exists(_name))
                 throw new ZipException("Bad Directory", new System.ArgumentException("That name specifies an existing directory. Please specify a filename.", "fileName"));
             _contentsChanged = true;
-            _fileAlreadyExists = File.Exists(_name);
+            _fileAlreadyExists = File.Exists(_readName);
             Save();
         }
 
@@ -577,11 +578,17 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             // if we had a filename to save to, we are now obliterating it.
             _name = null;
 
+            if (_writestream != null) // if we saved to a stream before read from there
+                _readstream = _writestream;
             _writestream = new CountingStream(outputStream);
 
             _contentsChanged = true;
-            _fileAlreadyExists = false;
+            _fileAlreadyExists = File.Exists(_readName); // if we saved to or read from a file before
+
             Save();
+
+            _fileAlreadyExists = false;
+            _readName = null; // if we had a filename to save to, we are now obliterating it.
         }
 
 

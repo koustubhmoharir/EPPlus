@@ -879,7 +879,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zlib
 
             if (emitting) return;
             emitting = true;
-            if (doAll || mustWait)
+            if ((doAll && (_latestCompressed != _lastFilled)) || mustWait)
                 _newlyCompressedBlob.WaitOne();
 
             do
@@ -967,7 +967,6 @@ namespace OfficeOpenXml.Packaging.Ionic.Zlib
 
                 } while (nextToWrite >= 0);
 
-            //} while (doAll && (_lastWritten != _latestCompressed));
             } while (doAll && (_lastWritten != _latestCompressed || _lastWritten != _lastFilled));
 
             emitting = false;

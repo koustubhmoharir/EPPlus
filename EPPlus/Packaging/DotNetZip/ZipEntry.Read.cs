@@ -216,8 +216,6 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                         i += 8;
                         ze._UncompressedSize = BitConverter.ToInt64(block, i);
                         i += 8;
-
-                        ze._LengthOfTrailer += 24;  // bytes including sig, CRC, Comp and Uncomp sizes
                     }
                     else
                     {
@@ -234,9 +232,6 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                         ze._Crc32 = (Int32)(block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256);
                         ze._CompressedSize = (uint)(block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256);
                         ze._UncompressedSize = (uint)(block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256);
-
-                        ze._LengthOfTrailer += 16;  // bytes including sig, CRC, Comp and Uncomp sizes
-
                     }
 
                     wantMore = (SizeOfDataRead != ze._CompressedSize);
@@ -261,6 +256,8 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                 ze.ArchiveStream.Seek(posn, SeekOrigin.Begin);
                 // workitem 10178
                 Ionic.Zip.SharedUtilities.Workaround_Ladybug318918(ze.ArchiveStream);
+
+                ze._LengthOfTrailer += ze._InputUsesZip64 ? 24 : 16;  // bytes including sig, CRC, Comp and Uncomp sizes
             }
 
             ze._CompressedFileDataSize = ze._CompressedSize;
@@ -502,7 +499,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                 {
                     int start = j;
                     UInt16 headerId = (UInt16)(buffer[j++] + buffer[j++] * 256);
-                    Int16 dataSize = (short)(buffer[j++] + buffer[j++] * 256);
+                    UInt16 dataSize = (UInt16)(buffer[j++] + buffer[j++] * 256);
 
                     switch (headerId)
                     {
@@ -580,7 +577,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
 
 #if AESCRYPTO
-        private int ProcessExtraFieldWinZipAes(byte[] buffer, int j, Int16 dataSize, long posn)
+        private int ProcessExtraFieldWinZipAes(byte[] buffer, int j, UInt16 dataSize, long posn)
         {
             if (this._CompressionMethod == 0x0063)
             {
@@ -627,7 +624,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
         private delegate T Func<T>();
 
-        private int ProcessExtraFieldZip64(byte[] buffer, int j, Int16 dataSize, long posn)
+        private int ProcessExtraFieldZip64(byte[] buffer, int j, UInt16 dataSize, long posn)
         {
             // The PKWare spec says that any of {UncompressedSize, CompressedSize,
             // RelativeOffset} exceeding 0xFFFFFFFF can lead to the ZIP64 header,
@@ -669,7 +666,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         }
 
 
-        private int ProcessExtraFieldInfoZipTimes(byte[] buffer, int j, Int16 dataSize, long posn)
+        private int ProcessExtraFieldInfoZipTimes(byte[] buffer, int j, UInt16 dataSize, long posn)
         {
             if (dataSize != 12 && dataSize != 8)
                 throw new BadReadException(String.Format("  Unexpected size (0x{0:X4}) for InfoZip v1 extra field at position 0x{1:X16}", dataSize, posn));
@@ -690,7 +687,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
 
 
-        private int ProcessExtraFieldUnixTimes(byte[] buffer, int j, Int16 dataSize, long posn)
+        private int ProcessExtraFieldUnixTimes(byte[] buffer, int j, UInt16 dataSize, long posn)
         {
             // The Unix filetimes are 32-bit unsigned integers,
             // storing seconds since Unix epoch.
@@ -734,7 +731,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         }
 
 
-        private int ProcessExtraFieldWindowsTimes(byte[] buffer, int j, Int16 dataSize, long posn)
+        private int ProcessExtraFieldWindowsTimes(byte[] buffer, int j, UInt16 dataSize, long posn)
         {
             // The NTFS filetimes are 64-bit unsigned integers, stored in Intel
             // (least significant byte first) byte order. They are expressed as the

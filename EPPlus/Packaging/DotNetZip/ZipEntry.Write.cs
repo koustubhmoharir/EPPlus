@@ -37,7 +37,8 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
     {
         internal void WriteCentralDirectoryEntry(Stream s)
         {
-            byte[] bytes = new byte[4096];
+            //CDE header size: 46 + extra field length + filename length + comment length
+            byte[] bytes = new byte[8192];
             int i = 0;
             // signature
             bytes[i++] = (byte)(ZipConstants.ZipDirEntrySignature & 0x000000FF);
@@ -184,14 +185,12 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             // the _CommentBytes private field was set during WriteHeader()
             int commentLength = (_CommentBytes == null) ? 0 : _CommentBytes.Length;
 
-            // the size of our buffer defines the max length of the comment we can write
-            if (commentLength + i > bytes.Length) commentLength = bytes.Length - i;
-            bytes[i++] = (byte)(commentLength & 0x00FF);
-            bytes[i++] = (byte)((commentLength & 0xFF00) >> 8);
+            // skip comment length because we set it at the end
+            i += 2;
 
             // Disk number start
             bool segmented = (this._container.ZipFile != null) &&
-                (this._container.ZipFile.MaxOutputSegmentSize != 0);
+                (this._container.ZipFile.MaxOutputSegmentSize64 != 0);
             if (segmented) // workitem 13915
             {
                 // Emit nonzero disknumber only if saving segmented archive.
@@ -274,12 +273,18 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             // file (entry) comment
             if (commentLength != 0)
             {
+                // the size of our buffer defines the max length of the comment we can write
+                if (commentLength + i > bytes.Length)
+                    commentLength = bytes.Length - i;
                 // now actually write the comment itself into the byte buffer
                 Buffer.BlockCopy(_CommentBytes, 0, bytes, i, commentLength);
                 // for (j = 0; (j < commentLength) && (i + j < bytes.Length); j++)
                 //     bytes[i + j] = _CommentBytes[j];
                 i += commentLength;
             }
+
+            bytes[32] = (byte)(commentLength & 0x00FF);
+            bytes[33] = (byte)((commentLength & 0xFF00) >> 8);
 
             s.Write(bytes, 0, i);
         }
@@ -1043,7 +1048,14 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 #endif
 
             // LastMod
-            _TimeBlob = Ionic.Zip.SharedUtilities.DateTimeToPacked(LastModified);
+            if (_dontEmitLastModified)
+            {
+                _TimeBlob = 0;
+            }
+            else
+            {
+                _TimeBlob = Ionic.Zip.SharedUtilities.DateTimeToPacked(LastModified);
+            }
 
             // (i==10) time blob
             block[i++] = (byte)(_TimeBlob & 0x000000FF);
@@ -1418,6 +1430,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                     // allow the application to close the stream
                     if (this._CloseDelegate != null)
                         this._CloseDelegate(this.FileName, input);
+                    this._sourceStream = null;
                 }
                 else if ((input as FileStream) != null)
                 {
@@ -2316,7 +2329,15 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                     // http://www.info-zip.org/pub/infozip/
 
                     // Also, winzip insists on this!
-                    _TimeBlob = Ionic.Zip.SharedUtilities.DateTimeToPacked(LastModified);
+                    if (_dontEmitLastModified)
+                    {
+                        _TimeBlob = 0;
+                    }
+                    else
+                    {
+                        _TimeBlob = Ionic.Zip.SharedUtilities.DateTimeToPacked(LastModified);
+                    }
+
                     encryptionHeader[11] = (byte)((this._TimeBlob >> 8) & 0xff);
                 }
                 else
@@ -2437,7 +2458,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
                     // read
                     n = input.Read(bytes, 0, len);
-                    //_CheckRead(n);
+                    _CheckRead(n);
 
                     // write
                     outstream.Write(bytes, 0, n);
@@ -2547,7 +2568,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
                 // read
                 n = input.Read(bytes, 0, len);
-                //_CheckRead(n);
+                _CheckRead(n);
 
                 // write
                 outstream.Write(bytes, 0, n);
