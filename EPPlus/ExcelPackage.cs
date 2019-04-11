@@ -814,108 +814,94 @@ namespace OfficeOpenXml
         /// </summary>
         public void Save()
         {
-            try
+            if (Stream is MemoryStream && Stream.Length > 0)
             {
-                if (Stream is MemoryStream && Stream.Length > 0)
-                {
-                    //Close any open memorystream and "renew" then. This can occure if the package is saved twice. 
-                    //The stream is left open on save to enable the user to read the stream-property.
-                    //Non-memorystream streams will leave the closing to the user before saving a second time.
-                    CloseStream();
-                }
+                //Close any open memorystream and "renew" then. This can occure if the package is saved twice. 
+                //The stream is left open on save to enable the user to read the stream-property.
+                //Non-memorystream streams will leave the closing to the user before saving a second time.
+                CloseStream();
+            }
 
-                Workbook.Save();
-                if (File == null)
+            Workbook.Save();
+            if (File == null)
+            {
+                if (Stream == null) Stream = CreateTempStream(GetTempFile());
+                if (Encryption.IsEncrypted)
                 {
-                    if (Stream == null) Stream = CreateTempStream(GetTempFile());
-                    if (Encryption.IsEncrypted)
-                    {
 #if !MONO
-                        using (var file = CreateTempStream(GetTempFile()))
-                        {
-                            _package.Save(file);
-                            EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
-                            eph.EncryptPackage(file, Encryption, Stream);
-                        }
+                    using (var file = CreateTempStream(GetTempFile()))
+                    {
+                        _package.Save(file);
+                        EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
+                        eph.EncryptPackage(file, Encryption, Stream);
+                    }
 #endif
 #if MONO
                         throw new NotSupportedException("Encryption is not supported under Mono.");
 #endif
-                    }
-                    else
-                    {
-                        _package.Save(Stream);
-                    }
-                    Stream.Flush();
-                    _package.Close();
                 }
                 else
                 {
-                    if (System.IO.File.Exists(File.FullName))
+                    _package.Save(Stream);
+                }
+                Stream.Flush();
+                _package.Close();
+            }
+            else
+            {
+                if (System.IO.File.Exists(File.FullName))
+                {
+                    try
                     {
-                        try
-                        {
-                            System.IO.File.Delete(File.FullName);
-                        }
-                        catch (Exception ex)
-                        {
-                            throw (new Exception(string.Format("Error overwriting file {0}", File.FullName), ex));
-                        }
+                        System.IO.File.Delete(File.FullName);
                     }
-
-                    using (var fi = new FileStream(File.FullName, FileMode.Create))
+                    catch (Exception ex)
                     {
-                        if (Encryption.IsEncrypted)
-                        {
-#if !MONO
-                            Stream tempStream = null;
-                            if (Stream == null)
-                                tempStream = Stream = CreateTempStream(GetTempFile());
-                            using (tempStream)
-                            {
-                                _package.Save(Stream);
-                                var encInpStream = Stream as MemoryStream;
-                                if (encInpStream == null)
-                                {
-                                    encInpStream = new MemoryStream();
-                                    CopyStream(Stream, encInpStream);
-                                }
-                                EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
-                                encInpStream.Seek(0, SeekOrigin.Begin);
-                                eph.EncryptPackage(encInpStream, Encryption, fi);
-                            }
+                        throw (new Exception(string.Format("Error overwriting file {0}", File.FullName), ex));
+                    }
+                }
 
-                            //fi.Write(ms.GetBuffer(), 0, (int)ms.Length);
+                using (var fi = new FileStream(File.FullName, FileMode.Create))
+                {
+                    if (Encryption.IsEncrypted)
+                    {
+#if !MONO
+                        Stream tempStream = null;
+                        if (Stream == null)
+                            tempStream = Stream = CreateTempStream(GetTempFile());
+                        using (tempStream)
+                        {
+                            _package.Save(Stream);
+                            var encInpStream = Stream as MemoryStream;
+                            if (encInpStream == null)
+                            {
+                                encInpStream = new MemoryStream();
+                                CopyStream(Stream, encInpStream);
+                            }
+                            EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
+                            encInpStream.Seek(0, SeekOrigin.Begin);
+                            eph.EncryptPackage(encInpStream, Encryption, fi);
+                        }
+
+                        //fi.Write(ms.GetBuffer(), 0, (int)ms.Length);
 #endif
 #if MONO
                             throw new NotSupportedException("Encryption is not supported under Mono.");
 #endif
-                        }
+                    }
+                    else
+                    {
+                        if (Stream == null)
+                            _package.Save(fi);
                         else
                         {
-                            if (Stream == null)
-                                _package.Save(fi);
-                            else
-                            {
-                                _package.Save(Stream);
-                                CopyStream(Stream, fi);
-                            }
+                            _package.Save(Stream);
+                            CopyStream(Stream, fi);
                         }
                     }
+                }
 
-                    _package.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (File == null)
-                {
-                    throw;
-                }
-                else
-                {
-                    throw (new InvalidOperationException(string.Format("Error saving file {0}", File.FullName), ex));
-                }
+                _package.Close();
             }
         }
         /// <summary>
