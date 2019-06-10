@@ -451,6 +451,58 @@ namespace OfficeOpenXml
         }
 
         /// <summary>
+        /// Returns the theme colors from the package
+        /// </summary>
+        public Color[] GetThemeColors()
+        {
+            try
+            {
+                foreach (var pair in _package.Package._contentTypes)
+                {
+                    if (pair.Value.Name == "application/vnd.openxmlformats-officedocument.theme+xml")
+                    {
+                        var uri = _package.Package.GetUriKey(pair.Key);
+                        var doc = _package.GetXmlFromUri(new Uri(uri, UriKind.Relative));
+                        var nsm = _package.CreateDefaultNSM();
+                        nsm.AddNamespace("a", ExcelPackage.schemaDrawings);
+                        var clrScheme = doc.SelectSingleNode("a:theme/a:themeElements/a:clrScheme", nsm);
+                        var colors = new Color[10];
+                        colors[0] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:lt1", nsm));
+                        colors[1] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:dk1", nsm));
+                        colors[2] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:lt2", nsm));
+                        colors[3] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:dk2", nsm));
+                        colors[4] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:accent1", nsm));
+                        colors[5] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:accent2", nsm));
+                        colors[6] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:accent3", nsm));
+                        colors[7] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:accent4", nsm));
+                        colors[8] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:accent5", nsm));
+                        colors[9] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:accent6", nsm));
+
+                        return colors;
+                    }
+                }
+            }
+            catch { }
+            return null;
+        }
+        private static Color ColorFromThemeXml(XmlNode node)
+        {
+            node = node?.FirstChild;
+            string s = null;
+            if (node.LocalName == "sysClr")
+            {
+                s = node.Attributes["lastClr"].Value;
+            }
+            else if (node.LocalName == "srgbClr")
+            {
+                s = node.Attributes["val"].Value;
+            }
+            if (!string.IsNullOrEmpty(s))
+                return Color.FromArgb(int.Parse(s.Substring(0, 2), NumberStyles.HexNumber), int.Parse(s.Substring(2, 2), NumberStyles.HexNumber), int.Parse(s.Substring(4, 2), NumberStyles.HexNumber));
+            throw new ArgumentException();
+        }
+
+        /// <summary>
         /// Create an empty VBA project.
         /// </summary>
         public void CreateVBAProject()
