@@ -105,8 +105,22 @@ namespace OfficeOpenXml
         /// <param name="fromColFixed">start column fixed</param>
         /// <param name="toRowFixed">End row fixed</param>
         /// <param name="toColFixed">End column fixed</param>
-        public ExcelAddressBase(int fromRow, int fromCol, int toRow, int toColumn, bool fromRowFixed, bool fromColFixed, bool toRowFixed, bool toColFixed)
+        /// <param name="swapIfReqd">Swap start and end if start is greater than end</param>
+        public ExcelAddressBase(int fromRow, int fromCol, int toRow, int toColumn, bool fromRowFixed, bool fromColFixed, bool toRowFixed, bool toColFixed, bool swapIfReqd = false)
         {
+            if (swapIfReqd)
+            {
+                if (fromRow > toRow)
+                {
+                    Swap(ref fromRow, ref toRow);
+                    Swap(ref fromRowFixed, ref toRowFixed);
+                }
+                if (fromCol > toColumn)
+                {
+                    Swap(ref fromCol, ref toColumn);
+                    Swap(ref fromColFixed, ref toColFixed);
+                }
+            }
             _fromRow = fromRow;
             _toRow = toRow;
             _fromCol = fromCol;
@@ -353,13 +367,18 @@ namespace OfficeOpenXml
 
             if (!string.IsNullOrEmpty(_ws))
             {
-                adr += string.Format("'{0}'!", _ws);
+                adr += _ws;
             }
+            adr = "'" + adr.Replace("'", "''") + "'!";
             if (IsName)
               adr += GetAddress(_fromRow, _fromCol, _toRow, _toCol);
             else
               adr += GetAddress(_fromRow, _fromCol, _toRow, _toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
             return adr;
+        }
+        public static string WorksheetPrefix(string name)
+        {
+            return "'" + name.Replace("'", "''") + "'!";
         }
         #endregion
         protected ExcelCellAddress _start = null;
@@ -463,6 +482,12 @@ namespace OfficeOpenXml
             {
                 return _address.Replace(',', ' '); //Conditional formatting and a few other places use space as separator for mulit addresses.
             }
+        }
+        private void Swap<T>(ref T a, ref T b)
+        {
+            var t = a;
+            a = b;
+            b = t;
         }
         /// <summary>
         /// Validate the address
@@ -676,11 +701,11 @@ namespace OfficeOpenXml
             }
             else if (row <= _fromRow)
             {
-                return new ExcelAddressBase((setFixed && _fromRowFixed ? _fromRow : _fromRow + rows), _fromCol, (setFixed && _toRowFixed ? _toRow : _toRow + rows), _toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
+                return new ExcelAddressBase((setFixed && _fromRowFixed ? _fromRow : _fromRow + rows), _fromCol, (setFixed && _toRowFixed ? _toRow : _toRow + rows), _toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed, true);
             }
             else
             {
-                return new ExcelAddressBase(_fromRow, _fromCol, (setFixed && _toRowFixed ? _toRow : _toRow + rows), _toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
+                return new ExcelAddressBase(_fromRow, _fromCol, (setFixed && _toRowFixed ? _toRow : _toRow + rows), _toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed, true);
             }
         }
         internal ExcelAddressBase DeleteRow(int row, int rows, bool setFixed = false)
@@ -691,7 +716,7 @@ namespace OfficeOpenXml
             }            
             else if (row+rows <= _fromRow) //Before
             {
-                return new ExcelAddressBase((setFixed && _fromRowFixed ? _fromRow : _fromRow - rows), _fromCol, (setFixed && _toRowFixed ? _toRow : _toRow - rows), _toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
+                return new ExcelAddressBase((setFixed && _fromRowFixed ? _fromRow : _fromRow - rows), _fromCol, (setFixed && _toRowFixed ? _toRow : _toRow - rows), _toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed, true);
             }
             else if (row <= _fromRow && row + rows > _toRow) //Inside
             {
@@ -701,11 +726,11 @@ namespace OfficeOpenXml
             {
                 if (row <= _fromRow)
                 {
-                    return new ExcelAddressBase(row, _fromCol, (setFixed && _toRowFixed ? _toRow : _toRow - rows), _toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
+                    return new ExcelAddressBase(row, _fromCol, (setFixed && _toRowFixed ? _toRow : _toRow - rows), _toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed, true);
                 }
                 else
                 {
-                    return new ExcelAddressBase(_fromRow, _fromCol, (setFixed && _toRowFixed ? _toRow : _toRow - rows < row ? row - 1 : _toRow - rows), _toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
+                    return new ExcelAddressBase(_fromRow, _fromCol, (setFixed && _toRowFixed ? _toRow : _toRow - rows < row ? row - 1 : _toRow - rows), _toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed, true);
                 }
             }
         }
@@ -717,11 +742,11 @@ namespace OfficeOpenXml
             }
             else if (col <= _fromCol)
             {
-                return new ExcelAddressBase(_fromRow, (setFixed && _fromColFixed ? _fromCol : _fromCol + cols), _toRow, (setFixed && _toColFixed ? _toCol : _toCol + cols), _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
+                return new ExcelAddressBase(_fromRow, (setFixed && _fromColFixed ? _fromCol : _fromCol + cols), _toRow, (setFixed && _toColFixed ? _toCol : _toCol + cols), _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed, true);
             }
             else
             {
-                return new ExcelAddressBase(_fromRow, _fromCol, _toRow, (setFixed && _toColFixed ? _toCol : _toCol + cols), _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
+                return new ExcelAddressBase(_fromRow, _fromCol, _toRow, (setFixed && _toColFixed ? _toCol : _toCol + cols), _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed, true);
             }
         }
         internal ExcelAddressBase DeleteColumn(int col, int cols, bool setFixed = false)
@@ -732,7 +757,7 @@ namespace OfficeOpenXml
             }
             else if (col + cols <= _fromCol) //Before
             {
-                return new ExcelAddressBase(_fromRow, (setFixed && _fromColFixed ? _fromCol : _fromCol - cols), _toRow, (setFixed && _toColFixed ? _toCol :_toCol - cols), _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
+                return new ExcelAddressBase(_fromRow, (setFixed && _fromColFixed ? _fromCol : _fromCol - cols), _toRow, (setFixed && _toColFixed ? _toCol :_toCol - cols), _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed, true);
             }
             else if (col <= _fromCol && col + cols > _toCol) //Inside
             {
@@ -742,13 +767,21 @@ namespace OfficeOpenXml
             {
                 if (col <= _fromCol)
                 {
-                    return new ExcelAddressBase(_fromRow, col, _toRow, (setFixed && _toColFixed ? _toCol : _toCol - cols), _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
+                    return new ExcelAddressBase(_fromRow, col, _toRow, (setFixed && _toColFixed ? _toCol : _toCol - cols), _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed, true);
                 }
                 else
                 {
-                    return new ExcelAddressBase(_fromRow, _fromCol, _toRow, (setFixed && _toColFixed ? _toCol :_toCol - cols < col ? col - 1 : _toCol - cols), _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
+                    return new ExcelAddressBase(_fromRow, _fromCol, _toRow, (setFixed && _toColFixed ? _toCol :_toCol - cols < col ? col - 1 : _toCol - cols), _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed, true);
                 }
             }
+        }
+        internal ExcelAddressBase Move(int rows, int columns)
+        {
+            var fromRow = _fromRow + rows;
+            var toRow   = _toRow   + rows;
+            var fromCol = _fromCol + columns;
+            var toCol   = _toCol   + columns;
+            return new ExcelAddressBase(fromRow, fromCol, toRow, toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
         }
         internal ExcelAddressBase Insert(ExcelAddressBase address, eShiftType Shift/*, out ExcelAddressBase topAddress, out ExcelAddressBase leftAddress, out ExcelAddressBase rightAddress, out ExcelAddressBase bottomAddress*/)
         {

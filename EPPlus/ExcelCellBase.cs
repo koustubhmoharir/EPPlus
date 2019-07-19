@@ -701,7 +701,7 @@ namespace OfficeOpenXml
                        string[] cells = address.Split(':');
                        if (cells.Length > 0)
                        {
-                           address = string.Format("'{0}'!{1}", worksheetName, cells[0]);
+                           address = string.Format("'{0}'!{1}", worksheetName.Replace("'", "''"), cells[0]);
                            if (cells.Length > 1)
                            {
                                address += string.Format(":{0}", cells[1]);
@@ -713,7 +713,7 @@ namespace OfficeOpenXml
                        var a = new ExcelAddressBase(address);
                        if ((a._fromRow == 1 && a._toRow == ExcelPackage.MaxRows) || (a._fromCol == 1 && a._toCol == ExcelPackage.MaxColumns))
                        {
-                           address = string.Format("'{0}'!{1}{2}:{3}{4}", worksheetName, ExcelAddress.GetColumnLetter(a._fromCol), a._fromRow, ExcelAddress.GetColumnLetter(a._toCol), a._toRow);
+                           address = string.Format("'{0}'!{1}{2}:{3}{4}", worksheetName.Replace("'", "''"), ExcelAddress.GetColumnLetter(a._fromCol), a._fromRow, ExcelAddress.GetColumnLetter(a._toCol), a._toRow);
                        }
                        else
                        {
@@ -868,7 +868,7 @@ namespace OfficeOpenXml
                         // Persist fully-qualified worksheet references.
                         if (!string.IsNullOrEmpty(a._ws))
                         {
-                            f += $"'{a._ws}'!";
+                            f += ExcelAddressBase.WorksheetPrefix(a._ws);
                         }
                         if (rowIncrement > 0)
                         {
@@ -914,7 +914,80 @@ namespace OfficeOpenXml
                 return formula;
             }
         }
-    
+
+        /// <summary>
+        /// Updates the Excel formula so that any cell references fully within source are moved to destination
+        /// Supports the simulateCut argument of ExcelRangeBase.Copy method
+        /// </summary>
+        /// <param name="formula">The Excel formula</param>
+        /// <param name="sourceRow">The starting row of source range</param>
+        /// <param name="sourceCol">The starting column of source range</param>
+        /// <param name="numRows">The number of rows in source range</param>
+        /// <param name="numCols">The number of columns in source range</param>
+        /// <param name="destRow">The starting row of destination range</param>
+        /// <param name="destCol">The starting column of destination range</param>
+        /// <param name="currentSheet">The sheet that contains the formula currently being processed.</param>
+        /// <param name="modifiedSheet">The sheet where cells are being inserted or deleted.</param>
+        /// <returns>The updated version of the <paramref name="formula"/>.</returns>
+        internal static string MoveFormulaReferences(string formula, int sourceRow, int sourceCol, int numRows, int numCols, int destRow, int destCol, string currentSheet, string modifiedSheet)
+        {
+            var srcRange = new ExcelAddress(sourceRow, sourceCol, sourceRow + numRows - 1, sourceCol + numCols - 1);
+            var d = new Dictionary<string, object>();
+            try
+            {
+                var sct = new SourceCodeTokenizer(FunctionNameProvider.Empty, NameValueProvider.Empty);
+                var tokens = sct.Tokenize(formula);
+                String f = "";
+                foreach (var t in tokens)
+                {
+                    if (t.TokenType == TokenType.ExcelAddress)
+                    {
+                        var a = new ExcelAddressBase(t.Value);
+                        var referencesModifiedWorksheet = (string.IsNullOrEmpty(a._ws) && currentSheet.Equals(modifiedSheet, StringComparison.CurrentCultureIgnoreCase)) || modifiedSheet.Equals(a._ws, StringComparison.CurrentCultureIgnoreCase);
+
+                        if (!string.IsNullOrEmpty(a._wb) || !referencesModifiedWorksheet)
+                        {
+                            // This address is in a different worksheet or workbook; no update is required.
+                            f += a.Address;
+                            continue;
+                        }
+                        // Persist fully-qualified worksheet references.
+                        if (!string.IsNullOrEmpty(a._ws))
+                        {
+                            f += ExcelAddressBase.WorksheetPrefix(a._ws);
+                        }
+                        var collision = srcRange.Collide(a, true);
+                        if (collision == ExcelAddressBase.eAddressCollition.Inside || collision == ExcelAddressBase.eAddressCollition.Equal)
+                            a = a.Move(destRow - sourceRow, destCol - sourceCol);
+                        if (a == null || !a.IsValidRowCol())
+                        {
+                            f += "#REF!";
+                        }
+                        else
+                        {
+                            // If the address was not shifted, then a.Address will still have the sheet name.
+                            var address = a.Address.Split('!');
+                            if (address.Length > 1)
+                                f += address[1];
+                            else
+                                f += a.Address;
+                        }
+
+
+                    }
+                    else
+                    {
+                        f += t.Value;
+                    }
+                }
+                return f;
+            }
+            catch //Invalid formula, skip updating addresses
+            {
+                return formula;
+            }
+        }
+
         /// <summary>
         /// Updates all the references to a renamed sheet in a formula.
         /// </summary>
