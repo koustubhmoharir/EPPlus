@@ -71,8 +71,8 @@ namespace OfficeOpenXml.Encryption
         {
             EncryptionInfo ret;
             dataStream.Seek(0, SeekOrigin.Begin);
-            var bytes = new byte[8];
-            dataStream.Read(bytes, 0, 8);
+            var bytes = new byte[4];
+            dataStream.Read(bytes, 0, 4);
             var majorVersion = BitConverter.ToInt16(bytes, 0);
             var minorVersion = BitConverter.ToInt16(bytes, 2);
             if ((minorVersion == 2 || minorVersion == 3) && majorVersion <= 4) // minorVersion==1 is RC4, not supported.
@@ -525,6 +525,7 @@ namespace OfficeOpenXml.Encryption
         }
         internal override void Read(FileStream dataStream)
         {
+            dataStream.Seek(8, SeekOrigin.Begin);
             using (XmlReader xmlReader = XmlReader.Create(dataStream))
             {
                 ReadFromXmlReader(xmlReader);
@@ -621,7 +622,41 @@ namespace OfficeOpenXml.Encryption
         }
         internal override void Read(FileStream dataStream)
         {
-            throw new NotImplementedException();
+            dataStream.Seek(0, SeekOrigin.Begin);
+            var reader = new BinaryReader(dataStream); // not disposing this so as to leave the stream open
+            reader.ReadUInt32(); // position is now 4
+            Flags = (Flags)reader.ReadInt32(); // position is now 8
+            HeaderSize = reader.ReadUInt32(); // position is now 12
+
+            /**** EncryptionHeader ****/
+            Header = new EncryptionHeader();
+            Header.Flags = (Flags)reader.ReadInt32(); // position is now 16
+            Header.SizeExtra = reader.ReadInt32(); // position is now 20
+            Header.AlgID = (AlgorithmID)reader.ReadInt32(); // position is now 24
+            Header.AlgIDHash = (AlgorithmHashID)reader.ReadInt32(); // position is now 28
+            Header.KeySize = reader.ReadInt32(); // position is now 32
+            Header.ProviderType = (ProviderType)reader.ReadInt32(); // position is now 36
+            Header.Reserved1 = reader.ReadInt32(); // position is now 40
+            Header.Reserved2 = reader.ReadInt32(); // position is now 44
+
+            byte[] text = reader.ReadBytes((int)HeaderSize - 34);
+            Header.CSPName = UTF8Encoding.Unicode.GetString(text);
+
+            int pos = (int)HeaderSize + 12;
+            dataStream.Seek(pos, SeekOrigin.Begin);
+
+            /**** EncryptionVerifier ****/
+            Verifier = new EncryptionVerifier();
+            Verifier.SaltSize = reader.ReadUInt32();
+            Verifier.Salt = new byte[Verifier.SaltSize];
+
+            Verifier.Salt = reader.ReadBytes((int)Verifier.SaltSize);
+
+            dataStream.Seek(pos + 20, SeekOrigin.Begin);
+            Verifier.EncryptedVerifier = reader.ReadBytes(16);
+
+            Verifier.VerifierHashSize = reader.ReadUInt32();
+            Verifier.EncryptedVerifierHash = reader.ReadBytes((int)Verifier.VerifierHashSize);
         }
         internal byte[] WriteBinary()
         {
