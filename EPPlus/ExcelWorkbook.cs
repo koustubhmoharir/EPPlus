@@ -832,9 +832,10 @@ namespace OfficeOpenXml
             }
 			
             UpdateDefinedNamesXml();
+            UpdateAppXml();
 
-			// save the workbook
-			if (_workbookXml != null)
+            // save the workbook
+            if (_workbookXml != null)
 			{
 				_package.SavePart(WorkbookUri, _workbookXml);
 			}
@@ -916,6 +917,87 @@ namespace OfficeOpenXml
                 var firstSheet = node.Attributes["firstSheet"];
                 if (firstSheet != null)
                     node.Attributes.Remove(firstSheet);
+            }
+        }
+
+        private void UpdateAppXml()
+        {
+            XmlNode headingPairsVector = Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:HeadingPairs/vt:vector", _namespaceManager);
+            int namesCount = Names.Count;
+            foreach (var sheet in _worksheets)
+            {
+                namesCount += sheet.Names.Count;
+            }
+            int size = namesCount == 0 ? 2 : 4;
+            headingPairsVector.Attributes["size"].Value = size.ToString(CultureInfo.InvariantCulture);
+            if (headingPairsVector.ChildNodes.Count == 2 && size == 4)
+            {
+                var namedRanges = headingPairsVector.OwnerDocument.CreateElement("vt", "variant", ExcelPackage.schemaVt);
+                var namedRangesStr = headingPairsVector.OwnerDocument.CreateElement("vt", "lpstr", ExcelPackage.schemaVt);
+                namedRangesStr.InnerText = "Named Ranges";
+                namedRanges.AppendChild(namedRangesStr);
+                headingPairsVector.AppendChild(namedRanges);
+
+                var namedRangesValue = headingPairsVector.OwnerDocument.CreateElement("vt", "variant", ExcelPackage.schemaVt);
+                var namedRangesValueI4 = headingPairsVector.OwnerDocument.CreateElement("vt", "i4", ExcelPackage.schemaVt);
+                namedRangesValueI4.InnerText = namesCount.ToString(CultureInfo.InvariantCulture);
+                namedRangesValue.AppendChild(namedRangesValueI4);
+                headingPairsVector.AppendChild(namedRangesValue);
+            }
+            else if (headingPairsVector.ChildNodes.Count >= 4)
+            {
+                var namedRangesValueI4 = headingPairsVector.ChildNodes[3].FirstChild as XmlElement;
+                namedRangesValueI4.InnerText = namesCount.ToString(CultureInfo.InvariantCulture);
+            }
+
+            XmlNode headingPairsVector2ndVariantI4Node = Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:HeadingPairs/vt:vector/vt:variant[2]/vt:i4", _namespaceManager);
+            if (headingPairsVector2ndVariantI4Node != null)
+                headingPairsVector2ndVariantI4Node.InnerText = (_worksheets.Count).ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+
+            XmlNode titlesOfPartsVectorNode = Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:TitlesOfParts/vt:vector", _namespaceManager);
+            if (titlesOfPartsVectorNode != null)
+            {
+                titlesOfPartsVectorNode.Attributes["size"].Value = (namesCount + _worksheets.Count).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                int i = 0;
+                foreach (var sheet in _worksheets)
+                {
+                    AddPartTitleToVector(titlesOfPartsVectorNode, i, sheet.Name);
+                    i++;
+                }
+                foreach (var name in Names)
+                {
+                    AddPartTitleToVector(titlesOfPartsVectorNode, i, name.Name);
+                    i++;
+                }
+
+                foreach (var sheet in _worksheets)
+                {
+                    string wsName = null;
+                    foreach (var name in sheet.Names)
+                    {
+                        if (wsName == null)
+                            wsName = ExcelAddressBase.WorksheetPrefix(name.LocalSheet.Name);
+                        AddPartTitleToVector(titlesOfPartsVectorNode, i, wsName + name.Name);
+                        i++;
+                    }
+                }
+
+                for (int j = titlesOfPartsVectorNode.ChildNodes.Count - 1; j >= i; j--)
+                {
+                    titlesOfPartsVectorNode.RemoveChild(titlesOfPartsVectorNode.ChildNodes[j]);
+                }
+            }
+        }
+        private void AddPartTitleToVector(XmlNode vector, int i, string name)
+        {
+            if (i < vector.ChildNodes.Count)
+                vector.ChildNodes[i].InnerText = name;
+            else
+            {
+                var partNameNode = vector.OwnerDocument.CreateElement("vt", "lpstr", ExcelPackage.schemaVt);
+                partNameNode.InnerText = name;
+                vector.AppendChild(partNameNode);
             }
         }
 

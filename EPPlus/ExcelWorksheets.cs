@@ -185,7 +185,6 @@ namespace OfficeOpenXml
                 }
 
                 _worksheets.Add(positionID, worksheet);
-                AppendSheetNameToAppXml(worksheet);
 #if !MONO
                 if (_pck.Workbook.VbaProject != null)
                 {
@@ -196,21 +195,6 @@ namespace OfficeOpenXml
                 }
 #endif
                 return worksheet;
-            }
-        }
-
-        private void AppendSheetNameToAppXml(ExcelWorksheet worksheet)
-        {
-            XmlNode headingPairsVector2ndVariantI4Node = _pck.Workbook.Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:HeadingPairs/vt:vector/vt:variant[2]/vt:i4", _namespaceManager);
-            if (headingPairsVector2ndVariantI4Node != null)
-                headingPairsVector2ndVariantI4Node.InnerText = (_worksheets.Count).ToString(System.Globalization.CultureInfo.InvariantCulture);
-            XmlNode titlesOfPartsVectorNode = _pck.Workbook.Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:TitlesOfParts/vt:vector", _namespaceManager);
-            if (titlesOfPartsVectorNode != null)
-            {
-                titlesOfPartsVectorNode.Attributes["size"].Value = _worksheets.Count.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                var sheetNameNode = titlesOfPartsVectorNode.OwnerDocument.CreateElement("vt", "lpstr", ExcelPackage.schemaVt);
-                sheetNameNode.InnerText = worksheet.Name;
-                titlesOfPartsVectorNode.AppendChild(sheetNameNode);
             }
         }
 
@@ -296,7 +280,6 @@ namespace OfficeOpenXml
 #endif
 
                 _worksheets.Add(_worksheets.Count + 1, added);
-                AppendSheetNameToAppXml(added);
 
                 //Remove any relation to printersettings.
                 XmlNode pageSetup = added.WorksheetXml.SelectSingleNode("//d:pageSetup", _namespaceManager);
@@ -953,11 +936,6 @@ namespace OfficeOpenXml
 					sheetsNode.RemoveChild(sheetNode);
 				}
 			}
-            XmlNode headingPairsVector2ndVariantI4Node = _pck.Workbook.Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:HeadingPairs/vt:vector/vt:variant[2]/vt:i4", _namespaceManager);
-            headingPairsVector2ndVariantI4Node.InnerText = (_worksheets.Count - 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
-            XmlNode titlesOfPartsVectorNode = _pck.Workbook.Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:TitlesOfParts/vt:vector", _namespaceManager);
-            titlesOfPartsVectorNode.Attributes["size"].Value = (_worksheets.Count - 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
-            titlesOfPartsVectorNode.RemoveChild(titlesOfPartsVectorNode.ChildNodes[Index - 1]);
             _worksheets.Remove(Index);
             if (_pck.Workbook.VbaProject != null)
             {
