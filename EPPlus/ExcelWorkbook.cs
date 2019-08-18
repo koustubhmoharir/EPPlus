@@ -117,7 +117,7 @@ namespace OfficeOpenXml
 		internal ExcelNamedRangeCollection _names;
 		internal int _nextDrawingID = 0;
 		internal int _nextTableID = int.MinValue;
-        internal int _nextPivotTableID = int.MinValue;
+        internal int _nextPivotTableID = 0;
 		internal XmlNamespaceManager _namespaceManager;
         internal FormulaParser _formulaParser = null;
 	    internal FormulaParserManager _parserManager;
@@ -832,7 +832,7 @@ namespace OfficeOpenXml
             }
 			
             UpdateDefinedNamesXml();
-            UpdateAppXml();
+            CleanAppXml();
 
             // save the workbook
             if (_workbookXml != null)
@@ -920,85 +920,15 @@ namespace OfficeOpenXml
             }
         }
 
-        private void UpdateAppXml()
+        private void CleanAppXml()
         {
-            XmlNode headingPairsVector = Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:HeadingPairs/vt:vector", _namespaceManager);
-            int namesCount = Names.Count;
-            foreach (var sheet in _worksheets)
-            {
-                namesCount += sheet.Names.Count;
-            }
-            int size = namesCount == 0 ? 2 : 4;
-            headingPairsVector.Attributes["size"].Value = size.ToString(CultureInfo.InvariantCulture);
-            if (headingPairsVector.ChildNodes.Count == 2 && size == 4)
-            {
-                var namedRanges = headingPairsVector.OwnerDocument.CreateElement("vt", "variant", ExcelPackage.schemaVt);
-                var namedRangesStr = headingPairsVector.OwnerDocument.CreateElement("vt", "lpstr", ExcelPackage.schemaVt);
-                namedRangesStr.InnerText = "Named Ranges";
-                namedRanges.AppendChild(namedRangesStr);
-                headingPairsVector.AppendChild(namedRanges);
-
-                var namedRangesValue = headingPairsVector.OwnerDocument.CreateElement("vt", "variant", ExcelPackage.schemaVt);
-                var namedRangesValueI4 = headingPairsVector.OwnerDocument.CreateElement("vt", "i4", ExcelPackage.schemaVt);
-                namedRangesValueI4.InnerText = namesCount.ToString(CultureInfo.InvariantCulture);
-                namedRangesValue.AppendChild(namedRangesValueI4);
-                headingPairsVector.AppendChild(namedRangesValue);
-            }
-            else if (headingPairsVector.ChildNodes.Count >= 4)
-            {
-                var namedRangesValueI4 = headingPairsVector.ChildNodes[3].FirstChild as XmlElement;
-                namedRangesValueI4.InnerText = namesCount.ToString(CultureInfo.InvariantCulture);
-            }
-
-            XmlNode headingPairsVector2ndVariantI4Node = Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:HeadingPairs/vt:vector/vt:variant[2]/vt:i4", _namespaceManager);
-            if (headingPairsVector2ndVariantI4Node != null)
-                headingPairsVector2ndVariantI4Node.InnerText = (_worksheets.Count).ToString(System.Globalization.CultureInfo.InvariantCulture);
-
-
-            XmlNode titlesOfPartsVectorNode = Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:TitlesOfParts/vt:vector", _namespaceManager);
-            if (titlesOfPartsVectorNode != null)
-            {
-                titlesOfPartsVectorNode.Attributes["size"].Value = (namesCount + _worksheets.Count).ToString(System.Globalization.CultureInfo.InvariantCulture);
-                int i = 0;
-                foreach (var sheet in _worksheets)
-                {
-                    AddPartTitleToVector(titlesOfPartsVectorNode, i, sheet.Name);
-                    i++;
-                }
-                foreach (var name in Names)
-                {
-                    AddPartTitleToVector(titlesOfPartsVectorNode, i, name.Name);
-                    i++;
-                }
-
-                foreach (var sheet in _worksheets)
-                {
-                    string wsName = null;
-                    foreach (var name in sheet.Names)
-                    {
-                        if (wsName == null)
-                            wsName = ExcelAddressBase.WorksheetPrefix(name.LocalSheet.Name);
-                        AddPartTitleToVector(titlesOfPartsVectorNode, i, wsName + name.Name);
-                        i++;
-                    }
-                }
-
-                for (int j = titlesOfPartsVectorNode.ChildNodes.Count - 1; j >= i; j--)
-                {
-                    titlesOfPartsVectorNode.RemoveChild(titlesOfPartsVectorNode.ChildNodes[j]);
-                }
-            }
-        }
-        private void AddPartTitleToVector(XmlNode vector, int i, string name)
-        {
-            if (i < vector.ChildNodes.Count)
-                vector.ChildNodes[i].InnerText = name;
-            else
-            {
-                var partNameNode = vector.OwnerDocument.CreateElement("vt", "lpstr", ExcelPackage.schemaVt);
-                partNameNode.InnerText = name;
-                vector.AppendChild(partNameNode);
-            }
+            var props = Properties.ExtendedPropertiesXml.DocumentElement;
+            var titlesOfParts = props.SelectSingleNode("xp:TitlesOfParts", _namespaceManager);
+            var headingPairs = props.SelectSingleNode("xp:HeadingPairs", _namespaceManager);
+            if (titlesOfParts != null)
+                props.RemoveChild(titlesOfParts);
+            if (headingPairs != null)
+                props.RemoveChild(headingPairs);
         }
 
         private void ValidateDataValidations()
@@ -1193,6 +1123,7 @@ namespace OfficeOpenXml
 		{
 			foreach (var ws in Worksheets)
 			{
+                if (ws.GetType() != typeof(ExcelWorksheet)) continue;
 				if (ws.PivotTables._pivotTableNames.ContainsKey(Name))
 				{
 					return true;
@@ -1200,6 +1131,15 @@ namespace OfficeOpenXml
 			}
 			return false;
 		}
+        internal void ResetNextPivotCacheId()
+        {
+            _nextPivotTableID = 0;
+            foreach (XmlNode node in WorkbookXml.SelectNodes("d:workbook/d:pivotCaches/d:pivotCache", NameSpaceManager))
+            {
+                _nextPivotTableID = Math.Max(_nextPivotTableID, int.Parse(node.Attributes["cacheId"].Value));
+            }
+            ++_nextPivotTableID;
+        }
 		internal void AddPivotTable(string cacheID, Uri defUri)
 		{
 			CreateNode("d:pivotCaches");

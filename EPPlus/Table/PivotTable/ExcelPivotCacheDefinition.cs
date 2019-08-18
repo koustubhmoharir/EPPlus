@@ -81,10 +81,29 @@ namespace OfficeOpenXml.Table.PivotTable
             if (CacheSource == eSourceType.Worksheet)
             {
                 var worksheetName = GetXmlNodeString(_sourceWorksheetPath);
-                if (pivotTable.WorkSheet.Workbook.Worksheets.Any(t => t.Name == worksheetName))
+                bool found = false;
+                if (!string.IsNullOrEmpty(worksheetName))
                 {
-                    _sourceRange = pivotTable.WorkSheet.Workbook.Worksheets[worksheetName].Cells[GetXmlNodeString(_sourceAddressPath)];
+                    foreach (var ws in pivotTable.WorkSheet.Workbook.Worksheets)
+                    {
+                        if (ws._originalName == worksheetName)
+                        {
+                            found = true;
+                            worksheetName = ws.Name;
+                            break;
+                        }
+                    }
                 }
+                if (found)
+                {
+                    string rangeRef = GetXmlNodeString(_sourceAddressPath);
+                    if (string.IsNullOrEmpty(rangeRef))
+                        _sourceRange = pivotTable.WorkSheet.Workbook.Worksheets[worksheetName].Names[GetXmlNodeString(_sourceNamePath)];
+                    else
+                        _sourceRange = pivotTable.WorkSheet.Workbook.Worksheets[worksheetName].Cells[rangeRef];
+                }
+                else
+                    _sourceRange = pivotTable.WorkSheet.Workbook.Names[GetXmlNodeString(_sourceNamePath)];
             }
         }
         internal ExcelPivotCacheDefinition(XmlNamespaceManager ns, ExcelPivotTable pivotTable, ExcelRangeBase sourceAddress, int tblId) :
@@ -168,8 +187,8 @@ namespace OfficeOpenXml.Table.PivotTable
             private set;
         }
         
-        const string _sourceWorksheetPath="d:cacheSource/d:worksheetSource/@sheet";
-        const string _sourceNamePath = "d:cacheSource/d:worksheetSource/@name";
+        internal const string _sourceWorksheetPath="d:cacheSource/d:worksheetSource/@sheet";
+        internal const string _sourceNamePath = "d:cacheSource/d:worksheetSource/@name";
         internal const string _sourceAddressPath = "d:cacheSource/d:worksheetSource/@ref";
         internal ExcelRangeBase _sourceRange = null;
         /// <summary>
@@ -199,6 +218,7 @@ namespace OfficeOpenXml.Table.PivotTable
                             }
                             foreach (var w in PivotTable.WorkSheet.Workbook.Worksheets)
                             {
+                                if (w.GetType() != typeof(ExcelWorksheet)) continue;
                                 if (w.Tables._tableNames.ContainsKey(name))
                                 {
                                     _sourceRange = w.Cells[w.Tables[name].Address.Address];
