@@ -3851,8 +3851,25 @@ namespace OfficeOpenXml
                     }
                     else if (formula!=null && formula.ToString()!="")
                     {
-                        cache.AppendFormat("<c r=\"{0}\" s=\"{1}\"{2}>", cse.CellAddress, styleID < 0 ? 0 : styleID, GetCellType(v,true));
-                        cache.AppendFormat("<f>{0}</f>{1}</c>", ConvertUtil.ExcelEscapeString(formula.ToString()), GetFormulaValue(v));
+                        cache.AppendFormat("<c r=\"{0}\" s=\"{1}\"{2}>", cse.CellAddress, styleID < 0 ? 0 : styleID, GetCellType(v, true));
+                        string formulaStr = formula as string;
+                        const string tableStr = "=table(";
+                        if (formulaStr.Length > tableStr.Length && formulaStr.Substring(0, tableStr.Length).ToLowerInvariant() == tableStr)
+                        {
+                            // Excel's WIA Data Tables are self correcting; that is, their formula tag gets relocated to the top left cell of their reference range upon saving the workbook. Similar logic applies to their values.
+                            var dtArgs = GetWIADataTableArgs(formulaStr, tableStr);
+                            var dtr = !string.IsNullOrEmpty(dtArgs[0]);
+                            var dt2D = dtr && !string.IsNullOrEmpty(dtArgs[1]);
+                            var r1 = dtr ? dtArgs[0] : dtArgs[1];
+                            cache.AppendFormat("<f ref=\"{0}\" t=\"dataTable\" dtr=\"{1}\" dt2D=\"{2}\" r1=\"{3}\"", dtArgs[2], dtr ? 1 : 0, dt2D ? 1 : 0, r1);
+                            if (dt2D)
+                                cache.AppendFormat(" r2=\"{0}\"", dtArgs[1]);
+                            cache.AppendFormat("/>{0}</c>", GetFormulaValue(v));
+                        }
+                        else
+                        {
+                            cache.AppendFormat("<f>{0}</f>{1}</c>", ConvertUtil.ExcelEscapeString(formula.ToString()), GetFormulaValue(v));
+                        }
                     }
                     else
                     {
@@ -3965,6 +3982,25 @@ namespace OfficeOpenXml
                 }
                 return columnStyles[col];
             }
+        }
+
+        private string[] GetWIADataTableArgs(string formulaStr, string tableStr)
+        {
+            if (!formulaStr.EndsWith(")"))
+                throw new Exception("TABLE formula must end with a closing parantheses.");
+            var dtArgs = formulaStr.Substring(tableStr.Length, formulaStr.Length - tableStr.Length - 1).Split(',').Select(a => a.Trim()).ToArray();
+            if (dtArgs.Length != 3)
+                throw new ArgumentException("TABLE formula must have Row_input_cell, Column_input_cell and Destination_range specified.");
+            if (string.IsNullOrEmpty(dtArgs[0]) && string.IsNullOrEmpty(dtArgs[1]))
+                throw new ArgumentException("At least one of Row_input_cell or Column_input_cell must be specified.");
+            for (int i = 0; i < 2; i++)
+            {
+                if (!string.IsNullOrEmpty(dtArgs[i]) && !ExcelCellBase.IsValidCellAddress(dtArgs[i]))
+                    throw new ArgumentException($"Incorrect cell reference for {(i == 0 ? "Row" : "Column")}_input_cell.");
+            }
+            if (!ExcelCellBase.IsValidAddress(dtArgs[2]))
+                throw new ArgumentException($"Incorrect range reference for Destination_range.");
+            return dtArgs;
         }
 
         private object GetFormulaValue(object v)
