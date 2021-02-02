@@ -281,16 +281,19 @@ namespace OfficeOpenXml
 		/// Handles shared formulas
 		/// </summary>
 		/// <param name="range">The range</param>
-        /// <param name="value">The  formula</param>
+		/// <param name="value">The  formula</param>
 		/// <param name="address">The address of the formula</param>
 		/// <param name="IsArray">If the forumla is an array formula.</param>
-		private static void Set_SharedFormula(ExcelRangeBase range, string value, ExcelAddress address, bool IsArray)
+		/// <param name="isDataTable">If the formula is a data table.</param>
+		/// <param name="rowInputCell">Row input cell for data table.</param>
+		/// <param name="colInputCell">Column input cell for data table.</param>
+		private static void Set_SharedFormula(ExcelRangeBase range, string value, ExcelAddress address, bool IsArray, bool isDataTable = false, ExcelCellAddress rowInputCell = null, ExcelCellAddress colInputCell = null)
 		{
 			if (range._fromRow == 1 && range._fromCol == 1 && range._toRow == ExcelPackage.MaxRows && range._toCol == ExcelPackage.MaxColumns)  //Full sheet (ex ws.Cells.Value=0). Set value for A1 only to avoid hanging 
 			{
 				throw (new InvalidOperationException("Can't set a formula for the entire worksheet"));
 			}
-			else if (address.Start.Row == address.End.Row && address.Start.Column == address.End.Column && !IsArray)             //is it really a shared formula? Arrayformulas can be one cell only
+			else if (address.Start.Row == address.End.Row && address.Start.Column == address.End.Column && !IsArray && !isDataTable)             //is it really a shared formula? Arrayformulas can be one cell only
 			{
 				//Nope, single cell. Set the formula
 				Set_Formula(range, value, address.Start.Row, address.Start.Column);
@@ -304,8 +307,17 @@ namespace OfficeOpenXml
 			f.StartCol = address.Start.Column;
 			f.StartRow = address.Start.Row;
 			f.IsArray = IsArray;
+			f.IsDataTable = isDataTable;
+			f.RowInputCell = rowInputCell;
+			f.ColInputCell = colInputCell;
 
 			range._worksheet._sharedFormulas.Add(f.Index, f);
+
+			if (isDataTable)
+            { // TODO: WARNING! Data table has not been fully integrated, especially while indexing, and gets indexed as a shared function.
+				range._worksheet._formulas.SetValue(address.Start.Row, address.Start.Column, f.Index);
+				return;
+            }
 
 			for (int col = address.Start.Column; col <= address.End.Column; col++)
 			{
@@ -2615,11 +2627,24 @@ namespace OfficeOpenXml
 			}
 			Set_SharedFormula(this, ArrayFormula, this, true);
 		}
-        //private void Clear(ExcelAddressBase Range)
-        //{
-        //    Clear(Range, true);
-        //}
-        internal void Delete(ExcelAddressBase Range, bool shift, bool retainFormats)
+		/// <summary>
+		/// Creates a data table formula.
+		/// </summary>
+		/// <param name="row">Row input cell.</param>
+		/// <param name="col">Column input cell.</param>
+		public void CreateDataTableFormula(ExcelCellAddress row, ExcelCellAddress col)
+		{
+			if (Addresses != null)
+				throw (new Exception("A Tableformula can not have more than one address"));
+			if (row == null && col == null)
+				throw new Exception("At least one of row input cell or column input cell must be specified.");
+			Set_SharedFormula(this, null, this, false, true, row, col);
+		}
+		//private void Clear(ExcelAddressBase Range)
+		//{
+		//    Clear(Range, true);
+		//}
+		internal void Delete(ExcelAddressBase Range, bool shift, bool retainFormats)
 		{
             //DeleteCheckMergedCells(Range);
             _worksheet.MergedCells.Clear(Range);
