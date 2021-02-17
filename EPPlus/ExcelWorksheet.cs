@@ -131,9 +131,7 @@ namespace OfficeOpenXml
             internal int Index { get; set; }
             internal string Address { get; set; }
             internal bool IsArray { get; set; }
-            internal bool IsDataTable { get; set; }
-            internal ExcelCellAddress RowInputCell { get; set; }
-            internal ExcelCellAddress ColInputCell { get; set; }
+            internal ExcelRangeBase.WhatIfDataTable WhatIfDataTable { get; set; }
             public string Formula { get; set; }
             public int StartRow { get; set; }
             public int StartCol { get; set; }
@@ -3823,7 +3821,7 @@ namespace OfficeOpenXml
                                 {
                                     cache.AppendFormat("<c r=\"{0}\" s=\"{1}\"{5}><f ref=\"{2}\" t=\"array\">{3}</f>{4}</c>", cse.CellAddress, styleID < 0 ? 0 : styleID, f.Address, ConvertUtil.ExcelEscapeString(f.Formula), GetFormulaValue(v), GetCellType(v,true));
                                 }
-                                else if (f.IsDataTable)
+                                else if (f.WhatIfDataTable != null)
                                 {
                                     WriteDataTable(cache, cse, styleID, v, f);
                                 }
@@ -3849,7 +3847,7 @@ namespace OfficeOpenXml
                             {
                                 cache.AppendFormat("<c r=\"{0}\" s=\"{1}\"{5}><f ref=\"{2}\" t=\"array\">{3}</f>{4}</c>", cse.CellAddress, styleID < 0 ? 0 : styleID, string.Format("{0}:{1}", f.Address, f.Address), ConvertUtil.ExcelEscapeString(f.Formula), GetFormulaValue(v), GetCellType(v,true));
                             }
-                            else if (f.IsDataTable)
+                            else if (f.WhatIfDataTable != null)
                             {
                                 WriteDataTable(cache, cse, styleID, v, f);
                             }
@@ -3936,13 +3934,15 @@ namespace OfficeOpenXml
         
         private void WriteDataTable(StringBuilder cache, CellsStoreEnumerator<ExcelCoreValue> cse, int styleID, object v, Formulas f)
         {
+            var rowInputCell = f.WhatIfDataTable.RowInputCell;
+            var colInputCell = f.WhatIfDataTable.ColInputCell;
             cache.AppendFormat("<c r=\"{0}\" s=\"{1}\"{2}>", cse.CellAddress, styleID < 0 ? 0 : styleID, GetCellType(v, true));
-            var dtr = f.RowInputCell != null;
-            var dt2D = dtr && (f.ColInputCell != null);
-            var r1 = (dtr ? f.RowInputCell : f.ColInputCell).Address;
+            var dtr = rowInputCell != null;
+            var dt2D = dtr && (colInputCell != null);
+            var r1 = (dtr ? rowInputCell : colInputCell).Address;
             cache.AppendFormat("<f ref=\"{0}\" t=\"dataTable\" dtr=\"{1}\" dt2D=\"{2}\" r1=\"{3}\"", f.Address, dtr ? 1 : 0, dt2D ? 1 : 0, r1);
             if (dt2D)
-                cache.AppendFormat(" r2=\"{0}\"", f.ColInputCell.Address);
+                cache.AppendFormat(" r2=\"{0}\"", colInputCell.Address);
             cache.AppendFormat("/>{0}</c>", GetFormulaValue(v));
         }
         

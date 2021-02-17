@@ -59,8 +59,8 @@ using w = System.Windows;
 using OfficeOpenXml.Utils;
 
 namespace OfficeOpenXml
-{	
-    /// <summary>
+{
+	/// <summary>
 	/// A range of cells 
 	/// </summary>
 	public class ExcelRangeBase : ExcelAddress, IExcelCell, IDisposable, IEnumerable<ExcelRangeBase>, IEnumerator<ExcelRangeBase>
@@ -72,19 +72,24 @@ namespace OfficeOpenXml
 		internal ExcelWorkbook _workbook = null;
 		private delegate void _changeProp(ExcelRangeBase range, _setValue method, object value);
 		private delegate void _setValue(ExcelRangeBase range, object value, int row, int col);
-        private _changeProp _changePropMethod;
+		private _changeProp _changePropMethod;
 		private int _styleID;
-        private class CopiedCell
+		private class CopiedCell
+		{
+			internal int Row { get; set; }
+			internal int Column { get; set; }
+			internal object Value { get; set; }
+			internal string Type { get; set; }
+			internal object Formula { get; set; }
+			internal int? StyleID { get; set; }
+			internal Uri HyperLink { get; set; }
+			internal ExcelComment Comment { get; set; }
+			internal Byte Flag { get; set; }
+		}
+		internal class WhatIfDataTable
         {
-            internal int Row { get; set; }
-            internal int Column { get; set; }
-            internal object Value { get; set; }
-            internal string Type { get; set; }
-            internal object Formula { get; set; }
-            internal int? StyleID { get; set; }
-            internal Uri HyperLink { get; set; }
-            internal ExcelComment Comment { get; set; }
-            internal Byte Flag { get; set; }
+			internal ExcelCellAddress RowInputCell { get; set; }
+            internal ExcelCellAddress ColInputCell { get; set; }
         }
         #region Constructors
 		internal ExcelRangeBase(ExcelWorksheet xlWorksheet)
@@ -284,16 +289,14 @@ namespace OfficeOpenXml
 		/// <param name="value">The  formula</param>
 		/// <param name="address">The address of the formula</param>
 		/// <param name="IsArray">If the forumla is an array formula.</param>
-		/// <param name="isDataTable">If the formula is a data table.</param>
-		/// <param name="rowInputCell">Row input cell for data table.</param>
-		/// <param name="colInputCell">Column input cell for data table.</param>
-		private static void Set_SharedFormula(ExcelRangeBase range, string value, ExcelAddress address, bool IsArray, bool isDataTable = false, ExcelCellAddress rowInputCell = null, ExcelCellAddress colInputCell = null)
+		/// <param name="whatIfDataTable">Object for what if analysis data table.</param>
+		private static void Set_SharedFormula(ExcelRangeBase range, string value, ExcelAddress address, bool IsArray, WhatIfDataTable whatIfDataTable = null)
 		{
 			if (range._fromRow == 1 && range._fromCol == 1 && range._toRow == ExcelPackage.MaxRows && range._toCol == ExcelPackage.MaxColumns)  //Full sheet (ex ws.Cells.Value=0). Set value for A1 only to avoid hanging 
 			{
 				throw (new InvalidOperationException("Can't set a formula for the entire worksheet"));
 			}
-			else if (address.Start.Row == address.End.Row && address.Start.Column == address.End.Column && !IsArray && !isDataTable)             //is it really a shared formula? Arrayformulas can be one cell only
+			else if (address.Start.Row == address.End.Row && address.Start.Column == address.End.Column && !IsArray && whatIfDataTable == null)             //is it really a shared formula? Arrayformulas can be one cell only
 			{
 				//Nope, single cell. Set the formula
 				Set_Formula(range, value, address.Start.Row, address.Start.Column);
@@ -307,13 +310,11 @@ namespace OfficeOpenXml
 			f.StartCol = address.Start.Column;
 			f.StartRow = address.Start.Row;
 			f.IsArray = IsArray;
-			f.IsDataTable = isDataTable;
-			f.RowInputCell = rowInputCell;
-			f.ColInputCell = colInputCell;
+			f.WhatIfDataTable = whatIfDataTable;
 
 			range._worksheet._sharedFormulas.Add(f.Index, f);
 
-			if (isDataTable)
+			if (whatIfDataTable != null)
             { // TODO: WARNING! Data table has not been fully integrated, especially while indexing, and gets indexed as a shared function.
 				range._worksheet._formulas.SetValue(address.Start.Row, address.Start.Column, f.Index);
 				return;
@@ -2638,7 +2639,12 @@ namespace OfficeOpenXml
 				throw (new Exception("A Tableformula can not have more than one address"));
 			if (row == null && col == null)
 				throw new Exception("At least one of row input cell or column input cell must be specified.");
-			Set_SharedFormula(this, null, this, false, true, row, col);
+			var whatIfDataTable = new WhatIfDataTable()
+			{
+				RowInputCell = row,
+				ColInputCell = col
+			};
+			Set_SharedFormula(this, null, this, false, whatIfDataTable);
 		}
 		//private void Clear(ExcelAddressBase Range)
 		//{
