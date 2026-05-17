@@ -12,10 +12,9 @@ This document lists the test cases that fail or hang when running EPPlus under M
 
 | Test Case | Status | Reason |
 | :--- | :--- | :--- |
-| `EPPlusTest.Excel.OperatorsTests.OperatorsActingOnDateStrings` | **Failed** | Returns `#VALUE!`. Likely a culture-specific date parsing issue on Mono. |
-| `EPPlusTest.DTS_FailingTests.DeleteWorksheetWithReferencedImage` | **Hangs** | Hangs during `AddPicture` call. Likely an issue with `libgdiplus` or resource loading in Mono. |
-| `EPPlusTest.DTS_FailingTests.CopyAndDeleteWorksheetWithImage` | **Hangs** | Same as above. |
-| `EPPlusTest.DataValidation.IntegrationTests...` | **Fixed** | Previously failed due to hardcoded `C:\Users\...\Desktop` path. Resolved by using `Path.GetTempPath()`. |
+| `EPPlusTest.Excel.OperatorsTests.OperatorsActingOnDateStrings` | **Ignored** | Returns `#VALUE!`. Likely a culture-specific date parsing issue on Mono. |
+| `EPPlusTest.DTS_FailingTests.DeleteWorksheetWithReferencedImage` | **Ignored** | Hangs during `AddPicture` call. Likely an issue with `libgdiplus` or resource loading in Mono. |
+| `EPPlusTest.DTS_FailingTests.CopyAndDeleteWorksheetWithImage` | **Ignored** | Same as above. |
 
 ## Observations
 

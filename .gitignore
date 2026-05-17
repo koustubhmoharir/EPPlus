@@ -27,3 +27,6 @@ obj/
 [Bb]uild[Ll]og.*
 *.[Pp]ublish.xml
 .vs/
+# Coverage
+coverage.xml
+coverage_report/
