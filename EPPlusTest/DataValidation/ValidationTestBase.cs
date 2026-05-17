@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,15 +36,8 @@ namespace EPPlusTest.DataValidation
 
         protected string GetTestOutputPath(string fileName)
         {
-            return Path.Combine(
-#if (Core)
-            Path.GetTempPath()      //In Net.Core Output to TempPath 
-#else
-            Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
-#endif
-                , fileName);
+            return Path.Combine(Path.GetTempPath(), fileName);
         }
-
         protected void SaveTestOutput(string fileName)
         {
             var path = GetTestOutputPath(fileName);
