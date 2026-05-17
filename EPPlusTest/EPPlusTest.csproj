@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -139,6 +139,7 @@
     <Compile Include="Drawing\Chart\ExcelChartAxisTest.cs" />
     <Compile Include="DTS_FailingTests.cs" />
     <Compile Include="Encrypt.cs" />
+    <Compile Include="ExcelNamedRangeCollectionTest.cs" />
     <Compile Include="ExcelRangeBaseTest.cs" />
     <Compile Include="FormulaParsing\ExcelUtilities\AddressTranslatorTests.cs" />
     <Compile Include="FormulaParsing\ExcelUtilities\CellReferenceProviderTests.cs" />
