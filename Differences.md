@@ -8,7 +8,7 @@ This file documents the differences identified between the `dotnetport` branch a
 | Multiple Files | TryParse Updates | Updated `int.TryParse` and `double.TryParse` to use `CultureInfo.InvariantCulture` and appropriate `NumberStyles`. | Verified |
 | EPPlus/ExcelNamedRange.cs | LocalSheetId | Updated `LocalSheetId` calculation to use `_workbook._package._worksheetAdd` instead of a hardcoded `-1`. | ExcelRangeBaseTest.cs |
 | EPPlus/ExcelNamedRangeCollection.cs | Name Validation & Bounds | Added name validation in `Add`. Improved `InsertColumn` and `InsertRow` with bounds checks against `MaxColumns` and `MaxRows`. Switched to `OrdinalIgnoreCase`. | ExcelNamedRangeCollectionTest.cs |
-| EPPlus/ExcelHeaderFooter.cs | Header/Footer Features | Added `ScaleWithDocument` property. Refactored `InsertPicture` to use `ImageCompat` for .NET Core support. | Pending |
+| EPPlus/ExcelHeaderFooter.cs | Header/Footer Features | Added `ScaleWithDocument` property. Refactored `InsertPicture` to use `ImageCompat` for .NET Core support. | ExcelHeaderFooterTest.cs |
 | EPPlus/ExcelCommentCollection.cs | DeleteRow | Added null check for address after row deletion. | Verified |
 | EPPlus/ExcelCellBase.cs | Formula & Address Parsing | Extensive refactoring of formula and address translation. Switched to `Lexer` for formula updates. Improved R1C1 and multi-address validation. Removed `MoveFormulaReferences`. | Pending |
 | EPPlus/ExcelBackgroundImage.cs | Image Handling | Refactored image to byte array conversion using `ImageCompat` for .NET Core. Optimized `SetPicture` to use `File.ReadAllBytes`. | Pending |
