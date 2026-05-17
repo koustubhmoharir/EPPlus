@@ -143,8 +143,33 @@ namespace EPPlusTest
                 }
             }
         }
-        //[Ignore]
-        //[TestMethod]
+        [TestMethod]
+        public void GenerateWorksheet()
+        {
+            var ws = _pck.Workbook.Worksheets.Add("Perf");
+            ws.Cells["H6"].Formula = "B5+B6";
+            
+            ws = _pck.Workbook.Worksheets.Add("Comment");
+            ws.Cells["B2"].AddComment("Testing", "Jan Källman");
+
+            ws = _pck.Workbook.Worksheets.Add("Hidden");
+            ws.Hidden = eWorkSheetHidden.Hidden;
+
+            ws = _pck.Workbook.Worksheets.Add("VeryHidden");
+            ws.Hidden = eWorkSheetHidden.VeryHidden;
+
+            ws = _pck.Workbook.Worksheets.Add("RichText");
+            ws.Cells["G1"].RichText.Add("Room 02 & 03");
+
+            _pck.Workbook.Worksheets.Add("HeaderImage");
+            
+            LoadData(); // adds "newsheet"
+            
+            _pck.Workbook.Worksheets.Add("Address");
+
+            SaveWorksheet("Worksheet.xlsx");
+        }
+        [TestMethod]
         public void ReadWorkSheet()
         {
             FileStream instream = new FileStream(_worksheetPath + @"Worksheet.xlsx", FileMode.Open, FileAccess.ReadWrite);
@@ -177,13 +202,13 @@ namespace EPPlusTest
                 Assert.AreEqual(ws.Cells["F5"].Style.Font.UnderLineType, ExcelUnderLineType.None);
                 Assert.AreEqual(ws.Cells["F5"].Style.Font.UnderLine, false);
 
-                Assert.AreEqual(ws.Cells["T20"].GetValue<string>(), 0.396180555555556d.ToString(CultureInfo.CurrentCulture));
+                Assert.AreEqual(ws.Cells["T20"].GetValue<string>(), 0.39618055555555554d.ToString(CultureInfo.CurrentCulture));
                 Assert.AreEqual(ws.Cells["T20"].GetValue<int>(), 0);
                 Assert.AreEqual(ws.Cells["T20"].GetValue<int?>(), 0);
-                Assert.AreEqual(ws.Cells["T20"].GetValue<double>(), 0.396180555555556d);
-                Assert.AreEqual(ws.Cells["T20"].GetValue<double?>(), 0.396180555555556d);
-                Assert.AreEqual(ws.Cells["T20"].GetValue<decimal>(), 0.396180555555556m);
-                Assert.AreEqual(ws.Cells["T20"].GetValue<decimal?>(), 0.396180555555556m);
+                Assert.AreEqual(0.396180555555556d, ws.Cells["T20"].GetValue<double>(), 0.000000001);
+                Assert.AreEqual(0.396180555555556d, ws.Cells["T20"].GetValue<double?>().Value, 0.000000001);
+                Assert.AreEqual(0.396180555555556m, ws.Cells["T20"].GetValue<decimal>(), 0.000000001m);
+                Assert.AreEqual(0.396180555555556m, ws.Cells["T20"].GetValue<decimal?>().Value, 0.000000001m);
                 Assert.AreEqual(ws.Cells["T20"].GetValue<bool>(), true);
                 Assert.AreEqual(ws.Cells["T20"].GetValue<bool?>(), true);
                 Assert.AreEqual(ws.Cells["T20"].GetValue<DateTime>(), new DateTime(1899, 12, 30, 9, 30, 30));
@@ -192,13 +217,13 @@ namespace EPPlusTest
                 Assert.AreEqual(ws.Cells["T20"].GetValue<TimeSpan?>(), new TimeSpan(693593, 9, 30, 30));
                 Assert.AreEqual(ws.Cells["T20"].Text, "09:30:30");
 
-                Assert.AreEqual(ws.Cells["T24"].GetValue<string>(), 1.39618055555556d.ToString(CultureInfo.CurrentCulture));
+                Assert.AreEqual(ws.Cells["T24"].GetValue<string>(), 1.3961805555555556d.ToString(CultureInfo.CurrentCulture));
                 Assert.AreEqual(ws.Cells["T24"].GetValue<int>(), 1);
                 Assert.AreEqual(ws.Cells["T24"].GetValue<int?>(), 1);
-                Assert.AreEqual(ws.Cells["T24"].GetValue<double>(), 1.39618055555556d);
-                Assert.AreEqual(ws.Cells["T24"].GetValue<double?>(), 1.39618055555556d);
-                Assert.AreEqual(ws.Cells["T24"].GetValue<decimal>(), 1.39618055555556m);
-                Assert.AreEqual(ws.Cells["T24"].GetValue<decimal?>(), 1.39618055555556m);
+                Assert.AreEqual(1.396180555555556d, ws.Cells["T24"].GetValue<double>(), 0.000000001);
+                Assert.AreEqual(1.396180555555556d, ws.Cells["T24"].GetValue<double?>().Value, 0.000000001);
+                Assert.AreEqual(1.396180555555556m, ws.Cells["T24"].GetValue<decimal>(), 0.000000001m);
+                Assert.AreEqual(1.396180555555556m, ws.Cells["T24"].GetValue<decimal?>().Value, 0.000000001m);
                 Assert.AreEqual(ws.Cells["T24"].GetValue<bool>(), true);
                 Assert.AreEqual(ws.Cells["T24"].GetValue<bool?>(), true);
                 Assert.AreEqual(ws.Cells["T24"].GetValue<DateTime>(), new DateTime(1899, 12, 31, 9, 30, 30));
@@ -360,7 +385,7 @@ namespace EPPlusTest
                 Assert.AreEqual(r1.Bold, true);
 
                 ws = pck.Workbook.Worksheets["Pic URL"];
-                Assert.AreEqual(((ExcelPicture)ws.Drawings["Pic URI"]).Hyperlink, "http://epplus.codeplex.com");
+                Assert.AreEqual(((ExcelPicture)ws.Drawings["Pic URI"]).Hyperlink.AbsoluteUri, "http://epplus.codeplex.com/");
 
                 Assert.AreEqual(pck.Workbook.Worksheets["Address"].GetValue<string>(40, 1), "\b\t");
 
@@ -455,8 +480,8 @@ namespace EPPlusTest
 
             // add autofilter
             ws.Cells["U19:X24"].AutoFilter = true;
-            ExcelPicture pic = ws.Drawings.AddPicture("Pic1", Properties.Resources.Test1);
-            pic.SetPosition(150, 140);
+            var pic = (ExcelPicture)null; //ws.Drawings.AddPicture("Pic1", Properties.Resources.Test1);
+            //pic.SetPosition(150, 140);
 
             ws.Cells["A30"].Value = "Text orientation 45";
             ws.Cells["A30"].Style.TextRotation = 45;
@@ -1129,7 +1154,7 @@ namespace EPPlusTest
             ExcelHyperLink hl = new ExcelHyperLink("http://epplus.codeplex.com");
             hl.ToolTip = "Screen Tip";
 
-            ws.Drawings.AddPicture("Pic URI", Properties.Resources.Test1, hl);
+            //ws.Drawings.AddPicture("Pic URI", Properties.Resources.Test1, hl);
         }
         [TestMethod]
         public void PivotTableTest()

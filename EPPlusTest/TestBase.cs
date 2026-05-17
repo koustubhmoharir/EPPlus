@@ -11,18 +11,29 @@ namespace EPPlusTest
     {
         protected ExcelPackage _pck;
         protected string _clipartPath="";
-        protected string _worksheetPath= @"c:\epplusTest\Testoutput\";
-        protected string _testInputPath = @"c:\epplusTest\workbooks\";
+        protected string _worksheetPath= Path.Combine(Path.GetTempPath(), "EPPlus", "Testoutput");
+        protected string _testInputPath = Path.Combine(Path.GetTempPath(), "EPPlus", "workbooks");
         public TestContext TestContext { get; set; }
         
         [TestInitialize]
         public void InitBase()
         {
-            _clipartPath = Path.Combine(Path.GetTempPath(), @"EPPlus clipart");
+            _clipartPath = Path.Combine(Path.GetTempPath(), "EPPlus", "clipart");
             if (!Directory.Exists(_clipartPath))
             {
                 Directory.CreateDirectory(_clipartPath);
             }
+            if (!Directory.Exists(_worksheetPath))
+            {
+                Directory.CreateDirectory(_worksheetPath);
+            }
+            if (!Directory.Exists(_testInputPath))
+            {
+                Directory.CreateDirectory(_testInputPath);
+            }
+            _worksheetPath += Path.DirectorySeparatorChar;
+            _testInputPath += Path.DirectorySeparatorChar;
+
             if(Environment.GetEnvironmentVariable("EPPlusTestInputPath")!=null)
             {
                 _testInputPath = Environment.GetEnvironmentVariable("EPPlusTestInputPath");

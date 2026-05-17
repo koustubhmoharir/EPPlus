@@ -57,3 +57,5 @@ packages/
 # Coverage
 coverage.xml
 coverage_report/
+.nuget_packages/
+.nuget_cache/
