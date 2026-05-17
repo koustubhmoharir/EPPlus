@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 
 namespace EPPlusTest
@@ -87,6 +87,28 @@ namespace EPPlusTest
                 Assert.IsNotNull(name.Addresses);
                 name.Address = "Sheet1!C3";
                 Assert.IsNull(name.Addresses);
+            }
+        }
+
+        [TestMethod]
+        public void ExcelNamedRangeLocalSheetIdTests()
+        {
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                var sheet1 = package.Workbook.Worksheets.Add("Sheet1");
+                var sheet2 = package.Workbook.Worksheets.Add("Sheet2");
+
+                // 1. Global named range (workbook scope)
+                var globalName = package.Workbook.Names.Add("GlobalRange", sheet1.Cells["A1:B2"]);
+                Assert.AreEqual(-1, globalName.LocalSheetId);
+
+                // 2. Local named range (worksheet scope) on first worksheet
+                var localName1 = sheet1.Names.Add("LocalRange1", sheet1.Cells["A1:B2"]);
+                Assert.AreEqual(0, localName1.LocalSheetId);
+
+                // 3. Local named range (worksheet scope) on second worksheet
+                var localName2 = sheet2.Names.Add("LocalRange2", sheet2.Cells["A1:B2"]);
+                Assert.AreEqual(1, localName2.LocalSheetId);
             }
         }
     }
