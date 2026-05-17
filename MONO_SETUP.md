@@ -26,6 +26,26 @@ mono /home/vscode/.local/share/dotnet-runners/vstest-runner/Microsoft.TestPlatfo
   /TestAdapterPath:packages/MSTest.TestAdapter.1.1.18/build/_common
 ```
 
+## Running Individual Tests
+
+To run a specific test class or method, use the `/TestCaseFilter` flag:
+
+**Run a specific test method:**
+```bash
+mono /home/vscode/.local/share/dotnet-runners/vstest-runner/Microsoft.TestPlatform.16.11.0/tools/net451/Common7/IDE/Extensions/TestPlatform/vstest.console.exe \
+  EPPlusTest/bin/Debug/EPPlusTest.dll \
+  /TestAdapterPath:packages/MSTest.TestAdapter.1.1.18/build/_common \
+  /TestCaseFilter:FullyQualifiedName=EPPlusTest.Address.Addresses
+```
+
+**Run all tests in a class:**
+```bash
+mono /home/vscode/.local/share/dotnet-runners/vstest-runner/Microsoft.TestPlatform.16.11.0/tools/net451/Common7/IDE/Extensions/TestPlatform/vstest.console.exe \
+  EPPlusTest/bin/Debug/EPPlusTest.dll \
+  /TestAdapterPath:packages/MSTest.TestAdapter.1.1.18/build/_common \
+  /TestCaseFilter:FullyQualifiedName~EPPlusTest.Address
+```
+
 ### Headless Environments (Linux)
 
 If running in a headless environment, some tests involving `System.Drawing` (like chart or picture tests) may fail or hang with "Authorization required" or GDI+ errors. Use `xvfb-run` to provide a virtual frame buffer:
