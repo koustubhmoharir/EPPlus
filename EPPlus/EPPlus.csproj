@@ -27,21 +27,6 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -154,7 +139,7 @@
     <Compile Include="ConditionalFormatting\Contracts\IExcelConditionalFormattingWithShowValue.cs" />
     <Compile Include="ConditionalFormatting\Contracts\IExcelConditionalFormattingWithStdDev.cs" />
     <Compile Include="ConditionalFormatting\Contracts\IExcelConditionalFormattingWithText.cs" />
-    <Compile Include="ConditionalFormatting\ExcelConditionalFormattingIconDataBarValue.cs" />
+    <Compile Include="ConditionalFormatting\ExcelConditionalFormattingIconDatabarValue.cs" />
     <Compile Include="ConditionalFormatting\Rules\ExcelConditionalFormattingDataBar.cs" />
     <Compile Include="ConditionalFormatting\Rules\ExcelConditionalFormattingFiveIconSet.cs" />
     <Compile Include="ConditionalFormatting\Rules\ExcelConditionalFormattingFourIconSet.cs" />
@@ -364,7 +349,7 @@
     <Compile Include="FormulaParsing\Excel\Functions\Database\Dget.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\Database\Dmax.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\Database\Dmin.cs" />
-    <Compile Include="FormulaParsing\Excel\Functions\Database\Dsum.cs" />
+    <Compile Include="FormulaParsing\Excel\Functions\Database\DSum.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\Database\Dvar.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -746,8 +731,8 @@
     <Compile Include="Packaging\ZipPackage.cs" />
     <Compile Include="VBA\ExcelVbaModule.cs" />
     <Compile Include="VBA\ExcelVbaModuleAttribute.cs" />
-    <Compile Include="VBA\ExcelVbaModuleCollection.cs" />
-    <Compile Include="VBA\ExcelVbaProject.cs" />
+    <Compile Include="VBA\ExcelVBAModuleCollection.cs" />
+    <Compile Include="VBA\ExcelVBAProject.cs" />
     <Compile Include="ExcelWorkbookView.cs" />
     <Compile Include="ExcelWorksheetView.cs" />
     <Compile Include="Style\Dxf\DxfStyleBase.cs" />
@@ -796,8 +781,8 @@
     <Compile Include="Utils\Require.cs" />
     <Compile Include="Utils\SqRefUtility.cs" />
     <Compile Include="VBA\ExcelVbaProtection.cs" />
-    <Compile Include="VBA\ExcelVbaReference.cs" />
-    <Compile Include="VBA\ExcelVbaSignature.cs" />
+    <Compile Include="VBA\ExcelVBAReference.cs" />
+    <Compile Include="VBA\ExcelVBASignature.cs" />
     <Compile Include="XmlHelper.cs" />
     <Compile Include="XmlHelperFactory.cs" />
     <Compile Include="Packaging\ZipPackagePart.cs" />

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,9 +35,8 @@ namespace EPPlusTest.DataValidation
 
         protected string GetTestOutputPath(string fileName)
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+            return Path.Combine(Path.GetTempPath(), fileName);
         }
-
         protected void SaveTestOutput(string fileName)
         {
             var path = GetTestOutputPath(fileName);
