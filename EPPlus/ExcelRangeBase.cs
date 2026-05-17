@@ -54,8 +54,8 @@ using System.Security;
 using OfficeOpenXml.ConditionalFormatting;
 using OfficeOpenXml.ConditionalFormatting.Contracts;
 using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
-using wm = System.Windows.Media;
-using w = System.Windows;
+//using wm = System.Windows.Media;
+//using w = System.Windows;
 using OfficeOpenXml.Utils;
 
 namespace OfficeOpenXml

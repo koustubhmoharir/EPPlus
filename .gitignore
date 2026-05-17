@@ -30,3 +30,4 @@ obj/
 # Coverage
 coverage.xml
 coverage_report/
+packages/
