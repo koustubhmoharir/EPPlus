@@ -53,3 +53,7 @@ _ReSharper*/
 
 #NuGet
 packages/
+
+# Coverage
+coverage.xml
+coverage_report/

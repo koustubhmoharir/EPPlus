@@ -28,8 +28,15 @@ echo "Setting up test runners..."
 RUNNER_DIR="\$HOME/.local/share/dotnet-runners"
 mkdir -p "\$RUNNER_DIR"
 
-# Install MSTest Platform
-mono ~/.local/bin/nuget.exe install Microsoft.TestPlatform -Version 16.11.0 -OutputDirectory "\$RUNNER_DIR/vstest-runner"
+# Install MSTest Platform, AltCover, and ReportGenerator
+echo "Setting up test and coverage runners..."
+RUNNER_DIR="$HOME/.local/share/dotnet-runners"
+mkdir -p "$RUNNER_DIR"
+
+mono ~/.local/bin/nuget.exe install Microsoft.TestPlatform -Version 16.11.0 -OutputDirectory "$RUNNER_DIR/vstest-runner"
+mono ~/.local/bin/nuget.exe install altcover -Version 8.6.14 -OutputDirectory "$RUNNER_DIR/altcover"
+mono ~/.local/bin/nuget.exe install reportgenerator -Version 5.2.0 -OutputDirectory "$RUNNER_DIR/reportgenerator"
+
 
 # 4. Restore Solution Packages
 echo "Restoring NuGet packages for EPPlus..."

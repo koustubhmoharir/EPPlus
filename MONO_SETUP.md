@@ -46,6 +46,37 @@ mono /home/vscode/.local/share/dotnet-runners/vstest-runner/Microsoft.TestPlatfo
   /TestCaseFilter:FullyQualifiedName~EPPlusTest.Address
 ```
 
+## Code Coverage
+
+To run tests with code coverage using AltCover and generate a report:
+
+1. **Instrument and Run Tests:**
+   ```bash
+   # Instrument the assemblies and run the tests
+   # Note: Some types are excluded to avoid instrumentation issues on Mono
+   mono /home/vscode/.local/share/dotnet-runners/altcover/altcover.8.6.14/tools/net472/AltCover.exe \
+     -i EPPlusTest/bin/Debug \
+     -o EPPlusTest/bin/Debug/__Instrumented \
+     -t "OfficeOpenXml\.Packaging\." --linecover && \
+   xvfb-run -a mono /home/vscode/.local/share/dotnet-runners/altcover/altcover.8.6.14/tools/net472/AltCover.exe \
+     Runner \
+     -r EPPlusTest/bin/Debug/__Instrumented \
+     -x mono \
+     -- /home/vscode/.local/share/dotnet-runners/vstest-runner/Microsoft.TestPlatform.16.11.0/tools/net451/Common7/IDE/Extensions/TestPlatform/vstest.console.exe \
+     EPPlusTest/bin/Debug/__Instrumented/EPPlusTest.dll \
+     /TestAdapterPath:packages/MSTest.TestAdapter.1.1.18/build/_common
+   ```
+
+2. **Generate Report:**
+   ```bash
+   mono /home/vscode/.local/share/dotnet-runners/reportgenerator/ReportGenerator.5.2.0/tools/net47/ReportGenerator.exe \
+     -reports:coverage.xml \
+     -targetdir:coverage_report \
+     -reporttypes:"Html;TextSummary"
+   ```
+
+The coverage report will be available in the `coverage_report` directory.
+
 ### Headless Environments (Linux)
 
 If running in a headless environment, some tests involving `System.Drawing` (like chart or picture tests) may fail or hang with "Authorization required" or GDI+ errors. Use `xvfb-run` to provide a virtual frame buffer:
