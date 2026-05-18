@@ -24,7 +24,7 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/Packaging/DotNetZip/ZipEntry.cs | .NET Core Support | Removed `ClassInterface` attribute, mapped `IBM437` encoding to `UTF-8` under `Core` conditional, and removed `DontEmitLastModified` property. | ZipEntryTest.cs |
 | EPPlus/Packaging/DotNetZip/ZipEntry.Extract.cs | .NET Core Support | Added `output.Dispose()` after `output.Close()` during file extraction to prevent stream leaks. | ZipEntryExtractTest.cs |
 | EPPlus/Packaging/DotNetZip/ZipEntry.Read.cs | Zip Parsing & Extra Fields | Refactored `LengthOfTrailer` updates in `HandleDataDescriptor` and changed `dataSize` parameter type from `UInt16` to `Int16`/`short` in `ProcessExtraField` methods. | ZipEntryTest.cs |
-| EPPlus/Packaging/DotNetZip/ZipEntry.Write.cs | Central Dir & Stream Cleanup | Added `Dispose()` calls for output stream, compressor, parallel compressor, and encryptor. Refactored central directory entry buffer, comment serialization, and segmented check. | Pending |
+| EPPlus/Packaging/DotNetZip/ZipEntry.Write.cs | Central Dir & Stream Cleanup | Added `Dispose()` calls for output stream, compressor, parallel compressor, and encryptor. Refactored central directory entry buffer, comment serialization, and segmented check. | ZipEntryTest.cs |
 | EPPlus/Packaging/DotNetZip/ZipFile.AddUpdate.cs | .NET Core Support & Cleanup | Used `UTF-8` encoding instead of `Encoding.Default` under `Core` conditional. Removed `_entriesInsensitive` registration in `InternalAddEntry`. | Pending |
 | EPPlus/Packaging/DotNetZip/ZipFile.cs | .NET Core Support & Unified Dict | Unified case-insensitive registry into `_entries` dictionary with `_initEntriesDictionary()`. Removed `IgnoreDuplicateFiles`. Simplified `MaxOutputSegmentSize` to `Int32` and default encodings to `UTF-8` under `Core` conditional. | Pending |
 | EPPlus/Packaging/DotNetZip/ZipFile.Read.cs | Zip Reading & Entry Registration | Removed `_entriesInsensitive` registration in `ReadIntoInstance` and `ReadIntoInstance_Orig`. Re-instantiated unified dictionary. | Pending |
@@ -108,7 +108,6 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/FormulaParsing/Excel/Functions/Text/Proper.cs | Cleanup | Removed unnecessary `CultureInfo.InvariantCulture` from `char.ToString()`. | Pending |
 | EPPlus/FormulaParsing/Excel/Functions/Text/Value.cs | Logic & Regex | Added null/empty check. Updated regex for decimal separator matching. | Pending |
 | EPPlus/FormulaParsing/ExcelDataProvider.cs | GetRange Overload | Added abstract `GetRange(string worksheetName, string address)` method. | Pending |
-
 
 
 

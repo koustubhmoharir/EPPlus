@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml.Packaging.Ionic.Crc;
 using OfficeOpenXml.Packaging.Ionic.Zip;
@@ -106,6 +108,28 @@ namespace EPPlusTest.Packaging.DotNetZip
             Assert.AreEqual(16, GetPrivateField<int>(entry, "_LengthOfTrailer"));
         }
 
+        [TestMethod]
+        public void ZipEntry_WriteCentralDirectoryEntry_WritesCommentBytes()
+        {
+            var comment = new string('c', 1000);
+            var bytes = BuildCentralDirectoryEntryBytes("payload.txt", comment, segmented: false, diskNumber: 0);
+
+            Assert.AreEqual((ushort)comment.Length, ReadUInt16(bytes, 32));
+            Assert.AreEqual((ushort)0, ReadUInt16(bytes, 34));
+            AssertCommentBytes(bytes, comment);
+        }
+
+        [TestMethod]
+        public void ZipEntry_WriteCentralDirectoryEntry_WritesSegmentedDiskNumber()
+        {
+            var comment = new string('c', 1000);
+            var bytes = BuildCentralDirectoryEntryBytes("payload.txt", comment, segmented: true, diskNumber: 7);
+
+            Assert.AreEqual((ushort)comment.Length, ReadUInt16(bytes, 32));
+            Assert.AreEqual((ushort)7, ReadUInt16(bytes, 34));
+            AssertCommentBytes(bytes, comment);
+        }
+
         private static ZipEntry ReadEntry(byte[] archiveBytes)
         {
             using (var stream = new MemoryStream(archiveBytes))
@@ -191,6 +215,86 @@ namespace EPPlusTest.Packaging.DotNetZip
             var field = instance.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.IsNotNull(field, fieldName);
             return (T)field.GetValue(instance);
+        }
+
+        private static byte[] BuildCentralDirectoryEntryBytes(string fileName, string comment, bool segmented, uint diskNumber)
+        {
+            var entry = (ZipEntry)FormatterServices.GetUninitializedObject(typeof(ZipEntry));
+#if Core
+            SetAutoProperty(entry, "AlternateEncoding", System.Text.Encoding.GetEncoding("UTF-8"));
+#else
+            SetAutoProperty(entry, "AlternateEncoding", System.Text.Encoding.GetEncoding("IBM437"));
+#endif
+            SetAutoProperty(entry, "AlternateEncodingUsage", ZipOption.Never);
+            SetPrivateField(entry, "_FileNameInArchive", fileName);
+            SetPrivateField(entry, "_Comment", comment);
+            SetPrivateField(entry, "_VersionMadeBy", (short)45);
+            SetPrivateField(entry, "_VersionNeeded", (short)20);
+            SetPrivateField(entry, "_BitField", (short)0);
+            SetPrivateField(entry, "_CompressionMethod", (short)0);
+            SetPrivateField(entry, "_TimeBlob", 0);
+            SetPrivateField(entry, "_Crc32", 0);
+            SetPrivateField(entry, "_CompressedSize", (long)0);
+            SetPrivateField(entry, "_UncompressedSize", (long)0);
+            SetPrivateField(entry, "_RelativeOffsetOfLocalHeader", (long)0);
+            SetPrivateField(entry, "_ExternalFileAttrs", 0);
+            SetPrivateField(entry, "_IsText", false);
+            SetPrivateField(entry, "_diskNumber", diskNumber);
+
+            var zipFile = (ZipFile)FormatterServices.GetUninitializedObject(typeof(ZipFile));
+            SetPrivateField(zipFile, "_maxOutputSegmentSize", segmented ? 65536 : 0);
+            var container = (ZipContainer)FormatterServices.GetUninitializedObject(typeof(ZipContainer));
+            SetPrivateField(container, "_zf", zipFile);
+            SetPrivateField(entry, "_container", container);
+
+            using (var output = new MemoryStream())
+            {
+                var method = typeof(ZipEntry).GetMethod("WriteCentralDirectoryEntry", BindingFlags.Instance | BindingFlags.NonPublic);
+                Assert.IsNotNull(method, "WriteCentralDirectoryEntry");
+                var writer = (Action<Stream>)Delegate.CreateDelegate(typeof(Action<Stream>), entry, method);
+                writer(output);
+                return output.ToArray();
+            }
+        }
+
+        private static void AssertCommentBytes(byte[] bytes, string comment)
+        {
+            var fileNameLength = ReadUInt16(bytes, 28);
+            var extraLength = ReadUInt16(bytes, 30);
+            var commentBytes = System.Text.Encoding.ASCII.GetBytes(comment);
+            var commentOffset = 46 + fileNameLength + extraLength;
+
+            for (int i = 0; i < commentBytes.Length; i++)
+            {
+                Assert.AreEqual(commentBytes[i], bytes[commentOffset + i], "Comment byte mismatch at index " + i);
+            }
+        }
+
+        private static void SetPrivateField(object instance, string fieldName, object value)
+        {
+            var field = instance.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(field, fieldName);
+
+            object convertedValue = value;
+            var fieldType = Nullable.GetUnderlyingType(field.FieldType) ?? field.FieldType;
+            if (convertedValue != null && !fieldType.IsInstanceOfType(convertedValue))
+            {
+                convertedValue = Convert.ChangeType(convertedValue, fieldType);
+            }
+
+            field.SetValue(instance, convertedValue);
+        }
+
+        private static void SetAutoProperty(object instance, string propertyName, object value)
+        {
+            var field = instance.GetType().GetField("<" + propertyName + ">k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(field, propertyName);
+            field.SetValue(instance, value);
+        }
+
+        private static ushort ReadUInt16(byte[] bytes, int offset)
+        {
+            return BitConverter.ToUInt16(bytes, offset);
         }
 
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
