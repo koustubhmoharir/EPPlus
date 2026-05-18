@@ -39,7 +39,7 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/Packaging/ZipPackageRelationshipBase.cs | .NET Core Support | Removed `using System.Web;` and switched string comparisons to `OrdinalIgnoreCase`. | ZipPackageTest.cs |
 | EPPlus/Properties/AssemblyInfo.cs | .NET Core Support | Conditionalized assembly attributes under `#if (!Core)` since modern .NET Core projects define assembly metadata in the csproj file. | Verified |
 | EPPlus/Style/ExcelColor.cs | Color Support | Implements `IColor` interface and `SetColor` method. Switched from `decimal.Round` to `Math.Round` in `translatedRGB` calculation. | ExcelColorTest.cs |
-| EPPlus/Style/ExcelRichTextHtmlUtility.cs | .NET Core Support | Uses `System.Net.WebUtility.HtmlDecode` instead of `System.Web.HttpUtility.HtmlDecode` under `Core` conditional. | Pending |
+| EPPlus/Style/ExcelRichTextHtmlUtility.cs | .NET Core Support | Uses `System.Net.WebUtility.HtmlDecode` instead of `System.Web.HttpUtility.HtmlDecode` under `Core` conditional. | ExcelRichTextHtmlUtilityTest.cs |
 | EPPlus/Style/StyleBase.cs | Font Styling | Added `Baseline` enum value to `ExcelVerticalAlignmentFont`. | Pending |
 | EPPlus/Style/XmlAccess/ExcelFillXml.cs | Code Cleanup | Removed commented-out XML node appending line in `CreateXmlNode` method. | Verified |
 | EPPlus/Style/XmlAccess/ExcelFontXml.cs | Font Height Calculation | Refactored `GetFontHeight` interpolation logic to handle arbitrary sizes safely beyond lookup ranges. | Pending |

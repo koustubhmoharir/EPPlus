@@ -58,6 +58,9 @@ namespace EPPlusTest
                 
                 color.SetColor(Color.Red);
                 Assert.AreEqual("FFFF0000", color.Rgb);
+
+                color.SetColor(128, 255, 0, 255);
+                Assert.AreEqual("80FF00FF", color.Rgb);
             }
         }
     }
