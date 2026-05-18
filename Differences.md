@@ -69,8 +69,8 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/CellStore.cs | GetPosition(int Row), GetPosition(int Column), Refactoring | Added performance optimization: direct indexing check before binary search in GetPosition. Refactored GetValue, Clear, and Exists to use GetPosition. | Verified on .NET 9 |
 | Multiple Files | Floating-point Precision | Identified precision differences between Mono and .NET 9 in `double.ToString()` and `TimeSpan` to `double` conversions. | Resolved in tests |
 | EPPlus/ExcelPackage.cs | Constructors / Init | Added .NET Core support; refactored stream handling to avoid temp folders; added `appsettings.json` support. Added `Compatibility` and `_worksheetAdd`. | Pending |
-| EPPlus/ExcelProtectedRange.cs | Password Hashing | Updated `SetPassword` to use `SHA512.Create()` for .NET Core support. | Pending |
-| EPPlus/ExcelProtectedRangeCollection.cs | Add Method | Added name uniqueness check and refactored XML node creation for protected ranges. | Pending |
+| EPPlus/ExcelProtectedRange.cs | Password Hashing | Updated `SetPassword` to use `SHA512.Create()` for .NET Core support. | ExcelProtectedRangeTest.cs |
+| EPPlus/ExcelProtectedRangeCollection.cs | Add Method | Added name uniqueness check and refactored XML node creation for protected ranges. | ExcelProtectedRangeTest.cs |
 | EPPlus/ExcelPackage.cs | Save / SavePart | Switched to `XmlTextWriter` with `Formatting.None`; refactored encryption to use `MemoryStream`; improved `CopyStream` performance. | Pending |
 | EPPlus/ExcelWorksheet.cs | .NET Core & Features | Added `SparklineGroups`. Updated `Load` to use `XmlReader.Create` with .NET Core compatible settings. Improved `Name` setter to update Extended Properties. Switched to `OrdinalIgnoreCase` for unique name checks. Simplified `AdjustFormulasRow/Column`. Removed `MoveFormulaReferences`. Added `FixSharedFormulas`. | Pending |
 | EPPlus/ExcelWorksheet.cs | Internal Cleanup | Improved URI generation for comments/VML with part existence check (Issue #236). Refactored `PivotTable` address saving; removed `RemoveSheetPrefix`. | Pending |
