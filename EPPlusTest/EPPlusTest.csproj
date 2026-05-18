@@ -252,6 +252,7 @@
     <Compile Include="Utils\SqRefUtilityTests.cs" />
     <Compile Include="VBA.cs" />
     <Compile Include="VBACollectionTest.cs" />
+    <Compile Include="VBACompressionTest.cs" />
     <Compile Include="WorkSheet.cs" />
     <Compile Include="WorksheetsTests.cs" />
   </ItemGroup>
