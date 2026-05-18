@@ -117,6 +117,7 @@
     <Compile Include="Drawing\Chart\ExcelChartDataTableTest.cs" />
     <Compile Include="ExcelCellBaseTest.cs" />
     <Compile Include="ExcelStyleTest.cs" />
+    <Compile Include="ExcelColorTest.cs" />
     <Compile Include="FormulaParsing\ExcelUtilities\ExpressionEvaluatorTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\FinanceFunctionTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\FunctionRepositoryTests.cs" />
