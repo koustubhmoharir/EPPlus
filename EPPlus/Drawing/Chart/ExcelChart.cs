@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -490,10 +490,12 @@ namespace OfficeOpenXml.Drawing.Chart
                // save it to the package
                Part = package.CreatePart(UriChart, "application/vnd.openxmlformats-officedocument.drawingml.chart+xml", _drawings._package.Compression);
 
-               StreamWriter streamChart = new StreamWriter(Part.GetStream(FileMode.Create, FileAccess.Write));
-               ChartXml.Save(streamChart);
-               streamChart.Close();
-               package.Flush();
+                StreamWriter streamChart = new StreamWriter(Part.GetStream(FileMode.Create, FileAccess.Write));
+                ChartXml.Save(streamChart);
+#if !Core
+                streamChart.Close();
+#endif
+                package.Flush();
 
                var chartRelation = drawings.Part.CreateRelationship(UriHelper.GetRelativeUri(drawings.UriDrawing, UriChart), Packaging.TargetMode.Internal, ExcelPackage.schemaRelationships + "/chart");
                graphFrame.SelectSingleNode("a:graphic/a:graphicData/c:chart", NameSpaceManager).Attributes["r:id"].Value = chartRelation.Id;
@@ -1329,7 +1331,7 @@ namespace OfficeOpenXml.Drawing.Chart
                 else
                 {
                     int v;
-                    if (int.TryParse(node.Value, out v))
+                    if (int.TryParse(node.Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out v))
                     {
                         return (eChartStyle)v;
                     }
@@ -1357,6 +1359,21 @@ namespace OfficeOpenXml.Drawing.Chart
                     XmlElement parent = ChartXml.SelectSingleNode("c:chartSpace", NameSpaceManager) as XmlElement;
                     parent.InsertBefore(element, parent.SelectSingleNode("c:chart", NameSpaceManager));
                 }
+            }
+        }
+        const string _roundedCornersPath = "../../../c:roundedCorners/@val";
+        /// <summary>
+        /// Border rounded corners
+        /// </summary>
+        public bool RoundedCorners
+        {
+            get
+            {
+                return _chartXmlHelper.GetXmlNodeBool(_roundedCornersPath);
+            }
+            set
+            {
+                _chartXmlHelper.SetXmlNodeBool(_roundedCornersPath, value);
             }
         }
         const string _plotVisibleOnlyPath="../../c:plotVisOnly/@val";
