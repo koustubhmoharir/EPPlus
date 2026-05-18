@@ -133,6 +133,7 @@
     <Compile Include="Packaging\DotNetZip\ParallelDeflateOutputStreamTest.cs" />
     <Compile Include="Packaging\DotNetZip\ZipSegmentedStreamTest.cs" />
     <Compile Include="Packaging\DotNetZip\ZipFileTest.cs" />
+    <Compile Include="Packaging\DotNetZip\ZlibCodecTest.cs" />
     <Compile Include="Packaging\DotNetZip\ZipEntryExtractTest.cs" />
     <Compile Include="SharedTest.cs" />
     <Compile Include="ZipDirEntryTest.cs" />
