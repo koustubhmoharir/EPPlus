@@ -359,8 +359,9 @@ namespace EPPlusTest
             Assert.AreEqual(ExcelAddressBase.AddressType.R1C1, ExcelAddressBase.IsValid("C2:C10", true));
             Assert.AreEqual(ExcelAddressBase.AddressType.R1C1, ExcelAddressBase.IsValid("R[1]C:R[3]C", true));
 
-            // Test non-r1c1 fallback/invalid
-            Assert.AreEqual(ExcelAddressBase.AddressType.Invalid, ExcelAddressBase.IsValid("R1C1", false));
+            // Test non-r1c1 fallback
+            Assert.AreEqual(ExcelAddressBase.AddressType.InternalName, ExcelAddressBase.IsValid("R1C1", false));
+            Assert.AreEqual(ExcelAddressBase.AddressType.Invalid, ExcelAddressBase.IsValid("123.45", false));
         }
 #endif
     }
