@@ -1,4 +1,5 @@
-﻿using System;
+#if Core
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using OfficeOpenXml;
@@ -90,3 +91,4 @@ namespace EPPlusTest
         }
     }
 }
+#endif
