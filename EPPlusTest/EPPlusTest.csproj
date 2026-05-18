@@ -148,6 +148,7 @@
     <Compile Include="ExcelStyleTest.cs" />
     <Compile Include="ExcelRichTextHtmlUtilityTest.cs" />
     <Compile Include="ExcelColorTest.cs" />
+    <Compile Include="Utils\UriHelperTest.cs" />
     <Compile Include="FormulaParsing\ExcelUtilities\ExpressionEvaluatorTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\FunctionRepositoryTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\CountIfsTests.cs" />
