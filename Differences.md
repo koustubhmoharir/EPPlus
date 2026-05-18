@@ -58,7 +58,7 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/XmlHelper.cs | XML Parsing Helper | Refactored `CreateNode` with `addNew` parameter. Standardized `int.TryParse` with invariant culture. Conditionalized `DtdProcessing`. | XmlHelperTest.cs |
 | EPPlus/Drawing/ExcelPicture.cs | Image Handling | Refactored image to byte array conversion using `ImageCompat` for .NET Core support. | ExcelPictureTest.cs |
 | EPPlus/Drawing/Chart/ExcelChartPlotArea.cs | DataTable Support | Added `DataTable` property and `CreateDataTable`, `RemoveDataTable` methods. Initialized `_dataTable` in constructor. | ExcelChartDataTableTest.cs |
-| EPPlus/Drawing/Chart/ExcelChart.cs | RoundedCorners, Core Support | Added `RoundedCorners` property. Refactored `Save` to avoid `StreamWriter.Close()` in .NET Core. Updated `int.TryParse` with `CultureInfo.InvariantCulture`. | Pending |
+| EPPlus/Drawing/Chart/ExcelChart.cs | RoundedCorners, Core Support | Added RoundedCorners property. Refactored Save to avoid StreamWriter.Close() in .NET Core. Updated int.TryParse with CultureInfo.InvariantCulture. | ExcelChartTest.cs |
 | EPPlus/Drawing/Chart/ExcelChartAxis.cs | Gridlines Support | Added `MajorGridlines`, `MinorGridlines` properties and `RemoveGridlines` methods. Updated `SchemaNodeOrder` to include `minorGridlines`. | Pending |
 | EPPlus/Drawing/Chart/ExcelBubbleChart.cs | ShowNegativeBubbles | Fixed incorrect XML documentation comment for `ShowNegativeBubbles`. | Verified |
 | EPPlus/DataValidation/Formulas/ExcelDataValidationFormulaInt.cs | ParseValue | Updated `int.TryParse` to use `NumberStyles.Number` and `CultureInfo.InvariantCulture`. | Pending |
