@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -954,10 +954,22 @@ namespace OfficeOpenXml
 				}
 			}
             XmlNode headingPairsVector2ndVariantI4Node = _pck.Workbook.Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:HeadingPairs/vt:vector/vt:variant[2]/vt:i4", _namespaceManager);
-            headingPairsVector2ndVariantI4Node.InnerText = (_worksheets.Count - 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+            if (headingPairsVector2ndVariantI4Node != null)
+            {
+                headingPairsVector2ndVariantI4Node.InnerText = (_worksheets.Count - 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
             XmlNode titlesOfPartsVectorNode = _pck.Workbook.Properties.ExtendedPropertiesXml.SelectSingleNode("//xp:Properties/xp:TitlesOfParts/vt:vector", _namespaceManager);
-            titlesOfPartsVectorNode.Attributes["size"].Value = (_worksheets.Count - 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
-            titlesOfPartsVectorNode.RemoveChild(titlesOfPartsVectorNode.ChildNodes[Index - 1]);
+            if (titlesOfPartsVectorNode != null)
+            {
+                if (titlesOfPartsVectorNode.Attributes["size"] != null)
+                {
+                    titlesOfPartsVectorNode.Attributes["size"].Value = (_worksheets.Count - 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                }
+                if (Index - 1 >= 0 && Index - 1 < titlesOfPartsVectorNode.ChildNodes.Count)
+                {
+                    titlesOfPartsVectorNode.RemoveChild(titlesOfPartsVectorNode.ChildNodes[Index - 1]);
+                }
+            }
 			_worksheets.Remove(Index);
             if (_pck.Workbook.VbaProject != null)
             {
