@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -284,10 +284,10 @@ namespace OfficeOpenXml.Utils
                 if (value is double)
                     return (T)(object)(DateTime.FromOADate((double)value));
 
-                if (fromType == typeof(TimeSpan))
+                if (value is TimeSpan)
                     return ((T)(object)(new DateTime(((TimeSpan)value).Ticks)));
 
-                if (fromType == typeof(string))
+                if (value is string)
                     return (T)(object)DateTime.Parse(value.ToString());
             }
             else if (toType == typeof(TimeSpan))
@@ -295,10 +295,10 @@ namespace OfficeOpenXml.Utils
                 if (value is double)
                     return (T)(object)(new TimeSpan(DateTime.FromOADate((double)value).Ticks));
 
-                if (fromType == typeof(DateTime))
+                if (value is DateTime)
                     return ((T)(object)(new TimeSpan(((DateTime)value).Ticks)));
 
-                if (fromType == typeof(string))
+                if (value is string)
                     return (T)(object)TimeSpan.Parse(value.ToString());
             }
 
@@ -307,7 +307,7 @@ namespace OfficeOpenXml.Utils
 
         #region internal cache objects
         internal static TextInfo _invariantTextInfo = CultureInfo.InvariantCulture.TextInfo;
-        internal static CompareInfo _invariantCompareInfo = CompareInfo.GetCompareInfo(CultureInfo.InvariantCulture.Name);  //TODO:Check that it works
+        internal static CompareInfo _invariantCompareInfo = CompareInfo.GetCompareInfo(CultureInfo.InvariantCulture.Name);
         #endregion
     }
 }
