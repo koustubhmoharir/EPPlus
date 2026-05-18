@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using System.Xml;
 using OfficeOpenXml.Style;
@@ -42,6 +42,35 @@ namespace EPPlusTest
                 Assert.AreEqual(1, nodes.Count);
                 Assert.AreEqual("baseline", nodes[0].Attributes["val"].Value);
             }
+        }
+
+        [TestMethod]
+        public void GetFontHeightTest()
+        {
+            // Exact size
+            var h12 = OfficeOpenXml.Style.XmlAccess.ExcelFontXml.GetFontHeight("Arial", 12);
+            Assert.AreEqual(21f, h12);
+
+            // In-between size
+            var h13 = OfficeOpenXml.Style.XmlAccess.ExcelFontXml.GetFontHeight("Arial", 13);
+            Assert.AreEqual(22.5f, h13);
+
+            // Unknown font (falls back to Calibri)
+            // Calibri 11 is 20
+            var hUnknown = OfficeOpenXml.Style.XmlAccess.ExcelFontXml.GetFontHeight("UnknownFont", 11);
+            Assert.AreEqual(20f, hUnknown);
+        }
+
+        [TestMethod]
+        public void GetFontHeightEdgeCasesTest()
+        {
+            // Below minimum (Arial min is 6, height 20)
+            var h4 = OfficeOpenXml.Style.XmlAccess.ExcelFontXml.GetFontHeight("Arial", 4);
+            Assert.AreEqual(20f, h4);
+
+            // Above maximum (Arial max is 256, height 424)
+            var h300 = OfficeOpenXml.Style.XmlAccess.ExcelFontXml.GetFontHeight("Arial", 300);
+            Assert.AreEqual(424f, h300);
         }
     }
 }
