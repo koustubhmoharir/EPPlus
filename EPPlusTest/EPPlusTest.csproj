@@ -102,6 +102,7 @@
     <Compile Include="ExceptionsTest.cs" />
     <Compile Include="Packaging\DotNetZip\ZipEntryTest.cs" />
     <Compile Include="Packaging\DotNetZip\ZipFileTest.cs" />
+    <Compile Include="Packaging\DotNetZip\ZipSegmentedStreamTest.cs" />
     <Compile Include="Packaging\DotNetZip\ZipEntryExtractTest.cs" />
     <Compile Include="SharedTest.cs" />
     <Compile Include="ZipDirEntryTest.cs" />
