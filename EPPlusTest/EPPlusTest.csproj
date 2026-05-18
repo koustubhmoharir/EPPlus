@@ -125,6 +125,7 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="EncryptionInfoTest.cs" />
+    <Compile Include="EncryptedPackageHandlerTest.cs" />
     <Compile Include="Calculation.cs" />
     <Compile Include="ConditionalFormatting\ConditionalFormatting.cs" />
     <Compile Include="ExcelCellBaseTest.cs" />
