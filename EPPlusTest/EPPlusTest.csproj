@@ -100,6 +100,7 @@
     <Compile Include="Crc32Test.cs" />
     <Compile Include="EncryptionInfoTest.cs" />
     <Compile Include="ExceptionsTest.cs" />
+    <Compile Include="FileSelectorTest.cs" />
     <Compile Include="EncryptedPackageHandlerTest.cs" />
     <Compile Include="Calculation.cs" />
     <Compile Include="CompoundDoc.cs" />
