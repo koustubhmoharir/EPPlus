@@ -126,6 +126,7 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="Table\ExcelTableCollectionTest.cs" />
+    <Compile Include="Table\PivotTableTest.cs" />
     <Compile Include="Packaging\ZipPackageTest.cs" />
     <Compile Include="ComHelperTest.cs" />
     <Compile Include="Crc32Test.cs" />
