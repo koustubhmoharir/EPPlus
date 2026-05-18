@@ -96,3 +96,4 @@ This workflow guides the process of verifying a method/behavior difference ident
    ```bash
    git commit -am "Update Differences.md and PortingProgress.md with [ClassName].[MethodName] status"
    ```
+4. Both branches should be committed and the working trees should be clean.
