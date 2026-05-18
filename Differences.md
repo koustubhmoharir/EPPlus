@@ -45,7 +45,7 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/Style/XmlAccess/ExcelFontXml.cs | Font Height Calculation | Refactored `GetFontHeight` interpolation logic to handle arbitrary sizes safely beyond lookup ranges. | ExcelStyleTest.cs |
 | EPPlus/Style/XmlAccess/ExcelXfsXml.cs | Cell Formatting XML Serialization | Added @applyProtection="1" and @applyAlignment="1" attributes conditionally to Xfs XML node. | ExcelStyleTest.cs |
 | EPPlus/Table/ExcelTableCollection.cs | Excel Table Collection | Added `ExcelAddressUtil.IsValidName` check to table name validation. Switched string comparisons to `OrdinalIgnoreCase`. | ExcelTableCollectionTest.cs |
-| EPPlus/Table/ExcelTable.cs | Excel Table Operations | Added Excel escape and validation support to table names. Improved name uniqueness checks. | Pending |
+| EPPlus/Table/ExcelTable.cs | Excel Table Operations | Added Excel escape and validation support to table names. Improved name uniqueness checks. | ExcelTableCollectionTest.cs |
 | EPPlus/Table/PivotTable/ExcelPivotCacheDefinition.cs | Pivot Table Cache | Removed unused `System.Data.SqlClient`. Simplified worksheet range address lookup. Switched string comparisons to `OrdinalIgnoreCase`. | Pending |
 | EPPlus/Table/PivotTable/ExcelPivotTableCollection.cs | Pivot Table Collection | Changed generated default pivot table name prefix from `PivotTable` to `Pivottable`. | Pending |
 | EPPlus/Table/PivotTable/ExcelPivotTable.cs | Excel Pivot Table | Added `ColumnHeaderCaption` property. Corrected `ColumnGrandTotals` spelling and obsoleted `ColumGrandTotals`. Escaped table name in `GetStartXml`. | Pending |
