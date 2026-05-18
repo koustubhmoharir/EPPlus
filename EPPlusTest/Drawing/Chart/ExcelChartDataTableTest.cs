@@ -18,12 +18,10 @@ namespace EPPlusTest.Drawing.Chart
         /// <summary>
         /// Basic test to check output with excel. need enhanced to be stand alone checking
         /// </summary>
-        [TestMethod,Ignore]
+        [TestMethod]
         public void DataTableFile()
         {
-            string outfile = Path.Combine(_worksheetPath, "DataTableFile.xlsx");
-            var fileinfo = new FileInfo(outfile);
-            using (ExcelPackage pkg = new ExcelPackage(fileinfo))
+            using (ExcelPackage pkg = new ExcelPackage())
             {
                 // Add worksheet with sample data
                 var worksheet = pkg.Workbook.Worksheets.Add("TestData");
@@ -48,7 +46,6 @@ namespace EPPlusTest.Drawing.Chart
                 Assert.AreEqual(null, chart.PlotArea.DataTable);
                 chart.PlotArea.CreateDataTable();
                 chart.PlotArea.DataTable.ShowOutline = false;
-                pkg.Save();
 
                 XmlDocument xmldoc = chart.ChartXml;
                 string xml = xmldoc.InnerXml;
