@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -2152,9 +2152,36 @@ namespace EPPlusTest
         {
             var ws = _pck.Workbook.Worksheets.Add("backimg");
 
+            // Assert default state
+            Assert.IsNull(ws.BackgroundImage.Image);
+
+            // Set image
             ws.BackgroundImage.Image = Properties.Resources.Test1;
+            Assert.IsNotNull(ws.BackgroundImage.Image);
+            Assert.IsTrue(ws.BackgroundImage.Image.Width > 0);
+
+            // Verify delete logic
+            ws.BackgroundImage.Image = null;
+            Assert.IsNull(ws.BackgroundImage.Image);
+
+            // Re-set image
+            ws.BackgroundImage.Image = Properties.Resources.Test1;
+            Assert.IsNotNull(ws.BackgroundImage.Image);
+
             ws = _pck.Workbook.Worksheets.Add("backimg2");
-            ws.BackgroundImage.SetFromFile(new FileInfo(Path.Combine(_clipartPath, "Vector Drawing.wmf")));
+            try
+            {
+                ws.BackgroundImage.SetFromFile(new FileInfo(Path.Combine(_clipartPath, "Vector Drawing.wmf")));
+                Assert.IsNotNull(ws.BackgroundImage.Image);
+            }
+            catch (ArgumentException ex) when (ex.Message.Contains("No codec available"))
+            {
+                // Expected fallback on Mono (Linux) due to WMF encoding codec missing in GDI+
+#if Core
+                // On .NET 9, it should never fail with a codec exception because it reads bytes directly!
+                Assert.Fail("SetFromFile threw a No Codec exception on .NET 9: " + ex.Message);
+#endif
+            }
         }
         //[Ignore]
         [TestMethod]
