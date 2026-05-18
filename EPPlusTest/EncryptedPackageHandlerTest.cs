@@ -1,4 +1,3 @@
-#if !MONO
 using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -47,7 +46,7 @@ namespace EPPlusTest
                     using (var decryptedPck = new ExcelPackage(decryptedStream))
                     {
                         Assert.AreEqual(1, decryptedPck.Workbook.Worksheets.Count);
-                        var ws = decryptedPck.Workbook.Worksheets[1];
+                        var ws = decryptedPck.Workbook.Worksheets["TestSheet"];
                         Assert.AreEqual("Hello World", ws.Cells["A1"].Value);
                         Assert.AreEqual(12345.0, Convert.ToDouble(ws.Cells["A2"].Value));
                     }
@@ -75,7 +74,7 @@ namespace EPPlusTest
             using (var decryptedPck = new ExcelPackage(decryptedStream))
             {
                 Assert.AreEqual(1, decryptedPck.Workbook.Worksheets.Count);
-                var ws = decryptedPck.Workbook.Worksheets[1];
+                var ws = decryptedPck.Workbook.Worksheets["TestSheet"];
                 Assert.AreEqual("Hello World", ws.Cells["A1"].Value);
                 Assert.AreEqual(12345.0, Convert.ToDouble(ws.Cells["A2"].Value));
             }
@@ -118,7 +117,7 @@ namespace EPPlusTest
                     using (var decryptedPck = new ExcelPackage(decryptedStream))
                     {
                         Assert.AreEqual(1, decryptedPck.Workbook.Worksheets.Count);
-                        var ws = decryptedPck.Workbook.Worksheets[1];
+                        var ws = decryptedPck.Workbook.Worksheets["TestSheet"];
                         Assert.AreEqual("Standard Encryption Test", ws.Cells["A1"].Value);
                     }
                 }
@@ -145,11 +144,10 @@ namespace EPPlusTest
             using (var decryptedPck = new ExcelPackage(decryptedStream))
             {
                 Assert.AreEqual(1, decryptedPck.Workbook.Worksheets.Count);
-                var ws = decryptedPck.Workbook.Worksheets[1];
+                var ws = decryptedPck.Workbook.Worksheets["TestSheet"];
                 Assert.AreEqual("Standard Encryption Test", ws.Cells["A1"].Value);
             }
 #endif
         }
     }
 }
-#endif
