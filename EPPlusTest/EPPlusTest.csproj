@@ -253,6 +253,7 @@
     <Compile Include="VBA.cs" />
     <Compile Include="VBACollectionTest.cs" />
     <Compile Include="VBACompressionTest.cs" />
+    <Compile Include="VBASignatureTest.cs" />
     <Compile Include="WorkSheet.cs" />
     <Compile Include="WorksheetsTests.cs" />
   </ItemGroup>
