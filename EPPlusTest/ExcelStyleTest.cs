@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using System.Xml;
 using OfficeOpenXml.Style;
+using System;
 
 namespace EPPlusTest
 {
@@ -71,6 +72,46 @@ namespace EPPlusTest
             // Above maximum (Arial max is 256, height 424)
             var h300 = OfficeOpenXml.Style.XmlAccess.ExcelFontXml.GetFontHeight("Arial", 300);
             Assert.AreEqual(424f, h300);
+        }
+
+        [TestMethod]
+        public void ApplyProtectionAndAlignmentTest()
+        {
+            using (var p = new ExcelPackage())
+            {
+                var ws = p.Workbook.Worksheets.Add("ApplyTest");
+                var cell = ws.Cells["A1"];
+                
+                // Set protection
+                cell.Style.Locked = false;
+                
+                // Set alignment
+                cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                
+                p.Workbook.Styles.UpdateXml();
+                var nodes = p.Workbook.StylesXml.SelectNodes("//d:cellXfs/d:xf", p.Workbook.NameSpaceManager);
+                
+                Assert.IsTrue(nodes.Count > 0, "Should have at least one xf node");
+                
+                bool foundApplyProtection = false;
+                bool foundApplyAlignment = false;
+
+                foreach(System.Xml.XmlNode node in nodes)
+                {
+                    if (node.Attributes["applyProtection"] != null && node.Attributes["applyProtection"].Value == "1")
+                    {
+                        foundApplyProtection = true;
+                    }
+                    if (node.Attributes["applyAlignment"] != null && node.Attributes["applyAlignment"].Value == "1")
+                    {
+                        foundApplyAlignment = true;
+                    }
+                }
+
+                // In dotnetport, these attributes SHOULD exist as "1" for the modified style.
+                Assert.IsTrue(foundApplyProtection, "applyProtection='1' should exist in dotnetport");
+                Assert.IsTrue(foundApplyAlignment, "applyAlignment='1' should exist in dotnetport");
+            }
         }
     }
 }
