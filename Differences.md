@@ -43,7 +43,7 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/Style/StyleBase.cs | Font Styling | Added `Baseline` enum value to `ExcelVerticalAlignmentFont`. | ExcelStyleTest.cs |
 | EPPlus/Style/XmlAccess/ExcelFillXml.cs | Code Cleanup | Removed commented-out XML node appending line in `CreateXmlNode` method. | Verified |
 | EPPlus/Style/XmlAccess/ExcelFontXml.cs | Font Height Calculation | Refactored `GetFontHeight` interpolation logic to handle arbitrary sizes safely beyond lookup ranges. | ExcelStyleTest.cs |
-| EPPlus/Style/XmlAccess/ExcelXfsXml.cs | Cell Formatting XML Serialization | Added `@applyProtection="1"` and `@applyAlignment="1"` attributes conditionally to Xfs XML node. | Pending |
+| EPPlus/Style/XmlAccess/ExcelXfsXml.cs | Cell Formatting XML Serialization | Added @applyProtection="1" and @applyAlignment="1" attributes conditionally to Xfs XML node. | ExcelStyleTest.cs |
 | EPPlus/Table/ExcelTableCollection.cs | Excel Table Collection | Added `ExcelAddressUtil.IsValidName` check to table name validation. Switched string comparisons to `OrdinalIgnoreCase`. | Pending |
 | EPPlus/Table/ExcelTable.cs | Excel Table Operations | Added Excel escape and validation support to table names. Improved name uniqueness checks. | Pending |
 | EPPlus/Table/PivotTable/ExcelPivotCacheDefinition.cs | Pivot Table Cache | Removed unused `System.Data.SqlClient`. Simplified worksheet range address lookup. Switched string comparisons to `OrdinalIgnoreCase`. | Pending |
