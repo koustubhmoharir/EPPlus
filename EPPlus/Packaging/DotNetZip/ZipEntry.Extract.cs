@@ -1414,7 +1414,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                     outFileName = Path.Combine(basedir, f);
 
                 // workitem 10639
-                outFileName = outFileName.Replace("/","\\");
+                outFileName = outFileName.Replace("/", Path.DirectorySeparatorChar.ToString());
 
                 // check if it is a directory
                 if ((IsDirectory) || (FileName.EndsWith("/")))
