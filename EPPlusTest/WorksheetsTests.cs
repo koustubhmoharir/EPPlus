@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
@@ -275,6 +275,63 @@ namespace EPPlusTest
 			{
 				Assert.AreEqual(worksheet.Name, newPackage.Workbook.Worksheets[positionId].Name, "Worksheets are not in the same order");
 				positionId++;
+			}
+		}
+
+		[TestMethod]
+		public void TestTableCalculatedColumnFormulaTranslation()
+		{
+			using (var package = new ExcelPackage())
+			{
+				var ws = package.Workbook.Worksheets.Add("Sheet1");
+				ws.Cells["A1"].Value = "ColA";
+				ws.Cells["B1"].Value = "ColB";
+				ws.Cells["A2"].Value = 10;
+				ws.Cells["A3"].Value = 20;
+
+				var table = ws.Tables.Add(ws.Cells["A1:B3"], "Table1");
+				table.Columns[1].CalculatedColumnFormula = "A2*2";
+
+				using (var ms = new MemoryStream())
+				{
+					package.SaveAs(ms);
+				}
+
+#if Core
+				// On dotnetport (.NET 9), table calculated column formulas are translated (shifted relative to row)
+				Assert.AreEqual("A2*2", ws.Cells["B2"].Formula);
+				Assert.AreEqual("A3*2", ws.Cells["B3"].Formula);
+#else
+				// On stable (Mono), there is no formula translation (each row gets the exact formula assigned)
+				Assert.AreEqual("A2*2", ws.Cells["B2"].Formula);
+				Assert.AreEqual("A2*2", ws.Cells["B3"].Formula);
+#endif
+			}
+		}
+
+		[TestMethod]
+		public void TestVmlCommentsPartCleanup()
+		{
+			using (var package = new ExcelPackage())
+			{
+				var ws = package.Workbook.Worksheets.Add("Sheet1");
+				ws.Cells["A1"].AddComment("Comment 1", "Author");
+
+				using (var ms = new MemoryStream())
+				{
+					package.SaveAs(ms);
+				}
+
+				Assert.AreEqual(1, ws.Comments.Count);
+
+				ws.Comments.RemoveAt(0);
+
+				using (var ms = new MemoryStream())
+				{
+					package.SaveAs(ms);
+				}
+
+				Assert.AreEqual(0, ws.Comments.Count);
 			}
 		}
 	}
