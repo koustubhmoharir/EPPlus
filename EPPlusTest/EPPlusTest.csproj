@@ -130,6 +130,7 @@
     <Compile Include="EncryptionInfoTest.cs" />
     <Compile Include="ExceptionsTest.cs" />
     <Compile Include="Packaging\DotNetZip\ZipEntryTest.cs" />
+    <Compile Include="Packaging\DotNetZip\ZipEntryExtractTest.cs" />
     <Compile Include="SharedTest.cs" />
     <Compile Include="ZipDirEntryTest.cs" />
     <Compile Include="FileSelectorTest.cs" />
