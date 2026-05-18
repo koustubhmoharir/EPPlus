@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -299,7 +299,7 @@ namespace OfficeOpenXml.ConditionalFormatting
         {
             get
             {
-                return GetXmlNodeBool(ExcelConditionalFormattingConstants.Paths.GteAttribute);
+                return GetXmlNodeBool(ExcelConditionalFormattingConstants.Paths.GteAttribute, true);
             }
 
             set
