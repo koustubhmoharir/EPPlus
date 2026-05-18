@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -284,5 +284,51 @@ namespace EPPlusTest
             Assert.AreEqual(1, excelAddress._fromRow);
             Assert.AreEqual(2, excelAddress._toRow);
         }
+
+        [TestMethod]
+        public void TestEscapedSingleQuoteInSheetName()
+        {
+            var addr = new ExcelAddress("'test''1'!J33");
+            Assert.AreEqual("test'1", addr.WorkSheet);
+            Assert.AreEqual(33, addr.Start.Row);
+            Assert.AreEqual(10, addr.Start.Column);
+        }
+
+        [TestMethod]
+        public void TestComplexWorkbookAndSheetPrefix()
+        {
+            var addr = new ExcelAddress("'[MyWorkbook.xlsx]Sheet 1'!A1:B2");
+            Assert.AreEqual("MyWorkbook.xlsx", addr._wb);
+            Assert.AreEqual("Sheet 1", addr.WorkSheet);
+            Assert.AreEqual(1, addr.Start.Row);
+            Assert.AreEqual(1, addr.Start.Column);
+            Assert.AreEqual(2, addr.End.Row);
+            Assert.AreEqual(2, addr.End.Column);
+        }
+
+#if Core
+        [TestMethod]
+        public void TestDotNetPortSpecificAddressFeatures()
+        {
+            // Test new constructor with worksheet name
+            var addr = new ExcelAddressBase("MySheet", 1, 2, 3, 4);
+            Assert.AreEqual("MySheet", addr.WorkSheet);
+            Assert.AreEqual(1, addr.Start.Row);
+            Assert.AreEqual(2, addr.Start.Column);
+            Assert.AreEqual(3, addr.End.Row);
+            Assert.AreEqual(4, addr.End.Column);
+
+            // Test IsValid with r1c1=true
+            Assert.AreEqual(ExcelAddressBase.AddressType.R1C1, ExcelAddressBase.IsValid("R1C1", true));
+            Assert.AreEqual(ExcelAddressBase.AddressType.R1C1, ExcelAddressBase.IsValid("R[1]C[-2]", true));
+            Assert.AreEqual(ExcelAddressBase.AddressType.R1C1, ExcelAddressBase.IsValid("R1:R5", true));
+            Assert.AreEqual(ExcelAddressBase.AddressType.R1C1, ExcelAddressBase.IsValid("C2:C10", true));
+            Assert.AreEqual(ExcelAddressBase.AddressType.R1C1, ExcelAddressBase.IsValid("R[1]C:R[3]C", true));
+
+            // Test non-r1c1 fallback/invalid
+            Assert.AreEqual(ExcelAddressBase.AddressType.Invalid, ExcelAddressBase.IsValid("R1C1", false));
+        }
+#endif
     }
 }
+
