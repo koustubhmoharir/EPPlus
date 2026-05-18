@@ -21,7 +21,7 @@ This workflow guides the process of verifying a method/behavior difference ident
 3. Write test cases that fully exercise all execution paths and lines of code of the target method(s).
 4. Rebuild the stable solution to compile the new tests:
    ```bash
-   xbuild /p:Configuration=Debug EPPlus.sln
+   xbuild /verbosity:minimal /p:Configuration=Debug EPPlus.sln
    ```
 5. Run the new tests under Mono using the VSTest console runner:
    ```bash

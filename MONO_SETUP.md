@@ -13,7 +13,7 @@ This document describes how to build EPPlus and run its tests using Mono on Linu
 To build the entire solution:
 
 ```bash
-xbuild /p:Configuration=Debug EPPlus.sln
+xbuild /verbosity:minimal /p:Configuration=Debug EPPlus.sln
 ```
 
 ## Test Command
