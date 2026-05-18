@@ -97,6 +97,7 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="ComHelperTest.cs" />
+    <Compile Include="Crc32Test.cs" />
     <Compile Include="EncryptionInfoTest.cs" />
     <Compile Include="EncryptedPackageHandlerTest.cs" />
     <Compile Include="Calculation.cs" />
