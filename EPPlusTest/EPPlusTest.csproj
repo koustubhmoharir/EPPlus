@@ -187,6 +187,7 @@
     <Compile Include="ExcelHeaderFooterTest.cs" />
     <Compile Include="ExcelNamedRangeCollectionTest.cs" />
     <Compile Include="ExcelRangeBaseTest.cs" />
+    <Compile Include="ExcelProtectedRangeTest.cs" />
     <Compile Include="FormulaParsing\ExcelUtilities\AddressTranslatorTests.cs" />
     <Compile Include="FormulaParsing\ExcelUtilities\CellReferenceProviderTests.cs" />
     <Compile Include="FormulaParsing\ExcelUtilities\ExcelAddressInfoTests.cs" />
