@@ -7,6 +7,7 @@
 - [ ] Verify parity and resolve platform differences
 
 ## Task Log
+- **2026-05-18:** Picked up `EPPlus/Packaging/DotNetZip/ZipSegmentedStream.cs` -> `Segmented Stream Writing` from `Differences.md`. Created a new test suite `ZipSegmentedStreamTest.cs` covering segmented writing, reading across segments, `TruncateBackward`, `ForUpdate`, and property validation. Verified 100% path coverage for key logic on `stable` (Mono) and successfully ported to `dotnetport` (.NET 9), confirming the 99-segment limit behavior.
 - **2026-05-18:** Picked up `EPPlus/Packaging/DotNetZip/ZipEntry.Write.cs` -> `Central Dir & Stream Cleanup` from `Differences.md`. Added direct byte-level tests in `Packaging/DotNetZip/ZipEntryTest.cs` to exercise `WriteCentralDirectoryEntry` comment serialization and segmented disk-number handling. Verified the new tests pass under Mono on `stable` and under .NET 9 on `dotnetport`. Also ran the stable AltCover/ReportGenerator coverage harness against the targeted tests.
 - **2026-05-17:** Initialized `GEMINI.md` and `PortingProgress.md`. Starting branch comparison.
 - **2026-05-17:** Picked up `EPPlus/ExcelNamedRange.cs` -> `LocalSheetId` from `Differences.md`. Added tests in `EPPlus-stable` (`ExcelRangeBaseTest.cs`), verified they pass under Mono, committed and cherry-picked to `dotnetport`, successfully passing under .NET 9.
