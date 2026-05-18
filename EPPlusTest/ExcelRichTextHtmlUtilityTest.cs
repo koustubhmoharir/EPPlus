@@ -16,7 +16,7 @@ namespace EPPlusTest
                 var ws = package.Workbook.Worksheets.Add("Test");
                 var range = ws.Cells["A1"];
 
-                // Test basic HTML entities. Note: &apos; is not decoded by HttpUtility in .NET 3.5
+                // Test basic HTML entities. Note: &apos; is not decoded by HttpUtility in .NET 3.5, but is in .NET Core
                 string html = "<b>Bold &amp; More</b> <i>Italic &lt; Tag &gt;</i> &quot;Quote&quot; &apos;Apos&apos;";
                 ExcelRichTextHtmlUtility.SetRichTextFromHtml(range, html, "Calibri", 11);
 
@@ -24,7 +24,11 @@ namespace EPPlusTest
                 
                 string fullText = "";
                 foreach(var rt in range.RichText) fullText += rt.Text;
+#if Core
+                Assert.AreEqual("Bold & More Italic < Tag > \"Quote\" 'Apos'", fullText);
+#else
                 Assert.AreEqual("Bold & More Italic < Tag > \"Quote\" &apos;Apos&apos;", fullText);
+#endif
                 
                 bool foundBold = false;
                 bool foundItalic = false;
