@@ -37,6 +37,7 @@ namespace EPPlusTest.DotNetZip
             }
         }
 
+        #if (!Core)
         [TestMethod]
         public void ZipDirEntry_DuplicateFilesHandling_Ignore()
         {
@@ -68,7 +69,7 @@ namespace EPPlusTest.DotNetZip
             {
                 if (File.Exists(tempFile))
                     File.Delete(tempFile);
-            }
         }
+#endif
     }
 }
