@@ -72,8 +72,8 @@ namespace EPPlusTest
                 using (var package = new ExcelPackage(tempFile))
                 {
                     Assert.AreEqual(1, package.Workbook.Worksheets.Count);
-                    Assert.AreEqual("Sheet1", package.Workbook.Worksheets[1].Name);
-                    Assert.AreEqual("FileInfo Test Data", package.Workbook.Worksheets[1].Cells[1, 1].Value);
+                    Assert.AreEqual("Sheet1", package.Workbook.Worksheets["Sheet1"].Name);
+                    Assert.AreEqual("FileInfo Test Data", package.Workbook.Worksheets["Sheet1"].Cells[1, 1].Value);
                 }
             }
             finally
@@ -108,8 +108,8 @@ namespace EPPlusTest
             using (var package = new ExcelPackage(ms))
             {
                 Assert.AreEqual(1, package.Workbook.Worksheets.Count);
-                Assert.AreEqual("SheetFromStream", package.Workbook.Worksheets[1].Name);
-                Assert.AreEqual("Stream Test Data", package.Workbook.Worksheets[1].Cells["A1"].Value);
+                Assert.AreEqual("SheetFromStream", package.Workbook.Worksheets["SheetFromStream"].Name);
+                Assert.AreEqual("Stream Test Data", package.Workbook.Worksheets["SheetFromStream"].Cells["A1"].Value);
             }
         }
 
@@ -132,8 +132,8 @@ namespace EPPlusTest
                 using (var package = new ExcelPackage(newFile, templateFile))
                 {
                     Assert.AreEqual(1, package.Workbook.Worksheets.Count);
-                    Assert.AreEqual("TemplateSheet", package.Workbook.Worksheets[1].Name);
-                    Assert.AreEqual("Template Value", package.Workbook.Worksheets[1].Cells["B2"].Value);
+                    Assert.AreEqual("TemplateSheet", package.Workbook.Worksheets["TemplateSheet"].Name);
+                    Assert.AreEqual("Template Value", package.Workbook.Worksheets["TemplateSheet"].Cells["B2"].Value);
 
                     var ws2 = package.Workbook.Worksheets.Add("NewSheet");
                     ws2.Cells["C3"].Value = "New Value";
@@ -147,10 +147,10 @@ namespace EPPlusTest
                 using (var package = new ExcelPackage(newFile))
                 {
                     Assert.AreEqual(2, package.Workbook.Worksheets.Count);
-                    Assert.AreEqual("TemplateSheet", package.Workbook.Worksheets[1].Name);
-                    Assert.AreEqual("Template Value", package.Workbook.Worksheets[1].Cells["B2"].Value);
-                    Assert.AreEqual("NewSheet", package.Workbook.Worksheets[2].Name);
-                    Assert.AreEqual("New Value", package.Workbook.Worksheets[2].Cells["C3"].Value);
+                    Assert.AreEqual("TemplateSheet", package.Workbook.Worksheets["TemplateSheet"].Name);
+                    Assert.AreEqual("Template Value", package.Workbook.Worksheets["TemplateSheet"].Cells["B2"].Value);
+                    Assert.AreEqual("NewSheet", package.Workbook.Worksheets["NewSheet"].Name);
+                    Assert.AreEqual("New Value", package.Workbook.Worksheets["NewSheet"].Cells["C3"].Value);
                 }
 
                 // Verify template remains unchanged
@@ -189,7 +189,7 @@ namespace EPPlusTest
                 using (var package = new ExcelPackage(outputStream, templateStream))
                 {
                     Assert.AreEqual(1, package.Workbook.Worksheets.Count);
-                    Assert.AreEqual("Stream Template Value", package.Workbook.Worksheets[1].Cells["A1"].Value);
+                    Assert.AreEqual("Stream Template Value", package.Workbook.Worksheets["TemplateSheet"].Cells["A1"].Value);
 
                     var ws = package.Workbook.Worksheets.Add("ExtraSheet");
                     ws.Cells["B2"].Value = "Extra Value";
@@ -201,8 +201,8 @@ namespace EPPlusTest
                 using (var package = new ExcelPackage(ms))
                 {
                     Assert.AreEqual(2, package.Workbook.Worksheets.Count);
-                    Assert.AreEqual("Stream Template Value", package.Workbook.Worksheets[1].Cells["A1"].Value);
-                    Assert.AreEqual("Extra Value", package.Workbook.Worksheets[2].Cells["B2"].Value);
+                    Assert.AreEqual("Stream Template Value", package.Workbook.Worksheets["TemplateSheet"].Cells["A1"].Value);
+                    Assert.AreEqual("Extra Value", package.Workbook.Worksheets["ExtraSheet"].Cells["B2"].Value);
                 }
             }
         }
@@ -226,7 +226,7 @@ namespace EPPlusTest
                 using (var package = new ExcelPackage(destFile))
                 {
                     Assert.AreEqual(1, package.Workbook.Worksheets.Count);
-                    Assert.AreEqual("Saved As Value", package.Workbook.Worksheets[1].Cells["A1"].Value);
+                    Assert.AreEqual("Saved As Value", package.Workbook.Worksheets["SaveAsSheet"].Cells["A1"].Value);
                 }
             }
             finally
@@ -254,7 +254,7 @@ namespace EPPlusTest
                     using (var package2 = new ExcelPackage(ms))
                     {
                         Assert.AreEqual(1, package2.Workbook.Worksheets.Count);
-                        Assert.AreEqual("Stream Saved Value", package2.Workbook.Worksheets[1].Cells["A1"].Value);
+                        Assert.AreEqual("Stream Saved Value", package2.Workbook.Worksheets["SaveAsStreamSheet"].Cells["A1"].Value);
                     }
                 }
             }
@@ -284,7 +284,7 @@ namespace EPPlusTest
                 {
                     using (var package = new ExcelPackage(file, "WrongPassword"))
                     {
-                        var name = package.Workbook.Worksheets[1].Name;
+                        var name = package.Workbook.Worksheets["SecureSheet"].Name;
                         Assert.Fail("Opening encrypted workbook with wrong password should have failed");
                     }
                 }
@@ -297,7 +297,7 @@ namespace EPPlusTest
                 using (var package = new ExcelPackage(file, "StrongPassword"))
                 {
                     Assert.AreEqual(1, package.Workbook.Worksheets.Count);
-                    Assert.AreEqual("SecureSheet", package.Workbook.Worksheets[1].Name);
+                    Assert.AreEqual("SecureSheet", package.Workbook.Worksheets["SecureSheet"].Name);
                 }
             }
             finally
