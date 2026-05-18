@@ -52,12 +52,12 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/Table/PivotTable/ExcelPivotTableField.cs | Excel Pivot Table Field | Added `MultipleItemSelectionAllowed` and various `Show` properties (e.g. `ShowDropDowns`). Used `ToLowerInvariant` in `SubTotal` setter. | PivotTableTest.cs |
 | EPPlus/Utils/ConvertUtil.cs | Conversion Utilities | Added `GetTypedCellValue<T>` helper. Initialized `_invariantCompareInfo` using `Name` instead of `LCID`. Used `TypeCompat.IsPrimitive`. | ConvertUtilTest.cs |
 | EPPlus/Utils/UriHelper.cs | URI Resolution | Updated ResolvePartUri to immediately return the targetUri if it contains ://. | UriHelperTest.cs |
-| EPPlus/VBA/ExcelVBAModuleCollection.cs | .NET Core Support & Reflection | Used `TypeCompat.GetPropertyValue` instead of direct reflection. Switched string comparisons to `OrdinalIgnoreCase`. | Pending |
-| EPPlus/VBA/ExcelVbaProject.cs | VBA Project Operations | Removed `IDisposable` and obsolete blank module helpers. Switched to `VBACompression` and `Encoding.GetEncoding(0)` for .NET Core compatibility. | Pending |
-| EPPlus/VBA/ExcelVBASignature.cs | VBA Signature | Refactored `SignedCms` to `EnvelopedCms` under `Core` conditional. Updated `X509Store` construction and cleanup. Used `MD5.Create()`. | Pending |
-| EPPlus/XmlHelper.cs | XML Parsing Helper | Refactored `CreateNode` with `addNew` parameter. Standardized `int.TryParse` with invariant culture. Conditionalized `DtdProcessing`. | Pending |
-| EPPlus/Drawing/ExcelPicture.cs | Image Handling | Refactored image to byte array conversion using `ImageCompat` for .NET Core support. | Pending |
-| EPPlus/Drawing/Chart/ExcelChartPlotArea.cs | DataTable Support | Added `DataTable` property and `CreateDataTable`, `RemoveDataTable` methods. Initialized `_dataTable` in constructor. | Pending |
+| EPPlus/VBA/ExcelVBAModuleCollection.cs | .NET Core Support & Reflection | Used TypeCompat.GetPropertyValue instead of direct reflection. Switched string comparisons to OrdinalIgnoreCase. | VBACollectionTest.cs |
+| EPPlus/VBA/ExcelVbaProject.cs | VBA Project Operations | Removed IDisposable and obsolete blank module helpers. Switched to VBACompression and Encoding.GetEncoding(0) for .NET Core compatibility. | VBACompressionTest.cs |
+| EPPlus/VBA/ExcelVBASignature.cs | VBA Signature | Refactored SignedCms to EnvelopedCms under Core conditional. Updated X509Store construction and cleanup. Used MD5.Create(). | VBASignatureTest.cs |
+| EPPlus/XmlHelper.cs | XML Parsing Helper | Refactored `CreateNode` with `addNew` parameter. Standardized `int.TryParse` with invariant culture. Conditionalized `DtdProcessing`. | XmlHelperTest.cs |
+| EPPlus/Drawing/ExcelPicture.cs | Image Handling | Refactored image to byte array conversion using `ImageCompat` for .NET Core support. | ExcelPictureTest.cs |
+| EPPlus/Drawing/Chart/ExcelChartPlotArea.cs | DataTable Support | Added `DataTable` property and `CreateDataTable`, `RemoveDataTable` methods. Initialized `_dataTable` in constructor. | ExcelChartDataTableTest.cs |
 | EPPlus/Drawing/Chart/ExcelChart.cs | RoundedCorners, Core Support | Added `RoundedCorners` property. Refactored `Save` to avoid `StreamWriter.Close()` in .NET Core. Updated `int.TryParse` with `CultureInfo.InvariantCulture`. | Pending |
 | EPPlus/Drawing/Chart/ExcelChartAxis.cs | Gridlines Support | Added `MajorGridlines`, `MinorGridlines` properties and `RemoveGridlines` methods. Updated `SchemaNodeOrder` to include `minorGridlines`. | Pending |
 | EPPlus/Drawing/Chart/ExcelBubbleChart.cs | ShowNegativeBubbles | Fixed incorrect XML documentation comment for `ShowNegativeBubbles`. | Verified |

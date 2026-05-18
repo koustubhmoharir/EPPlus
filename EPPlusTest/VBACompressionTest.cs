@@ -8,6 +8,14 @@ namespace EPPlusTest
     [TestClass]
     public class VBACompressionTest
     {
+        [TestInitialize]
+        public void Initialize()
+        {
+#if Core
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
+        }
+
         [TestMethod]
         public void VBA_CompressionDecompression_Parity()
         {
