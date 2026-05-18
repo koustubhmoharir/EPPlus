@@ -44,7 +44,7 @@ namespace EPPlusTest.Utils
             // On stable, it currently tries to resolve this relative to the source.
             // On dotnetport, it should return the target directly.
             // We want to document this difference.
-            // Assert.AreEqual("http://example.com/file.xlsx", result.OriginalString); // This will fail on stable
+            Assert.AreEqual("http://example.com/file.xlsx", result.OriginalString);
         }
 
         [TestMethod]

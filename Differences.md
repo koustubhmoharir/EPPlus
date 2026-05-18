@@ -51,7 +51,7 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/Table/PivotTable/ExcelPivotTable.cs | Excel Pivot Table | Added `ColumnHeaderCaption` property. Corrected `ColumnGrandTotals` spelling and obsoleted `ColumGrandTotals`. Escaped table name in `GetStartXml`. | PivotTableTest.cs |
 | EPPlus/Table/PivotTable/ExcelPivotTableField.cs | Excel Pivot Table Field | Added `MultipleItemSelectionAllowed` and various `Show` properties (e.g. `ShowDropDowns`). Used `ToLowerInvariant` in `SubTotal` setter. | PivotTableTest.cs |
 | EPPlus/Utils/ConvertUtil.cs | Conversion Utilities | Added `GetTypedCellValue<T>` helper. Initialized `_invariantCompareInfo` using `Name` instead of `LCID`. Used `TypeCompat.IsPrimitive`. | ConvertUtilTest.cs |
-| EPPlus/Utils/UriHelper.cs | URI Resolution | Updated `ResolvePartUri` to immediately return the `targetUri` if it contains `://`. | Pending |
+| EPPlus/Utils/UriHelper.cs | URI Resolution | Updated ResolvePartUri to immediately return the targetUri if it contains ://. | UriHelperTest.cs |
 | EPPlus/VBA/ExcelVBAModuleCollection.cs | .NET Core Support & Reflection | Used `TypeCompat.GetPropertyValue` instead of direct reflection. Switched string comparisons to `OrdinalIgnoreCase`. | Pending |
 | EPPlus/VBA/ExcelVbaProject.cs | VBA Project Operations | Removed `IDisposable` and obsolete blank module helpers. Switched to `VBACompression` and `Encoding.GetEncoding(0)` for .NET Core compatibility. | Pending |
 | EPPlus/VBA/ExcelVBASignature.cs | VBA Signature | Refactored `SignedCms` to `EnvelopedCms` under `Core` conditional. Updated `X509Store` construction and cleanup. Used `MD5.Create()`. | Pending |
