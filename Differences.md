@@ -21,7 +21,7 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/Packaging/DotNetZip/FileSelector.cs | Regex Optimization | Simplified regex patterns from `[^'\f\n\r\t\v\x85\p{Z}]` to `\S`. Switched size suffix checks to `OrdinalIgnoreCase`. | FileSelectorTest.cs |
 | EPPlus/Packaging/DotNetZip/Shared.cs | .NET Core Support | Removed `System.Security.Permissions`, mapped `IBM437` encoding to `UTF-8` under `Core` conditional, and removed unmanaged `SecurityPermission` check/retry logic. | SharedTest.cs |
 | EPPlus/Packaging/DotNetZip/ZipDirEntry.cs | Duplicate Files Handling | Removed IgnoreDuplicateFiles conditional checks, simplified unique entry name suffix generation, and removed ThreadStatic tracking. | ZipDirEntryTest.cs |
-| EPPlus/Packaging/DotNetZip/ZipEntry.cs | .NET Core Support | Removed `ClassInterface` attribute, mapped `IBM437` encoding to `UTF-8` under `Core` conditional, and removed `DontEmitLastModified` property. | Pending |
+| EPPlus/Packaging/DotNetZip/ZipEntry.cs | .NET Core Support | Removed `ClassInterface` attribute, mapped `IBM437` encoding to `UTF-8` under `Core` conditional, and removed `DontEmitLastModified` property. | ZipEntryTest.cs |
 | EPPlus/Packaging/DotNetZip/ZipEntry.Extract.cs | .NET Core Support | Added `output.Dispose()` after `output.Close()` during file extraction to prevent stream leaks. | Pending |
 | EPPlus/Packaging/DotNetZip/ZipEntry.Read.cs | Zip Parsing & Extra Fields | Refactored `LengthOfTrailer` updates in `HandleDataDescriptor` and changed `dataSize` parameter type from `UInt16` to `Int16`/`short` in `ProcessExtraField` methods. | Pending |
 | EPPlus/Packaging/DotNetZip/ZipEntry.Write.cs | Central Dir & Stream Cleanup | Added `Dispose()` calls for output stream, compressor, parallel compressor, and encryptor. Refactored central directory entry buffer, comment serialization, and segmented check. | Pending |
@@ -108,7 +108,6 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/FormulaParsing/Excel/Functions/Text/Proper.cs | Cleanup | Removed unnecessary `CultureInfo.InvariantCulture` from `char.ToString()`. | Pending |
 | EPPlus/FormulaParsing/Excel/Functions/Text/Value.cs | Logic & Regex | Added null/empty check. Updated regex for decimal separator matching. | Pending |
 | EPPlus/FormulaParsing/ExcelDataProvider.cs | GetRange Overload | Added abstract `GetRange(string worksheetName, string address)` method. | Pending |
-
 
 
 

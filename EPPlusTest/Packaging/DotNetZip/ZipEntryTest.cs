@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml.Packaging.Ionic.Zip;
 
@@ -14,11 +15,20 @@ namespace EPPlusTest.Packaging.DotNetZip
             var entry = new ZipEntry();
 
             Assert.IsNotNull(entry.AlternateEncoding);
+#if Core
+            Assert.AreEqual(65001, entry.AlternateEncoding.CodePage);
+#else
             Assert.AreEqual(437, entry.AlternateEncoding.CodePage);
+#endif
             Assert.AreEqual(ZipOption.Never, entry.AlternateEncodingUsage);
+#if Core
+            Assert.IsNull(typeof(ZipEntry).GetProperty("DontEmitLastModified", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+#else
             Assert.IsFalse(entry.DontEmitLastModified);
+#endif
         }
 
+        #if !Core
         [TestMethod]
         public void ZipEntry_DontEmitLastModified_RoundTrips()
         {
@@ -30,6 +40,7 @@ namespace EPPlusTest.Packaging.DotNetZip
             entry.DontEmitLastModified = false;
             Assert.IsFalse(entry.DontEmitLastModified);
         }
+        #endif
 
         [TestMethod]
         public void ZipEntry_TypeAttributes_ArePresent()
@@ -44,8 +55,12 @@ namespace EPPlusTest.Packaging.DotNetZip
             Assert.AreEqual("ebc25cf6-9120-4283-b972-0e5520d00004", guidAttribute.Value);
             Assert.IsNotNull(comVisibleAttribute);
             Assert.IsTrue(comVisibleAttribute.Value);
+#if Core
+            Assert.IsNull(classInterfaceAttribute);
+#else
             Assert.IsNotNull(classInterfaceAttribute);
             Assert.AreEqual(ClassInterfaceType.AutoDispatch, classInterfaceAttribute.Value);
+#endif
         }
     }
 }
