@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -223,6 +223,67 @@ namespace EPPlusTest
             Assert.IsNotNull(defaultThreeColorScale.HighValue);
             Assert.IsNotNull(defaultThreeColorScale.LowValue);
         }
+    }
+
+    [TestMethod]
+    public void TwoAndThreeColorScaleDefaultColors()
+    {
+      var ws = _pck.Workbook.Worksheets.Add("DefaultColors");
+      var twoColor = ws.ConditionalFormatting.AddTwoColorScale(ws.Cells["A1:A5"]);
+      var threeColor = ws.ConditionalFormatting.AddThreeColorScale(ws.Cells["B1:B5"]);
+
+      // Verify two color scale default colors
+      Assert.AreEqual(Color.FromArgb(0xFF, 0xF8, 0x69, 0x6B), twoColor.LowValue.Color);
+      Assert.AreEqual(Color.FromArgb(0xFF, 0x63, 0xBE, 0x7B), twoColor.HighValue.Color);
+
+      // Verify three color scale default colors
+      Assert.AreEqual(Color.FromArgb(0xFF, 0xF8, 0x69, 0x6B), threeColor.LowValue.Color);
+      Assert.AreEqual(Color.FromArgb(0xFF, 0xFF, 0xEB, 0x84), threeColor.MiddleValue.Color);
+      Assert.AreEqual(Color.FromArgb(0xFF, 0x63, 0xBE, 0x7B), threeColor.HighValue.Color);
+    }
+
+    [TestMethod]
+    public void TwoAndThreeColorScale_XmlTest()
+    {
+      var ws = _pck.Workbook.Worksheets.Add("XmlTest");
+      var twoColor = ws.ConditionalFormatting.AddTwoColorScale(ws.Cells["A1:A5"]);
+      var threeColor = ws.ConditionalFormatting.AddThreeColorScale(ws.Cells["B1:B5"]);
+
+      twoColor.LowValue.Color = Color.Blue;
+      twoColor.HighValue.Color = Color.Green;
+
+      threeColor.LowValue.Color = Color.Red;
+      threeColor.MiddleValue.Color = Color.Yellow;
+      threeColor.HighValue.Color = Color.Orange;
+
+      var xml = ws.WorksheetXml.OuterXml;
+      Assert.IsTrue(xml.Contains("rgb=\"ff0000ff\""));
+      Assert.IsTrue(xml.Contains("rgb=\"ff008000\""));
+      Assert.IsTrue(xml.Contains("rgb=\"ffff0000\""));
+      Assert.IsTrue(xml.Contains("rgb=\"ffffff00\""));
+      Assert.IsTrue(xml.Contains("rgb=\"ffffa500\""));
+    }
+
+    [TestMethod]
+    public void IconSet_GreaterThanOrEqualTo_XmlTest()
+    {
+      var ws = _pck.Workbook.Worksheets.Add("IconSetGteXml");
+      var cf = ws.ConditionalFormatting.AddThreeIconSet(ws.Cells["A1:A3"], eExcelconditionalFormatting3IconsSetType.Symbols);
+      var icon = cf.Icon1;
+
+      var gteProp = icon.GetType().GetProperty("GreaterThanOrEqualTo", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+      if (gteProp != null)
+      {
+        // On dotnetport: test getter/setter and XML serialization
+        gteProp.SetValue(icon, true, null);
+        Assert.AreEqual(true, gteProp.GetValue(icon, null));
+
+        gteProp.SetValue(icon, false, null);
+        Assert.AreEqual(false, gteProp.GetValue(icon, null));
+
+        var xml = ws.WorksheetXml.OuterXml;
+        Assert.IsTrue(xml.Contains("gte=\"0\""));
+      }
     }
 
     }
