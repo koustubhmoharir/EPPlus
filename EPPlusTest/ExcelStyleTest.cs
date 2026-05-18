@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using System.Xml;
+using OfficeOpenXml.Style;
 
 namespace EPPlusTest
 {
@@ -24,6 +25,22 @@ namespace EPPlusTest
                 Assert.AreNotEqual(0, cell.StyleID);
                 Assert.IsNull(nodes[0].Attributes["quotePrefix"]);
                 Assert.AreEqual("1", nodes[cell.StyleID].Attributes["quotePrefix"].Value);
+            }
+        }
+        [TestMethod]
+        public void FontBaselineStyle()
+        {
+            using (var p = new ExcelPackage())
+            {
+                var ws = p.Workbook.Worksheets.Add("BaselineTest");
+                var cell = ws.Cells["A1"];
+                cell.Style.Font.VerticalAlign = ExcelVerticalAlignmentFont.Baseline;
+                Assert.AreEqual(ExcelVerticalAlignmentFont.Baseline, cell.Style.Font.VerticalAlign);
+
+                p.Workbook.Styles.UpdateXml();
+                var nodes = p.Workbook.StylesXml.SelectNodes("//d:fonts/d:font/d:vertAlign", p.Workbook.NameSpaceManager);
+                Assert.AreEqual(1, nodes.Count);
+                Assert.AreEqual("baseline", nodes[0].Attributes["val"].Value);
             }
         }
     }
