@@ -52,5 +52,26 @@ namespace EPPlusTest.Table
                 }
             }
         }
+
+        [TestMethod]
+        public void PivotTableDefaultNameTest()
+        {
+            using (var pck = new ExcelPackage())
+            {
+                var wsSource = pck.Workbook.Worksheets.Add("Source");
+                wsSource.Cells["A1"].Value = "Col1";
+                wsSource.Cells["A2"].Value = 1;
+                var wsPivot = pck.Workbook.Worksheets.Add("Pivot");
+                
+                var pivotTable = wsPivot.PivotTables.Add(wsPivot.Cells["A1"], wsSource.Cells["A1:A2"], "");
+                
+                // In stable it's PivotTable1, in dotnetport it's Pivottable1
+#if Core
+                Assert.AreEqual("Pivottable1", pivotTable.Name);
+#else
+                Assert.AreEqual("PivotTable1", pivotTable.Name);
+#endif
+            }
+        }
     }
 }
