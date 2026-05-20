@@ -107,5 +107,14 @@ namespace EPPlusTest.ExcelUtilities
             Assert.AreEqual(1, address.FromRow);
             Assert.AreEqual(ExcelMaxRows, address.ToRow);
         }
+
+        [TestMethod]
+        public void CreateShouldHandleTableAddress()
+        {
+            // Table addresses are not resolved to A1C1 in stable RangeAddressFactory.
+            // We just want to see what it returns currently.
+            var address = _factory.Create("Table1[Column1]");
+            Assert.IsNotNull(address); Console.WriteLine("FromRow: " + address.FromRow);
+        }
     }
 }
