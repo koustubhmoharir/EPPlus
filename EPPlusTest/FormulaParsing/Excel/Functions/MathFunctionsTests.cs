@@ -1119,5 +1119,14 @@ namespace EPPlusTest.Excel.Functions
                 Assert.AreEqual(w.GetValue(5, 5), 1.5D);
             }
         }
+        [TestMethod]
+        public void CeilingShouldReturnNumberIfSignificanceIsMultipleOfNumber()
+        {
+            var expectedValue = 20d;
+            var func = new Ceiling();
+            var args = FunctionsHelper.CreateArgs(20d, 10d);
+            var result = func.Execute(args, _parsingContext);
+            Assert.AreEqual(expectedValue, result.Result);
+        }
     }
     }
