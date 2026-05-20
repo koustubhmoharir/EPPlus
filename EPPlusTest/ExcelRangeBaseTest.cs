@@ -1,3 +1,4 @@
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 
@@ -109,6 +110,135 @@ namespace EPPlusTest
                 // 3. Local named range (worksheet scope) on second worksheet
                 var localName2 = sheet2.Names.Add("LocalRange2", sheet2.Cells["A1:B2"]);
                 Assert.AreEqual(1, localName2.LocalSheetId);
+            }
+        }
+
+        [TestMethod]
+        public void GetValueTypedConversions()
+        {
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                var ws = package.Workbook.Worksheets.Add("Sheet1");
+                
+                // Int
+                ws.Cells["A1"].Value = 42;
+                Assert.AreEqual(42, ws.Cells["A1"].GetValue<int>());
+                Assert.AreEqual(42L, ws.Cells["A1"].GetValue<long>());
+                Assert.AreEqual(42.0, ws.Cells["A1"].GetValue<double>());
+                
+                // String to double/int
+                ws.Cells["A2"].Value = "123.45";
+#if Core
+                Assert.AreEqual(123.45, ws.Cells["A2"].GetValue<double>());
+#else
+                Assert.AreEqual(0.0, ws.Cells["A2"].GetValue<double>());
+#endif
+                
+                // DateTime
+                var date = new DateTime(2023, 10, 1);
+                ws.Cells["A3"].Value = date;
+                Assert.AreEqual(date, ws.Cells["A3"].GetValue<DateTime>());
+                
+                // TimeSpan
+                var ts = new TimeSpan(1, 2, 3);
+                ws.Cells["A4"].Value = ts;
+                Assert.AreEqual(ts, ws.Cells["A4"].GetValue<TimeSpan>());
+                
+                // Nullable conversions
+                ws.Cells["A5"].Value = "";
+                Assert.IsNull(ws.Cells["A5"].GetValue<int?>());
+                
+                ws.Cells["A6"].Value = 99;
+                Assert.AreEqual(99, ws.Cells["A6"].GetValue<int?>());
+            }
+        }
+
+        [TestMethod]
+        public void LoadFromTextComprehensiveTests()
+        {
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                var ws = package.Workbook.Worksheets.Add("Sheet1");
+                
+                // Basic CSV loading
+                var csv = "1,Hello,10.5\r\n2,World,20.5";
+                var range = ws.Cells["A1"].LoadFromText(csv);
+#if Core
+                Assert.AreEqual(2, range.Rows);
+#else
+                Assert.AreEqual(3, range.Rows);
+#endif
+                Assert.AreEqual(3, range.Columns);
+                Assert.AreEqual(1.0, ws.Cells["A1"].Value);
+                Assert.AreEqual("Hello", ws.Cells["B1"].Value);
+                Assert.AreEqual(10.5, ws.Cells["C1"].Value);
+                Assert.AreEqual(2.0, ws.Cells["A2"].Value);
+                Assert.AreEqual("World", ws.Cells["B2"].Value);
+                Assert.AreEqual(20.5, ws.Cells["C2"].Value);
+                
+                // Custom delimiter and text qualifiers
+                var csvQualifier = "\"1\";\"Hello, World\";\"30.5\"\r\n\"2\";\"Test\";\"40.5\"";
+                var format = new ExcelTextFormat { Delimiter = ';', TextQualifier = '"' };
+                var rangeQ = ws.Cells["A4"].LoadFromText(csvQualifier, format);
+#if Core
+                Assert.AreEqual(2, rangeQ.Rows);
+#else
+                Assert.AreEqual(3, rangeQ.Rows);
+#endif
+                Assert.AreEqual(3, rangeQ.Columns);
+                Assert.AreEqual("1", ws.Cells["A4"].Value);
+                Assert.AreEqual("Hello, World", ws.Cells["B4"].Value);
+                Assert.AreEqual("30.5", ws.Cells["C4"].Value);
+                Assert.AreEqual("2", ws.Cells["A5"].Value);
+                Assert.AreEqual("Test", ws.Cells["B5"].Value);
+                Assert.AreEqual("40.5", ws.Cells["C5"].Value);
+            }
+        }
+
+        [TestMethod]
+        public void ClearAndDeleteTests()
+        {
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                var ws = package.Workbook.Worksheets.Add("Sheet1");
+                ws.Cells["A1"].Value = "Val1";
+                ws.Cells["B1"].Value = "Val2";
+                
+                Assert.AreEqual("Val1", ws.Cells["A1"].Value);
+                Assert.AreEqual("Val2", ws.Cells["B1"].Value);
+                
+                ws.Cells["A1:B1"].Clear();
+                Assert.IsNull(ws.Cells["A1"].Value);
+                Assert.IsNull(ws.Cells["B1"].Value);
+            }
+        }
+
+        [TestMethod]
+        public void GetDateTextFormattingTests()
+        {
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                var ws = package.Workbook.Worksheets.Add("Sheet1");
+                var date = new DateTime(2023, 10, 5, 12, 30, 45);
+                ws.Cells["B1"].Value = date;
+
+#if Core
+                ws.Cells["B1"].Style.Numberformat.Format = "d";
+                Assert.AreEqual("5", ws.Cells["B1"].Text);
+
+                ws.Cells["B1"].Style.Numberformat.Format = "M";
+                Assert.AreEqual("10", ws.Cells["B1"].Text);
+
+                ws.Cells["B1"].Style.Numberformat.Format = "m";
+                Assert.AreEqual("10", ws.Cells["B1"].Text);
+
+                ws.Cells["B1"].Style.Numberformat.Format = "yyyy";
+                Assert.AreEqual("2023", ws.Cells["B1"].Text);
+#else
+                // In stable, standard ToString (or default translation) applies
+                ws.Cells["B1"].Style.Numberformat.Format = "yyyy-MM-dd";
+                Assert.AreEqual("2023-10-05", ws.Cells["B1"].Text);
+#endif
             }
         }
     }
