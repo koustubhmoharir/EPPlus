@@ -77,6 +77,20 @@ namespace OfficeOpenXml.Style
         /// Border 
         /// </summary>
         public Border Border { get; set; }
+        private ExcelXfs CurrentXfs
+        {
+            get
+            {
+                if (_positionID > -1)
+                {
+                    return _styles.CellXfs[Index];
+                }
+                else
+                {
+                    return _styles.CellStyleXfs[Index];
+                }
+            }
+        }
         /// <summary>
         /// The horizontal alignment in the cell
         /// </summary>
@@ -84,7 +98,7 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                return _styles.CellXfs[Index].HorizontalAlignment;
+                return CurrentXfs.HorizontalAlignment;
             }
             set
             {
@@ -98,7 +112,7 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                return _styles.CellXfs[Index].VerticalAlignment;
+                return CurrentXfs.VerticalAlignment;
             }
             set
             {
@@ -112,7 +126,7 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                return _styles.CellXfs[Index].WrapText;
+                return CurrentXfs.WrapText;
             }
             set
             {
@@ -126,7 +140,7 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                return _styles.CellXfs[Index].ReadingOrder;
+                return CurrentXfs.ReadingOrder;
             }
             set
             {
@@ -140,7 +154,7 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                return _styles.CellXfs[Index].ShrinkToFit;
+                return CurrentXfs.ShrinkToFit;
             }
             set
             {
@@ -154,7 +168,7 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                return _styles.CellXfs[Index].Indent;
+                return CurrentXfs.Indent;
             }
             set
             {
@@ -172,7 +186,7 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                return _styles.CellXfs[Index].TextRotation;
+                return CurrentXfs.TextRotation;
             }
             set
             {
@@ -191,7 +205,7 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                return _styles.CellXfs[Index].Locked;
+                return CurrentXfs.Locked;
             }
             set
             {
@@ -206,7 +220,7 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                return _styles.CellXfs[Index].Hidden;
+                return CurrentXfs.Hidden;
             }
             set
             {
@@ -221,7 +235,7 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                return _styles.CellXfs[Index].QuotePrefix;
+                return CurrentXfs.QuotePrefix;
             }
             set
             {
@@ -237,7 +251,7 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                return _styles.CellXfs[Index].XfId;
+                return CurrentXfs.XfId;
             }
             set
             {

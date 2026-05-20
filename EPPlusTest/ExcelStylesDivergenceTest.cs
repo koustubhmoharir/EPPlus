@@ -20,31 +20,20 @@ namespace EPPlusTest
                 ns1.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 ns1.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Red);
 
-                // DEBUG INFO
-                // Assert.Fail("CellStyleXfs count: {0}, CellXfs count: {1}, ns1.Style.Index: {2}", 
-                //    p1.Workbook.Styles.CellStyleXfs.Count, p1.Workbook.Styles.CellXfs.Count, ns1.Style.Index);
-
                 using (var p2 = new ExcelPackage())
                 {
                     var ws2 = p2.Workbook.Worksheets.Add("Sheet1");
                     
-                    try {
-                        var ns2 = p2.Workbook.Styles.CreateNamedStyle("CustomStyle2", ns1.Style);
-                        
-                        Assert.AreEqual("CustomStyle2", ns2.Name);
-                        Assert.IsTrue(ns2.Style.Font.Bold);
-                        Assert.AreEqual(ExcelFillStyle.Solid, ns2.Style.Fill.PatternType);
-                        
-                        // Modify ns2 and ensure ns1 is not affected
-                        ns2.Style.Font.Bold = false;
-                        Assert.IsFalse(ns2.Style.Font.Bold);
-                        Assert.IsTrue(ns1.Style.Font.Bold);
-                    }
-                    catch (Exception ex)
-                    {
-                        Assert.Fail("Caught exception: {0}. p1.CellStyleXfs.Count: {1}, p1.CellXfs.Count: {2}, ns1.Style.Index: {3}", 
-                            ex.Message, p1.Workbook.Styles.CellStyleXfs.Count, p1.Workbook.Styles.CellXfs.Count, ns1.Style.Index);
-                    }
+                    var ns2 = p2.Workbook.Styles.CreateNamedStyle("CustomStyle2", ns1.Style);
+                    
+                    Assert.AreEqual("CustomStyle2", ns2.Name);
+                    Assert.IsTrue(ns2.Style.Font.Bold);
+                    Assert.AreEqual(ExcelFillStyle.Solid, ns2.Style.Fill.PatternType);
+                    
+                    // Modify ns2 and ensure ns1 is not affected
+                    ns2.Style.Font.Bold = false;
+                    Assert.IsFalse(ns2.Style.Font.Bold);
+                    Assert.IsTrue(ns1.Style.Font.Bold);
                 }
             }
         }

@@ -613,7 +613,7 @@ namespace OfficeOpenXml
                 }
                 else
                 {
-                    xfIdCopy = Template.XfId;
+                    xfIdCopy = Template.Index;
                     positionID = -1;
                     styles = Template.Styles;
                 }
