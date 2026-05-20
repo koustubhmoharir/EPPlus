@@ -94,6 +94,19 @@ namespace EPPlusTest.Excel.Functions
         }
 
         [TestMethod]
+        public void ArgToAddress_ShouldReturnFullAddressForRange()
+        {
+            var tester = new ExcelFunctionTester();
+            var rangeInfo = new MockRangeInfo { Address = new ExcelAddressBase("Sheet1", 1, 1, 2, 2) };
+            var args = new List<FunctionArgument> { new FunctionArgument(rangeInfo) };
+
+            var result = tester.ArgToAddressPublic(args, 0);
+
+            // In dotnetport, it should be 'Sheet1'!A1:B2
+            Assert.AreEqual("'Sheet1'!A1:B2", result);
+        }
+
+        [TestMethod]
         public void ArgToAddress_ShouldReturnStringForNonRange()
         {
             var tester = new ExcelFunctionTester();
