@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -2301,9 +2301,8 @@ namespace OfficeOpenXml
                 throw (new ArgumentException(string.Format("Text delimiter is not closed in line : {0}", list.Count)));
             }
             
-            if (prevLineStart >= Format.EOL.Length && IsEOL(text, prevLineStart - Format.EOL.Length, Format.EOL))
+            if (prevLineStart >= text.Length)
             {
-                //list.Add(text.Substring(prevLineStart- Format.EOL.Length, Format.EOL.Length));
                 list.Add("");
             }
             else
@@ -2314,12 +2313,14 @@ namespace OfficeOpenXml
          }
         private bool IsEOL(string text, int ix, string eol)
         {
+            if (ix + eol.Length > text.Length)
+                return false;
             for (int i=0;i<eol.Length;i++)
             {
                 if (text[ix + i] != eol[i])
                     return false;
             }
-            return ix+eol.Length<=text.Length;
+            return true;
         }
 
         /// <summary>

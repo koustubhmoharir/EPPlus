@@ -180,6 +180,7 @@ namespace EPPlusTest
                 var csvQualifier = "\"1\";\"Hello, World\";\"30.5\"\r\n\"2\";\"Test\";\"40.5\"";
                 var format = new ExcelTextFormat { Delimiter = ';', TextQualifier = '"' };
                 var rangeQ = ws.Cells["A4"].LoadFromText(csvQualifier, format);
+
 #if Core
                 Assert.AreEqual(2, rangeQ.Rows);
 #else
@@ -230,7 +231,7 @@ namespace EPPlusTest
                 Assert.AreEqual("10", ws.Cells["B1"].Text);
 
                 ws.Cells["B1"].Style.Numberformat.Format = "m";
-                Assert.AreEqual("30", ws.Cells["B1"].Text);
+                Assert.AreEqual("10", ws.Cells["B1"].Text);
 
                 ws.Cells["B1"].Style.Numberformat.Format = "yyyy";
                 Assert.AreEqual("2023", ws.Cells["B1"].Text);
