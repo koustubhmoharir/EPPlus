@@ -217,6 +217,7 @@
     <Compile Include="FormulaParsing\Excel\Functions\InformationFunctionsTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\LogicalFunctionsTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\MathFunctionsTests.cs" />
+    <Compile Include="FormulaParsing\Excel\Functions\Math\RoundTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\NumberFunctionsTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\RefAndLookup\ChooseTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\RefAndLookup\LookupNavigatorTests.cs" />
