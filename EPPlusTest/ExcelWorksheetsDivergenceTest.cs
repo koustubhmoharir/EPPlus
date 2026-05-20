@@ -19,10 +19,17 @@ namespace EPPlusTest
                 var ws1 = pck.Workbook.Worksheets.Add("Sheet1");
                 var ws2 = pck.Workbook.Worksheets.Add("Sheet2");
 
+#if Core
+                Assert.AreEqual(0, ws1.PositionID, "First worksheet should have PositionID 0 in .NET Core");
+                Assert.AreEqual(1, ws2.PositionID, "Second worksheet should have PositionID 1 in .NET Core");
+                Assert.AreEqual(ws1, pck.Workbook.Worksheets[0], "Indexer[0] should return Sheet1");
+                Assert.AreEqual(ws2, pck.Workbook.Worksheets[1], "Indexer[1] should return Sheet2");
+#else
                 Assert.AreEqual(1, ws1.PositionID, "First worksheet should have PositionID 1");
                 Assert.AreEqual(2, ws2.PositionID, "Second worksheet should have PositionID 2");
                 Assert.AreEqual(ws1, pck.Workbook.Worksheets[1], "Indexer[1] should return Sheet1");
                 Assert.AreEqual(ws2, pck.Workbook.Worksheets[2], "Indexer[2] should return Sheet2");
+#endif
             }
         }
 
@@ -47,6 +54,9 @@ namespace EPPlusTest
                     {
                         if (node.InnerText == "SyncTest") containsSheet = true;
                     }
+#if Core
+                    Assert.IsTrue(containsSheet, "TitlesOfParts should contain the added worksheet name in .NET Core");
+#endif
                     Console.WriteLine("TitlesOfParts contains sheet: " + containsSheet);
                 }
             }
@@ -102,6 +112,9 @@ namespace EPPlusTest
                 {
                     if (m.Name == ws.CodeModuleName) exists = true;
                 }
+#if Core
+                Assert.IsTrue(exists, "VBA module should be created in .NET Core");
+#endif
                 Console.WriteLine("VBA Module exists: " + exists);
             }
         }
