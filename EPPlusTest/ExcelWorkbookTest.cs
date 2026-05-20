@@ -10,18 +10,24 @@ namespace EPPlusTest
     public class ExcelWorkbookTest : TestBase
     {
         [TestMethod]
-        public void Workbook_Worksheets_Access_1Based()
+        public void Workbook_Worksheets_Access_BasedOnCompatibility()
         {
             using (var package = new ExcelPackage(new MemoryStream()))
             {
+#if Core
+                Assert.IsFalse(package.Compatibility.IsWorksheets1Based);
+                int startIdx = 0;
+#else
+                int startIdx = 1;
+#endif
                 var ws1 = package.Workbook.Worksheets.Add("Sheet1");
                 var ws2 = package.Workbook.Worksheets.Add("Sheet2");
 
-                Assert.AreEqual(1, ws1.PositionID);
-                Assert.AreEqual(2, ws2.PositionID);
+                Assert.AreEqual(startIdx, ws1.PositionID);
+                Assert.AreEqual(startIdx + 1, ws2.PositionID);
 
-                Assert.AreEqual("Sheet1", package.Workbook.Worksheets[1].Name);
-                Assert.AreEqual("Sheet2", package.Workbook.Worksheets[2].Name);
+                Assert.AreEqual("Sheet1", package.Workbook.Worksheets[startIdx].Name);
+                Assert.AreEqual("Sheet2", package.Workbook.Worksheets[startIdx + 1].Name);
             }
         }
 
