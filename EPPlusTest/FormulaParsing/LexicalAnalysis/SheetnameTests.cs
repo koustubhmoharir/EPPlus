@@ -22,7 +22,10 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
                 System.Console.WriteLine(token.TokenType + ": " + token.Value);
             }
 
-            Assert.IsTrue(tokens.Any(t => t.TokenType == TokenType.WorksheetNameContent && t.Value == "Sheet''1"), "WorksheetNameContent should contain double single quotes");
+            // In EPPlus, these are merged into a single ExcelAddress token
+            Assert.AreEqual(1, tokens.Count);
+            Assert.AreEqual(TokenType.ExcelAddress, tokens[0].TokenType);
+            Assert.AreEqual("'Sheet''1'!A1", tokens[0].Value);
         }
     }
 }
