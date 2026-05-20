@@ -79,7 +79,7 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/ExcelRangeBase.cs | Range Operations & Formatting | Replaced `Type.IsPrimitive` with `TypeCompat.IsPrimitive`. Added `GetDateText` for robust date formatting. Refactored `LoadFromText` with better line splitting. Updated `GetValue<T>` to use `ConvertUtil`. Removed `simulateCut` and `retainFormats` from `Copy`, `Clear`, and `Delete`. | ExcelRangeBaseTest.cs |
 | EPPlus/Drawing/ExcelDrawings.cs | AddChart | Added overloads supporting `ExcelPivotTable` as source. | ExcelChartTest.cs |
 | EPPlus/Drawing/ExcelDrawings.cs | Internal State | Switched to `OrdinalIgnoreCase` for drawing names; improved XML part creation with unique URI logic (Issue #100). | ExcelChartTest.cs |
-| EPPlus/FormulaParsing/EpplusExcelDataProvider.cs | Address Handling | Added `ConvertToA1C1` and `GetRange` overrides for Table-style addresses. | Pending |
+| EPPlus/FormulaParsing/EpplusExcelDataProvider.cs | Address Handling | Added `ConvertToA1C1` and `GetRange` overrides for Table-style addresses. | EpplusExcelDataProviderTests.cs |
 | EPPlus/FormulaParsing/ExcelUtilities/ExcelAddressUtil.cs | Name Validation | Added `IsValidName` and `GetValidName` methods to support named range validation. | Pending |
 | EPPlus/FormulaParsing/ExcelUtilities/RangeAddressFactory.cs | Table-style Address Parsing | Updated `Create` method to parse Table-style addresses and convert them to standard A1C1 addresses using `ExcelDataProvider`. | Pending |
 | EPPlus/FormulaParsing/ExpressionGraph/ExpressionConverter.cs | Date/Time Conversion | Updated `FromCompileResult` to convert `DataType.Time` and `DataType.Date` to `DecimalExpression` using `(double)compileResult.Result`. | Pending |

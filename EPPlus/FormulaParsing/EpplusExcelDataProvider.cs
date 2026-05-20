@@ -301,7 +301,7 @@ namespace OfficeOpenXml.FormulaParsing
             var addr = new ExcelAddress(worksheet, address);
             if (addr.Table != null)
             {
-                addr = ConvertToA1C1(addr);
+                addr = ConvertToA1C1(addr, row, column);
             }
             //SetCurrentWorksheet(addr.WorkSheet); 
             var wsName = string.IsNullOrEmpty(addr.WorkSheet) ? _currentWorksheet.Name : addr.WorkSheet;
@@ -323,10 +323,17 @@ namespace OfficeOpenXml.FormulaParsing
             return new RangeInfo(ws, addr);
         }
 
-        private ExcelAddress ConvertToA1C1(ExcelAddress addr)
+        private ExcelAddress ConvertToA1C1(ExcelAddress addr, int row = -1, int column = -1)
         {
             //Convert the Table-style Address to an A1C1 address
-            addr.SetRCFromTable(_package, addr);
+            if (row > 0 && column > 0)
+            {
+                addr.SetRCFromTable(_package, new ExcelAddressBase(row, column, row, column));
+            }
+            else
+            {
+                addr.SetRCFromTable(_package, addr);
+            }
             var a = new ExcelAddress(addr._fromRow, addr._fromCol, addr._toRow, addr._toCol);
             a._ws = addr._ws;            
             return a;
