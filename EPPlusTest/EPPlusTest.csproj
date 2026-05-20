@@ -275,6 +275,7 @@
     <Compile Include="WorksheetsTests.cs" />
     <Compile Include="ExcelWorksheetsDivergenceTest.cs" />
     <Compile Include="ExcelWorksheetViewDivergenceTest.cs" />
+    <Compile Include="FinanceFunctionsTest.cs" />
     <Compile Include="SparkLines.cs" />
   </ItemGroup>
   <ItemGroup>
