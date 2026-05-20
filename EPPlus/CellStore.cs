@@ -74,8 +74,17 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
         internal int GetPosition(int Row)
         {
             var page = (short)(Row >> CellStore<int>.pageBits);
-            _searchIx.Index = page;
-            var res = Array.BinarySearch(_pages, 0, PageCount, _searchIx);
+            int res;
+            if (page >= 0 && page < PageCount && _pages[page].Index == page)
+            {
+                res = page;
+            }
+            else
+            {
+                _searchIx.Index = page;
+                res = Array.BinarySearch(_pages, 0, PageCount, _searchIx);
+            }
+
             if (res >= 0)
             {
                 GetPage(Row, ref res);
@@ -348,8 +357,15 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 	    }
         internal int GetPosition(int Column)
         {
-            _searchIx.Index = (short)Column;
-            return Array.BinarySearch(_columnIndex, 0, ColumnCount, _searchIx);
+            if (Column < ColumnCount && _columnIndex[Column].Index == Column)      //Check if th column is lesser than
+            {
+                return Column;
+            }
+            else
+            {
+                _searchIx.Index = (short)Column;
+                return Array.BinarySearch(_columnIndex, 0, ColumnCount, _searchIx);
+            }
         }
         internal CellStore<T> Clone()
         {
@@ -603,8 +619,8 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
         {
             lock(_columnIndex)
             {
-                var col = Array.BinarySearch(_columnIndex, 0, ColumnCount, new IndexBase() { Index = (short)(Column) });
-                
+                var col = GetPosition(Column);          //Array.BinarySearch(_columnIndex, 0, ColumnCount, new IndexBase() { Index = (short)(Column) });
+
                 var page = (short)(Row >> pageBits);
                 if (col >= 0)
                 {
@@ -687,7 +703,8 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 
                 for (int colIx = fromColumn; colIx <= toColumn; colIx++)
                 {
-                    var col = Array.BinarySearch(_columnIndex, 0, ColumnCount, new IndexBase() { Index = (short)(colIx) });
+                    //var col = Array.BinarySearch(_columnIndex, 0, ColumnCount, new IndexBase() { Index = (short)(colIx) });
+                    var col=GetPosition(colIx);
 
                     foreach (var pair in pages)
                     {
@@ -761,7 +778,8 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
         {
             lock (_columnIndex)
             {
-                var col = Array.BinarySearch(_columnIndex, 0, ColumnCount, new IndexBase() { Index = (short)(Column) });
+                //var col = Array.BinarySearch(_columnIndex, 0, ColumnCount, new IndexBase() { Index = (short)(Column) });
+                var col = GetPosition(Column);
                 var page = (short)(Row >> pageBits);
                 if (col >= 0)
                 {
@@ -847,7 +865,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
                         var pagePos = column.GetPosition(fromRow);
                         if (pagePos >= 0)
                         {
-                            if (fromRow >= column._pages[pagePos].MinIndex && fromRow <= column._pages[pagePos].MaxIndex) //The row is inside the page
+                            if (IsWithinPage(fromRow, column, pagePos)) //The row is inside the page
                             {
                                 int offset = fromRow - column._pages[pagePos].IndexOffset;
                                 var rowPos = column._pages[pagePos].GetPosition(offset);
@@ -857,7 +875,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
                                 }
                                 UpdateIndexOffset(column, pagePos, rowPos, fromRow, rows);
                             }
-                            else if (column._pages[pagePos].MinIndex > fromRow - 1 && pagePos > 0) //The row is on the page before.
+                            else if (pagePos > 0 && IsWithinPage(fromRow, column, pagePos-1)) //The row is inside the previous page
                             {
                                 int offset = fromRow - ((page - 1) << pageBits);
                                 var rowPos = column._pages[pagePos - 1].GetPosition(offset);
@@ -892,6 +910,12 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
                 }
             }
         }
+
+        private static bool IsWithinPage(int row, ColumnIndex column, int pagePos)
+        {
+            return (row >= column._pages[pagePos].MinIndex && row <= column._pages[pagePos].MaxIndex);
+        }
+
         internal void Clear(int fromRow, int fromCol, int rows, int columns)
         {
             Delete(fromRow, fromCol, rows, columns, false);
@@ -1083,7 +1107,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
                 var delSize=page.MaxIndex - page.MinIndex+1;
                 rows -= delSize;
                 var prevOffset = page.Offset;
-                Array.Copy(column._pages, pagePos + 1, column._pages, pagePos, column.PageCount - (pagePos + 1));
+                Array.Copy(column._pages, pagePos + 1, column._pages, pagePos, column.PageCount - pagePos - 1);
                 column.PageCount--;
                 if (column.PageCount == 0)
                 {

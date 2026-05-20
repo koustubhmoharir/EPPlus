@@ -46,14 +46,12 @@ namespace EPPlusSamples
                 string SqlServerName = "";
 
                 //FileInfo templateFile = new FileInfo(@"C:\Users\QP-107\Desktop\test.xlsx");
-                FileInfo templateFile = new FileInfo(@"C:\Users\QP-107\Desktop\test - Copy.xlsx");
+                FileInfo templateFile = new FileInfo(@"C:\Users\koust\Downloads\MIS_All_1_Days_14_07_2020.xlsx");
                 //FileInfo saveFile = new FileInfo(@"C:\Users\QP-107\Desktop\test1.xlsx");
-                FileInfo saveFile = new FileInfo(@"C:\Users\QP-107\Desktop\test1 - Copy.xlsx");
-                using (ExcelPackage package = new ExcelPackage(templateFile, "abc"))
-                    //, "abc"
+                //FileInfo saveFile = new FileInfo(@"C:\Users\QP-107\Desktop\test1 - Copy.xlsx");
+                using (ExcelPackage package = new ExcelPackage(templateFile))
                 {
-                    package.SaveAs(saveFile, "xyz");
-                    //, "xyz"
+                    //package.SaveAs(saveFile);
                 }
                 return;
 
