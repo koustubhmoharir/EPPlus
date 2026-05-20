@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FakeItEasy;
+using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing.ExcelUtilities;
 using OfficeOpenXml.FormulaParsing;
 
@@ -111,10 +112,19 @@ namespace EPPlusTest.ExcelUtilities
         [TestMethod]
         public void CreateShouldHandleTableAddress()
         {
-            // Table addresses are not resolved to A1C1 in stable RangeAddressFactory.
-            // We just want to see what it returns currently.
-            var address = _factory.Create("Table1[Column1]");
-            Assert.IsNotNull(address); Console.WriteLine("FromRow: " + address.FromRow);
+            var provider = A.Fake<ExcelDataProvider>();
+            A.CallTo(() => provider.ExcelMaxRows).Returns(ExcelMaxRows);
+            var rangeInfo = A.Fake<ExcelDataProvider.IRangeInfo>();
+            A.CallTo(() => rangeInfo.Address).Returns(new ExcelAddressBase(10, 5, 20, 8));
+            A.CallTo(() => provider.GetRange(null, "Table1[Column1]")).Returns(rangeInfo);
+
+            var factory = new RangeAddressFactory(provider);
+            var address = factory.Create("Table1[Column1]");
+            
+            Assert.AreEqual(10, address.FromRow);
+            Assert.AreEqual(5, address.FromCol);
+            Assert.AreEqual(20, address.ToRow);
+            Assert.AreEqual(8, address.ToCol);
         }
     }
 }
