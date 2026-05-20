@@ -100,7 +100,7 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/FormulaParsing/Excel/Functions/ExcelDoubleCellValue.cs | API Cleanup | Added GetHashCode override. | ExcelDoubleCellValueTests.cs |
 | EPPlus/FormulaParsing/Excel/Functions/ExcelFunction.cs | Refactoring & Compatibility | Added `ArgToAddress`. Switched to `TypeCompat.IsPrimitive`. Added static imports for `ExcelDataProvider`. | ExcelFunctionDivergenceTests.cs |
 | EPPlus/FormulaParsing/Excel/Functions/Math/Ceiling.cs | Math Logic | Added check for `number % significance == 0` to return the number directly. | MathFunctionsTests.cs |
-| EPPlus/FormulaParsing/Excel/Functions/Math/Floor.cs | Math Logic | Added check for `number % significance == 0` to return the number directly. | Pending |
+| EPPlus/FormulaParsing/Excel/Functions/Math/Floor.cs | Math Logic | Added check for `number % significance == 0` to return the number directly. | MathFunctionsTests.cs |
 | EPPlus/FormulaParsing/Excel/Functions/Math/Round.cs | Math Logic | Updated rounding logic for negative digits and switched to `MidpointRounding.AwayFromZero` to match Excel behavior. | Pending |
 | EPPlus/FormulaParsing/Excel/Functions/RefAndLookup/Indirect.cs | Address Handling | Switched to `ArgToAddress` and used simplified `GetRange` overload. | Pending |
 | EPPlus/FormulaParsing/Excel/Functions/RefAndLookup/Match.cs | Address Handling | Switched to `ArgToAddress`. | Pending |
