@@ -120,6 +120,7 @@
     <Compile Include="Drawing\Chart\ExcelChartDataTableTest.cs" />
     <Compile Include="ExcelCellBaseTest.cs" />
     <Compile Include="ExcelStyleTest.cs" />
+    <Compile Include="ExcelStylesDivergenceTest.cs" />
     <Compile Include="ExcelRichTextHtmlUtilityTest.cs" />
     <Compile Include="ExcelColorTest.cs" />
     <Compile Include="Utils\UriHelperTest.cs" />
