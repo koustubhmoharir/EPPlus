@@ -102,10 +102,10 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/FormulaParsing/Excel/Functions/Math/Ceiling.cs | Math Logic | Added check for `number % significance == 0` to return the number directly. | MathFunctionsTests.cs |
 | EPPlus/FormulaParsing/Excel/Functions/Math/Floor.cs | Math Logic | Added check for `number % significance == 0` to return the number directly. | MathFunctionsTests.cs |
 | EPPlus/FormulaParsing/Excel/Functions/Math/Round.cs | Math Logic | Updated rounding logic for negative digits and switched to `MidpointRounding.AwayFromZero` to match Excel behavior. | RoundTests.cs |
-| EPPlus/FormulaParsing/Excel/Functions/RefAndLookup/Indirect.cs | Address Handling | Switched to `ArgToAddress` and used simplified `GetRange` overload. | Pending |
-| EPPlus/FormulaParsing/Excel/Functions/RefAndLookup/Match.cs | Address Handling | Switched to `ArgToAddress`. | Pending |
-| EPPlus/FormulaParsing/Excel/Functions/RefAndLookup/Offset.cs | Address Handling & Logic | Switched to `ArgToAddress`. Refactored `toRow`/`toCol` calculation for correct height/width handling. | Pending |
-| EPPlus/FormulaParsing/Excel/Functions/Text/Proper.cs | Cleanup | Removed unnecessary `CultureInfo.InvariantCulture` from `char.ToString()`. | Pending |
+| EPPlus/FormulaParsing/Excel/Functions/RefAndLookup/Indirect.cs | Address Handling | Switched to `ArgToAddress` and used simplified `GetRange` overload. | RefAndLookupDivergenceTests.cs |
+| EPPlus/FormulaParsing/Excel/Functions/RefAndLookup/Match.cs | Address Handling | Switched to `ArgToAddress`. | RefAndLookupDivergenceTests.cs |
+| EPPlus/FormulaParsing/Excel/Functions/RefAndLookup/Offset.cs | Address Handling & Logic | Switched to `ArgToAddress`. Refactored `toRow`/`toCol` calculation for correct height/width handling. | RefAndLookupDivergenceTests.cs |
+| EPPlus/FormulaParsing/Excel/Functions/Text/Proper.cs | Cleanup | Removed unnecessary `CultureInfo.InvariantCulture` from `char.ToString()`. | TextFunctionsTests.cs |
 | EPPlus/FormulaParsing/Excel/Functions/Text/Value.cs | Logic & Regex | Added null/empty check. Updated regex for decimal separator matching. | Pending |
 | EPPlus/FormulaParsing/ExcelDataProvider.cs | GetRange Overload | Added abstract `GetRange(string worksheetName, string address)` method. | Pending |
 
