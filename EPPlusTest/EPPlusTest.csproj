@@ -246,6 +246,7 @@
     <Compile Include="FormulaParsing\IntegrationTests\BuiltInFunctions\LogicalFunctionsTests.cs" />
     <Compile Include="FormulaParsing\IntegrationTests\BuiltInFunctions\MathFunctionsTests.cs" />
     <Compile Include="FormulaParsing\IntegrationTests\BuiltInFunctions\RefAndLookupTests.cs" />
+    <Compile Include="FormulaParsing\IntegrationTests\BuiltInFunctions\RefAndLookupDivergenceTests.cs" />
     <Compile Include="FormulaParsing\IntegrationTests\BuiltInFunctions\StringFunctionsTests.cs" />
     <Compile Include="FormulaParsing\IntegrationTests\BuiltInFunctions\SubtotalTests.cs" />
     <Compile Include="FormulaParsing\IntegrationTests\BuiltInFunctions\TextFunctionsTests.cs" />
