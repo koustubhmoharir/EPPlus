@@ -97,7 +97,7 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/ExcelWorksheets.cs | Collection Management | Integrated 0-based indexing support. Added `AppendSheetNameToAppXml` to synchronize Extended Properties. Refactored `CopyPivotTable` and `CopyCells` (merged cells) for better reliability. Ensured `_nextTableID` initialization. Removed `MONO` conditional around VBA copying. | ExcelWorksheetsDivergenceTest.cs |
 | EPPlus/ExcelWorksheetView.cs | Tab Selection | Added TabSelectedMulti and SetTabSelected to support multiple selected worksheet tabs. | ExcelWorksheetViewDivergenceTest.cs |
 | EPPlus/FormulaParsing/Excel/Functions/BuiltInFunctions.cs | Finance Functions | Added `PMT` function to `BuiltInFunctions`. | FinanceFunctionsTest.cs |
-| EPPlus/FormulaParsing/Excel/Functions/ExcelDoubleCellValue.cs | API Cleanup | Added `GetHashCode` override. | Pending |
+| EPPlus/FormulaParsing/Excel/Functions/ExcelDoubleCellValue.cs | API Cleanup | Added GetHashCode override. | ExcelDoubleCellValueTests.cs |
 | EPPlus/FormulaParsing/Excel/Functions/ExcelFunction.cs | Refactoring & Compatibility | Added `ArgToAddress`. Switched to `TypeCompat.IsPrimitive`. Added static imports for `ExcelDataProvider`. | Pending |
 | EPPlus/FormulaParsing/Excel/Functions/Math/Ceiling.cs | Math Logic | Added check for `number % significance == 0` to return the number directly. | Pending |
 | EPPlus/FormulaParsing/Excel/Functions/Math/Floor.cs | Math Logic | Added check for `number % significance == 0` to return the number directly. | Pending |
