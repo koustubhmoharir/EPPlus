@@ -443,6 +443,16 @@ namespace EPPlusTest.Excel.Functions
         }
 
         [TestMethod]
+        public void FloorShouldReturnNumberIfSignificanceIsMultipleOfNumber()
+        {
+            var expectedValue = 20d;
+            var func = new Floor();
+            var args = FunctionsHelper.CreateArgs(20d, 10d);
+            var result = func.Execute(args, _parsingContext);
+            Assert.AreEqual(expectedValue, result.Result);
+        }
+
+        [TestMethod]
         public void RandShouldReturnAValueBetween0and1()
         {
             var func = new Rand();
