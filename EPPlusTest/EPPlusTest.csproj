@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Address.cs" />
+    <Compile Include="StringComparisonTests.cs" />
     <Compile Include="Table\ExcelTableCollectionTest.cs" />
     <Compile Include="Table\PivotTableTest.cs" />
     <Compile Include="Packaging\ZipPackageTest.cs" />
