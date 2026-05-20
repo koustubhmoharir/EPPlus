@@ -41,9 +41,10 @@ namespace OfficeOpenXml.FormulaParsing.LexicalAnalysis.TokenSeparatorHandlers
         {
             if (context.IsInSheetName)
             {
-                if (IsDoubleQuote(tokenSeparator, tokenIndexProvider.Index, context))
+                if (IsSingleQuote(tokenSeparator, tokenIndexProvider.Index, context))
                 {
                     tokenIndexProvider.MoveIndexPointerForward();
+                    context.AppendToCurrentToken(c);
                     context.AppendToCurrentToken(c);
                     return true;
                 }

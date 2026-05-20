@@ -42,6 +42,11 @@ namespace OfficeOpenXml.FormulaParsing.LexicalAnalysis.TokenSeparatorHandlers
             return tokenSeparator.TokenType == TokenType.String && formulaCharIndex + 1 < context.FormulaChars.Length && context.FormulaChars[formulaCharIndex + 1] == '\"';
         }
 
+        protected bool IsSingleQuote(Token tokenSeparator, int formulaCharIndex, TokenizerContext context)
+        {
+            return tokenSeparator.TokenType == TokenType.WorksheetName && formulaCharIndex + 1 < context.FormulaChars.Length && context.FormulaChars[formulaCharIndex + 1] == '\'';
+        }
+
         public abstract bool Handle(char c, Token tokenSeparator, TokenizerContext context, ITokenIndexProvider tokenIndexProvider);
 
     }
