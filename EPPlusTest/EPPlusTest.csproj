@@ -234,6 +234,7 @@
     <Compile Include="FormulaParsing\LexicalAnalysis\SyntacticAnalyzerTests.cs" />
     <Compile Include="FormulaParsing\LexicalAnalysis\TokenFactoryTests.cs" />
     <Compile Include="FormulaParsing\LexicalAnalysis\TokenHandlerTests.cs" />
+    <Compile Include="FormulaParsing\Logging\TextFileLoggerTests.cs" />
     <Compile Include="FormulaParsing\NameValueProviderTests.cs" />
     <Compile Include="FormulaParsing\ParsingContextTests.cs" />
     <Compile Include="FormulaParsing\ParsingScopesTest.cs" />
