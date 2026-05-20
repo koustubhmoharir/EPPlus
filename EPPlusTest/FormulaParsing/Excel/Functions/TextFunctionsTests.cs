@@ -169,6 +169,30 @@ namespace EPPlusTest.Excel.Functions.Text
         }
 
         [TestMethod]
+        public void ProperShouldHandleEmptyString()
+        {
+            var func = new Proper();
+            var result = func.Execute(FunctionsHelper.CreateArgs(""), _parsingContext);
+            Assert.AreEqual("", result.Result);
+        }
+
+        [TestMethod]
+        public void ProperShouldHandleOnlySymbols()
+        {
+            var func = new Proper();
+            var result = func.Execute(FunctionsHelper.CreateArgs("!@#$%^&*()"), _parsingContext);
+            Assert.AreEqual("!@#$%^&*()", result.Result);
+        }
+
+        [TestMethod]
+        public void ProperShouldHandleNumbers()
+        {
+            var func = new Proper();
+            var result = func.Execute(FunctionsHelper.CreateArgs("123abc456"), _parsingContext);
+            Assert.AreEqual("123Abc456", result.Result);
+        }
+
+        [TestMethod]
         public void HyperLinkShouldReturnArgIfOneArgIsSupplied()
         {
             var func = new Hyperlink();
