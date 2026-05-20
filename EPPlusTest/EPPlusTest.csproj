@@ -230,6 +230,7 @@
     <Compile Include="FormulaParsing\LexicalAnalysis\CharHandlerTests.cs" />
     <Compile Include="FormulaParsing\LexicalAnalysis\NegationTests.cs" />
     <Compile Include="FormulaParsing\LexicalAnalysis\SourceCodeTokenizerTests.cs" />
+    <Compile Include="FormulaParsing\LexicalAnalysis\R1C1Tests.cs" />
     <Compile Include="FormulaParsing\LexicalAnalysis\SyntacticAnalyzerTests.cs" />
     <Compile Include="FormulaParsing\LexicalAnalysis\TokenFactoryTests.cs" />
     <Compile Include="FormulaParsing\LexicalAnalysis\TokenHandlerTests.cs" />
