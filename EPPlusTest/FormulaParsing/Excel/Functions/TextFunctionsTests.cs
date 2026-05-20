@@ -1,3 +1,4 @@
+using OfficeOpenXml;
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
@@ -206,6 +207,57 @@ namespace EPPlusTest.Excel.Functions.Text
             var func = new Hyperlink();
             var result = func.Execute(FunctionsHelper.CreateArgs("http://epplus.codeplex.com", "EPPlus"), _parsingContext);
             Assert.AreEqual("EPPlus", result.Result);
+        }
+
+        [TestMethod]
+        public void ValueShouldHandleEmptyString()
+        {
+            var func = new OfficeOpenXml.FormulaParsing.Excel.Functions.Text.Value();
+            var result = func.Execute(FunctionsHelper.CreateArgs(""), _parsingContext);
+            Assert.AreEqual(0d, result.Result);
+        }
+
+        [TestMethod]
+        public void ValueShouldHandleNumericString()
+        {
+            var func = new OfficeOpenXml.FormulaParsing.Excel.Functions.Text.Value();
+            var result = func.Execute(FunctionsHelper.CreateArgs("12.3"), _parsingContext);
+            Assert.AreEqual(12.3d, result.Result);
+        }
+
+        [TestMethod]
+        public void ValueShouldHandlePercent()
+        {
+            var func = new OfficeOpenXml.FormulaParsing.Excel.Functions.Text.Value();
+            var result = func.Execute(FunctionsHelper.CreateArgs("50%"), _parsingContext);
+            Assert.AreEqual(0.5d, result.Result);
+        }
+
+        [TestMethod]
+        public void ValueShouldHandleDate()
+        {
+            var func = new OfficeOpenXml.FormulaParsing.Excel.Functions.Text.Value();
+            // 2017-01-01 is 42736 in Excel
+            var result = func.Execute(FunctionsHelper.CreateArgs("2017-01-01"), _parsingContext);
+            Assert.IsTrue(result.Result is double);
+            Assert.AreEqual(42736d, (double)result.Result);
+        }
+
+        [TestMethod]
+        public void ValueShouldHandleTime()
+        {
+            var func = new OfficeOpenXml.FormulaParsing.Excel.Functions.Text.Value();
+            var result = func.Execute(FunctionsHelper.CreateArgs("12:00:00"), _parsingContext);
+            Assert.AreEqual(0.5d, result.Result);
+        }
+
+        [TestMethod]
+        public void ValueShouldReturnErrorIfInvalid()
+        {
+            var func = new OfficeOpenXml.FormulaParsing.Excel.Functions.Text.Value();
+            var result = func.Execute(FunctionsHelper.CreateArgs("abc"), _parsingContext);
+            Assert.IsTrue(result.Result is ExcelErrorValue);
+            Assert.AreEqual(eErrorType.Value, ((ExcelErrorValue)result.Result).Type);
         }
     }
 }
