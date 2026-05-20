@@ -460,6 +460,16 @@ namespace EPPlusTest.Excel.Functions
             var result = func.Execute(args, _parsingContext);
             Assert.AreEqual(-26d, result.Result);
         }
+
+        [TestMethod]
+        public void FloorShouldReturnNumberIfSignificanceIsMultipleOfNumber()
+        {
+            var expectedValue = 20d;
+            var func = new Floor();
+            var args = FunctionsHelper.CreateArgs(20d, 10d);
+            var result = func.Execute(args, _parsingContext);
+            Assert.AreEqual(expectedValue, result.Result);
+        }
         [TestMethod]
         public void FloorBugTest1()
         {
