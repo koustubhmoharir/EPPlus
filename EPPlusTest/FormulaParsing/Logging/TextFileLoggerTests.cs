@@ -50,10 +50,10 @@ namespace EPPlusTest.FormulaParsing.Logging
         }
 
         [TestMethod]
-        public void ShouldOverwriteLogFileByInStable()
+        public void ShouldHandleExistingLogFile()
         {
             File.WriteAllText(_logFile, "initial content");
-            
+
             var fileInfo = new FileInfo(_logFile);
             using (var logger = CreateLogger(fileInfo))
             {
@@ -61,7 +61,11 @@ namespace EPPlusTest.FormulaParsing.Logging
             }
 
             var content = File.ReadAllText(_logFile);
+        #if (Core)
+            Assert.IsTrue(content.Contains("initial content"), "Log file should have been appended in Core");
+        #else
             Assert.IsFalse(content.Contains("initial content"), "Log file should have been overwritten in stable");
+        #endif
             Assert.IsTrue(content.Contains("new message"));
         }
     }
