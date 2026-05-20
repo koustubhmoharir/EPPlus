@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -51,7 +51,10 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
         {
             return CompareTo(obj) == 0;
         }
-
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }        
         public static bool operator ==(ExcelDoubleCellValue a, ExcelDoubleCellValue b)
         {
             return a.Value.CompareTo(b.Value) == 0;

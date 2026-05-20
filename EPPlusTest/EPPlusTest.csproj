@@ -211,6 +211,7 @@
     <Compile Include="FormulaParsing\Excel\Functions\Database\RowMatcherTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\DateTimeFunctionsTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\ExcelFunctionTests.cs" />
+    <Compile Include="FormulaParsing\Excel\Functions\ExcelDoubleCellValueTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\FunctionArgumentTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\InformationFunctionsTests.cs" />
     <Compile Include="FormulaParsing\Excel\Functions\LogicalFunctionsTests.cs" />
