@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -24,14 +24,15 @@
  *
  * Code change notes:
  * 
- * Author							Change						Date
+ * Author                                                       Change                                          Date
  * ******************************************************************************
- * Mats Alm   		                Added       		        2013-03-01 (Prior file history on https://github.com/swmal/ExcelFormulaParser)
+ * Mats Alm                             Added                           2013-03-01 (Prior file history on https://github.com/swmal/ExcelFormulaParser)
  *******************************************************************************/
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace OfficeOpenXml.FormulaParsing.ExcelUtilities
 {
@@ -66,6 +67,48 @@ namespace OfficeOpenXml.FormulaParsing.ExcelUtilities
                 token = token.Substring(token.IndexOf('!') + 1);
             }
             return OfficeOpenXml.ExcelAddress.IsValidAddress(token);
+        }
+        readonly static char[] NameInvalidChars = new char[] { '!', '@', '#', '$', '£', '%', '&', '/', '(', ')', '[', ']', '{', '}', '<', '>', '=', '+', '?', '\\', '*', '-', '~', '^', ':', ';', '|', ',', ' ' };
+        public static bool IsValidName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+            var fc = name[0];
+            if (!(char.IsLetter(fc) || fc == '_' || (fc == '\\' && name.Length > 2)))
+            {
+                return false;
+            }
+
+            if (name.IndexOfAny(NameInvalidChars, 1) > 0)
+            {
+                return false;
+            }
+
+            if(ExcelCellBase.IsValidAddress(name))
+            {
+                return false;
+            }
+
+            //TODO:Add check for functionnames.
+            return true;
+        }
+        public static string GetValidName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return name;
+            }
+
+            var fc = name[0];
+            if (!(char.IsLetter(fc) || fc == '_' || (fc == '\\' && name.Length > 2)))
+            {
+                name = "_" + name.Substring(1);
+            }
+
+            name=NameInvalidChars.Aggregate(name, (c1, c2) => c1.Replace(c2, '_'));
+            return name;
         }
     }
 }
