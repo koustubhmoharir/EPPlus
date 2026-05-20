@@ -83,9 +83,9 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/FormulaParsing/ExcelUtilities/ExcelAddressUtil.cs | Name Validation | Added `IsValidName` and `GetValidName` methods to support named range validation. | ExcelAddressUtilTests.cs |
 | EPPlus/FormulaParsing/ExcelUtilities/RangeAddressFactory.cs | Table-style Address Parsing | Updated `Create` method to parse Table-style addresses and convert them to standard A1C1 addresses using `ExcelDataProvider`. | RangeAddressFactoryTests.cs |
 | EPPlus/FormulaParsing/ExpressionGraph/ExpressionConverter.cs | Date/Time Conversion | Updated FromCompileResult to convert DataType.Time and DataType.Date to DecimalExpression using (double)compileResult.Result. | ExpressionConverterTests.cs |
-| EPPlus/FormulaParsing/LexicalAnalysis/SourceCodeTokenizer.cs | R1C1 Support | Added `R1C1` static property and updated constructor and tokenization logic to support `TokenType.ExcelAddressR1C1`. | Pending |
-| EPPlus/FormulaParsing/LexicalAnalysis/TokenFactory.cs | R1C1 Support | Updated constructors to accept `r1c1` parameter, and updated `Create` to check for R1C1 addresses and return `TokenType.ExcelAddressR1C1`. | Pending |
-| EPPlus/FormulaParsing/LexicalAnalysis/TokenType.cs | R1C1 Support | Added `ExcelAddressR1C1` to `TokenType` enum. | Pending |
+| EPPlus/FormulaParsing/LexicalAnalysis/SourceCodeTokenizer.cs | R1C1 Support | Added `R1C1` static property and updated constructor and tokenization logic to support `TokenType.ExcelAddressR1C1`. | R1C1Tests.cs |
+| EPPlus/FormulaParsing/LexicalAnalysis/TokenFactory.cs | R1C1 Support | Updated constructors to accept `r1c1` parameter, and updated `Create` to check for R1C1 addresses and return `TokenType.ExcelAddressR1C1`. | R1C1Tests.cs |
+| EPPlus/FormulaParsing/LexicalAnalysis/TokenType.cs | R1C1 Support | Added `ExcelAddressR1C1` to `TokenType` enum. | R1C1Tests.cs |
 | EPPlus/FormulaParsing/Logging/TextFileLogger.cs | .NET Core Support | Added `StreamWriter` creation conditional logic (`#if Core`) for .NET Core compatibility. | Pending |
 | EPPlus/FormulaParsing/Utilities/ExtensionMethods.cs | .NET Core Compatibility | Switched to `TypeCompat.IsPrimitive` for .NET Core compatibility. | Pending |
 | EPPlus/FormulaParsing/LexicalAnalysis/TokenSeparatorHandlers/MultipleCharSeparatorHandler.cs | Cleanup | Removed unnecessary `CultureInfo.InvariantCulture` from `char.ToString()`. | Pending |

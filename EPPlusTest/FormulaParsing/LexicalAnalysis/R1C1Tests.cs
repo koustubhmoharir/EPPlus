@@ -12,16 +12,18 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
     public class R1C1Tests
     {
         private SourceCodeTokenizer _tokenizer;
+        private SourceCodeTokenizer _r1c1Tokenizer;
 
         [TestInitialize]
         public void Setup()
         {
             var context = ParsingContext.Create();
-            _tokenizer = new SourceCodeTokenizer(context.Configuration.FunctionRepository, null);
+            _tokenizer = new SourceCodeTokenizer(context.Configuration.FunctionRepository, null, false);
+            _r1c1Tokenizer = new SourceCodeTokenizer(context.Configuration.FunctionRepository, null, true);
         }
 
         [TestMethod]
-        public void ShouldTokenizeAbsoluteR1C1AddressAsNameValueInStable()
+        public void ShouldTokenizeAbsoluteR1C1AddressAsNameValueWhenR1C1IsDisabled()
         {
             var input = "R1C1";
             var tokens = _tokenizer.Tokenize(input);
@@ -29,20 +31,35 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
         }
 
         [TestMethod]
-        public void ShouldTokenizeRelativeR1C1AddressAsExcelAddressInStable()
+        public void ShouldTokenizeAbsoluteR1C1AddressAsR1C1WhenEnabled()
         {
-            // Stable incorrectly identifies R[1]C[1] as a table reference because of the brackets
-            var input = "R[1]C[1]";
-            var tokens = _tokenizer.Tokenize(input);
-            Assert.AreEqual(TokenType.ExcelAddress, tokens.First().TokenType);
+            var input = "R1C1";
+            var tokens = _r1c1Tokenizer.Tokenize(input);
+            Assert.AreEqual(TokenType.ExcelAddressR1C1, tokens.First().TokenType);
         }
 
         [TestMethod]
-        public void ShouldTokenizeWorksheetR1C1AddressAsInvalidInStable()
+        public void ShouldTokenizeRelativeR1C1AddressAsR1C1WhenEnabled()
+        {
+            var input = "R[1]C[1]";
+            var tokens = _r1c1Tokenizer.Tokenize(input);
+            Assert.AreEqual(TokenType.ExcelAddressR1C1, tokens.First().TokenType);
+        }
+
+        [TestMethod]
+        public void ShouldTokenizeWorksheetR1C1AddressAsR1C1WhenEnabled()
         {
             var input = "'Sheet1'!R1C1";
-            var tokens = _tokenizer.Tokenize(input);
-            Assert.AreEqual(TokenType.InvalidReference, tokens.First().TokenType);
+            var tokens = _r1c1Tokenizer.Tokenize(input);
+            Assert.AreEqual(TokenType.ExcelAddressR1C1, tokens.First().TokenType);
+        }
+
+        [TestMethod]
+        public void ShouldTokenizeR1C1RangeAsR1C1WhenEnabled()
+        {
+            var input = "R1C1:R2C2";
+            var tokens = _r1c1Tokenizer.Tokenize(input);
+            Assert.AreEqual(TokenType.ExcelAddressR1C1, tokens.First().TokenType);
         }
     }
 }
