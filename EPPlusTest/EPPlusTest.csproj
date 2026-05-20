@@ -169,6 +169,7 @@
     <Compile Include="FormulaParsing\ExcelUtilities\AddressTranslatorTests.cs" />
     <Compile Include="FormulaParsing\ExcelUtilities\CellReferenceProviderTests.cs" />
     <Compile Include="FormulaParsing\ExcelUtilities\ExcelAddressInfoTests.cs" />
+    <Compile Include="FormulaParsing\ExcelUtilities\ExcelAddressUtilTests.cs" />
     <Compile Include="FormulaParsing\ExcelUtilities\IndexToAddressTranslatorTests.cs" />
     <Compile Include="FormulaParsing\ExcelUtilities\RangeAddressFactoryTests.cs" />
     <Compile Include="FormulaParsing\ExcelUtilities\RangeAddressTests.cs" />
