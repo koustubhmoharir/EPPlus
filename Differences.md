@@ -109,4 +109,29 @@ This file documents the differences identified between the `dotnetport` branch a
 | EPPlus/FormulaParsing/Excel/Functions/Text/Value.cs | Logic & Regex | Added null/empty check. Updated regex for decimal separator matching. | TextFunctionsTests.cs |
 | EPPlus/FormulaParsing/ExcelDataProvider.cs | GetRange Overload | Added abstract `GetRange(string worksheetName, string address)` method. | EpplusExcelDataProviderTests.cs |
 
+## Regressions in .NET 9
+
+Through three-way test suite comparisons, we identified exactly 4 test cases that passed on `stable-net472` but fail on `dotnetport` under .NET 9:
+
+### 1. EPPlusTest.ExcelHeaderFooterTest.TestHeaderFooterInsertPictureFileInfo
+* **Symptom**: `System.IO.IOException: The process cannot access the file '...test_header_footer_image.jpg' because it is being used by another process.` during the `File.Delete()` cleanup phase.
+* **Root Cause**: `ImageCompat.GetImageAsByteArray()` or similar helper holds an open stream/lock on the temporary file under .NET 9's stricter file stream lifetime policies.
+* **Action Plan**: Audit stream disposal in `ExcelHeaderFooter.cs` and ensure the image stream is fully disposed.
+
+### 2. EPPlusTest.Packaging.DotNetZip.ZipEntryTest.ZipEntry_ReadEntry_WithFalsePositiveDescriptorSignature_AccumulatesTrailerLength
+* **Symptom**: `Assert.AreEqual failed. Expected:<16>. Actual:<32>.`
+* **Root Cause**: Modern runtime behavior or refactorings in `ZipEntry.Read.cs` handle data descriptor signatures differently, returning 32 bytes of accumulated trailer length instead of 16.
+* **Action Plan**: Investigate trailing descriptor processing in `ZipEntry.Read.cs` under .NET 9 and conditionalize behavior if needed.
+
+### 3. EPPlusTest.WorkSheetTest.CrossSheetReferenceIsUpdatedWhenSheetIsRenamed
+* **Symptom**: `System.NullReferenceException: Object reference not set to an instance of an object` in `ExcelWorksheet.set_Name` at line 523.
+* **Root Cause**: Cleanups in formula updates or cross-sheet reference indexing inside the worksheet name setter throw a null reference when resolving external packages or missing formula cells.
+* **Action Plan**: Add a null check in `ExcelWorksheet.cs` name setter around reference updating logic.
+
+### 4. EPPlusTest.WorkSheetTest.RunWorksheetTests
+* **Symptom**: `System.ArgumentOutOfRangeException: Index was out of range` in `ExcelStyles.CloneStyle` at line 949.
+* **Root Cause**: The style index cloning template resolver retrieves an invalid style or out-of-bounds style ID during worksheet cloning / addition.
+* **Action Plan**: Inspect style dictionary initialization and boundary safety checks in `ExcelStyles.cs`.
+
+
 
