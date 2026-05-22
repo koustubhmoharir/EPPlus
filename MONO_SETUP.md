@@ -2,6 +2,8 @@
 
 This document describes how to build EPPlus and run its tests using Mono on Linux.
 
+For Windows and Visual Studio coverage commands, see [WINDOWS_CODE_COVERAGE.md](WINDOWS_CODE_COVERAGE.md).
+
 ## Prerequisites
 
 - Mono (mono-complete)
