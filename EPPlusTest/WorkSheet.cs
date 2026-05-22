@@ -2169,19 +2169,8 @@ namespace EPPlusTest
             Assert.IsNotNull(ws.BackgroundImage.Image);
 
             ws = _pck.Workbook.Worksheets.Add("backimg2");
-            try
-            {
-                ws.BackgroundImage.SetFromFile(new FileInfo(Path.Combine(_clipartPath, "Vector Drawing.wmf")));
-                Assert.IsNotNull(ws.BackgroundImage.Image);
-            }
-            catch (ArgumentException ex) when (ex.Message.Contains("No codec available"))
-            {
-                // Expected fallback on Mono (Linux) due to WMF encoding codec missing in GDI+
-#if Core
-                // On .NET 9, it should never fail with a codec exception because it reads bytes directly!
-                Assert.Fail("SetFromFile threw a No Codec exception on .NET 9: " + ex.Message);
-#endif
-            }
+            ws.BackgroundImage.SetFromFile(new FileInfo(Path.Combine(_clipartPath, "Vector Drawing.wmf")));
+            Assert.IsNotNull(ws.BackgroundImage.Image);
         }
         //[Ignore]
         [TestMethod]

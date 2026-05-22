@@ -12,7 +12,7 @@ namespace EPPlusTest
     public class DTS_FailingTests
     {
 
-        [Ignore] // Hangs during AddPicture call on Mono. Likely an issue with libgdiplus or resource loading in Mono.
+        //[Ignore] // Hangs during AddPicture call on Mono. Likely an issue with libgdiplus or resource loading in Mono.
         [TestMethod]
         public void DeleteWorksheetWithReferencedImage()
         {
@@ -34,7 +34,7 @@ namespace EPPlusTest
             }
         }
 
-        [Ignore] // Hangs during AddPicture call on Mono. Likely an issue with libgdiplus or resource loading in Mono.
+        //[Ignore] // Hangs during AddPicture call on Mono. Likely an issue with libgdiplus or resource loading in Mono.
         [TestMethod]
         public void CopyAndDeleteWorksheetWithImage()
         {
