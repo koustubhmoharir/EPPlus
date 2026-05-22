@@ -113,28 +113,22 @@ namespace OfficeOpenXml
                 throw (new InvalidDataException("File is not a supported image-file or is corrupt", ex));
             }
 
-            ImageConverter ic = new ImageConverter();
-            string contentType = ExcelPicture.GetContentType(PictureFile.Extension);
-            var imageURI = XmlHelper.GetNewUri(_workSheet._package.Package, "/xl/media/" + PictureFile.Name.Substring(0, PictureFile.Name.Length - PictureFile.Extension.Length) + "{0}" + PictureFile.Extension);
-
-            byte[] fileBytes = (byte[])ic.ConvertTo(img, typeof(byte[]));
-            var ii = _workSheet.Workbook._package.AddImage(fileBytes, imageURI, contentType);
-
-
-            if (_workSheet.Part.Package.PartExists(imageURI) && ii.RefCount==1) //The file exists with another content, overwrite it.
+            try
             {
-                //Remove the part if it exists
-                _workSheet.Part.Package.DeletePart(imageURI);
+                ImageConverter ic = new ImageConverter();
+                string contentType = ExcelPicture.GetContentType(PictureFile.Extension);
+                var imageURI = XmlHelper.GetNewUri(_workSheet._package.Package, "/xl/media/" + PictureFile.Name.Substring(0, PictureFile.Name.Length - PictureFile.Extension.Length) + "{0}" + PictureFile.Extension);
+
+                byte[] fileBytes = (byte[])ic.ConvertTo(img, typeof(byte[]));
+                var ii = _workSheet.Workbook._package.AddImage(fileBytes, imageURI, contentType);
+
+                var rel = _workSheet.Part.CreateRelationship(ii.Uri, Packaging.TargetMode.Internal, ExcelPackage.schemaRelationships + "/image");
+                SetXmlNodeString(BACKGROUNDPIC_PATH, rel.Id);
             }
-
-            var imagePart = _workSheet.Part.Package.CreatePart(imageURI, contentType, CompressionLevel.None);
-            //Save the picture to package.
-
-            var strm = imagePart.GetStream(FileMode.Create, FileAccess.Write);
-            strm.Write(fileBytes, 0, fileBytes.Length);
-
-            var rel = _workSheet.Part.CreateRelationship(imageURI, Packaging.TargetMode.Internal, ExcelPackage.schemaRelationships + "/image");
-            SetXmlNodeString(BACKGROUNDPIC_PATH, rel.Id);
+            finally
+            {
+                img.Dispose();
+            }
         }
         private void DeletePrevImage()
         {
@@ -148,13 +142,12 @@ namespace OfficeOpenXml
                 //Delete the relation
                 _workSheet.Part.DeleteRelationship(relID);
                 
-                //Delete the image if there are no other references.
-                if (ii != null && ii.RefCount == 1)
+                // Keep the package image cache in sync with the removed relationship.
+                // RemoveImage decrements the reference count and deletes the part only
+                // when it is no longer shared by any other drawing.
+                if (ii != null)
                 {
-                    if (_workSheet.Part.Package.PartExists(ii.Uri))
-                    {
-                        _workSheet.Part.Package.DeletePart(ii.Uri);
-                    }
+                    _workSheet.Workbook._package.RemoveImage(ii.Hash);
                 }
                 
             }
