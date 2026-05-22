@@ -2172,6 +2172,26 @@ namespace EPPlusTest
             ws.BackgroundImage.SetFromFile(new FileInfo(Path.Combine(_clipartPath, "Vector Drawing.wmf")));
             Assert.IsNotNull(ws.BackgroundImage.Image);
         }
+        [TestMethod]
+        public void SetBackgroundFromInvalidFileThrows()
+        {
+            var ws = _pck.Workbook.Worksheets.Add("backimg_invalid");
+            var invalidFile = Path.Combine(_worksheetPath, "invalid_background.wmf");
+            File.WriteAllText(invalidFile, "not an image");
+
+            try
+            {
+                Assert.ThrowsException<InvalidDataException>(() =>
+                    ws.BackgroundImage.SetFromFile(new FileInfo(invalidFile)));
+            }
+            finally
+            {
+                if (File.Exists(invalidFile))
+                {
+                    File.Delete(invalidFile);
+                }
+            }
+        }
         //[Ignore]
         [TestMethod]
         public void SetHeaderFooterImage()
