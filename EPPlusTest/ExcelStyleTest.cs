@@ -25,18 +25,8 @@ namespace EPPlusTest
                 // a new one should be created and referenced.
                 Assert.AreNotEqual(0, cell.StyleID);
                 Assert.IsNull(nodes[0].Attributes["quotePrefix"]);
-                // Use a safe way to access the node, as StyleID might behave differently across versions
-                bool found = false;
-                foreach(System.Xml.XmlNode node in nodes)
-                {
-                    if (node.Attributes["quotePrefix"] != null && node.Attributes["quotePrefix"].Value == "1")
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                Assert.IsTrue(found, "quotePrefix='1' should be found in one of the xf nodes");
-            }
+				Assert.AreEqual("1", nodes[cell.StyleID].Attributes["quotePrefix"].Value);
+			}
         }
 
         [TestMethod]
