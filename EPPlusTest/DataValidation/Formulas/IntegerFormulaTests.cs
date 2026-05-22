@@ -70,7 +70,7 @@ namespace EPPlusTest.DataValidation.Formulas
         public void IntegerFormula_FormulaValueIsSetFromXmlNodeInConstructor()
         {
             // Arrange
-            LoadXmlTestData("A1", "whole", "1");
+            LoadXmlTestData("A1", "decimal", "1");
 
             // Act
             var formula = CreateFormulaInstance();
@@ -83,16 +83,42 @@ namespace EPPlusTest.DataValidation.Formulas
         public void IntegerFormula_FormulasFormulaIsSetFromXmlNodeInConstructor()
         {
             // Arrange
-            LoadXmlTestData("A1", "whole", "A1");
+            LoadXmlTestData("A1", "decimal", "A1");
 
             // Act
             var formula = CreateFormulaInstance();
 
             // Assert
             Assert.AreEqual("A1", GetExcelFormula(formula));
-        }
+		}
 
-        [TestMethod]
+		[TestMethod]
+		public void IntegerFormula_FormulaValueIsSetFromXmlNodeInConstructor2()
+		{
+			// Arrange
+			LoadXmlTestData("A1", "whole", "1");
+
+			// Act
+			var formula = CreateFormulaInstance();
+
+			// Assert
+			Assert.AreEqual(1, GetValue(formula));
+		}
+
+		[TestMethod]
+		public void IntegerFormula_FormulasFormulaIsSetFromXmlNodeInConstructor2()
+		{
+			// Arrange
+			LoadXmlTestData("A1", "whole", "A1");
+
+			// Act
+			var formula = CreateFormulaInstance();
+
+			// Assert
+			Assert.AreEqual("A1", GetExcelFormula(formula));
+		}
+
+		[TestMethod]
         public void IntegerFormula_Constructor_ShouldHandleEmptyOrNullValue()
         {
             // Arrange
