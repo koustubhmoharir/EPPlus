@@ -30,6 +30,7 @@
  *******************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -190,7 +191,7 @@ namespace OfficeOpenXml.Style
 		private static string CleanText(string s)
 		{
 			// Need to convert HTML entities (named or numbered) into actual Unicode characters
-			s = System.Web.HttpUtility.HtmlDecode(s);
+			s = WebUtility.HtmlDecode(s);
 			// Remove any non-breaking spaces, kills Excel
 			s = s.Replace("\u00A0", " ");
 			return s;
