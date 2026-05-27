@@ -15,7 +15,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests
         [TestInitialize]
         public void Initialize()
         {
-            _package = new ExcelPackage();
+            _package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             _ws = _package.Workbook.Worksheets.Add("test");
         }
 

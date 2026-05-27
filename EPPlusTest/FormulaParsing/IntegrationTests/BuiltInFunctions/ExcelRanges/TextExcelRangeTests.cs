@@ -20,7 +20,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions.ExcelRange
         public void Initialize()
         {
             _currentCulture = CultureInfo.CurrentCulture;
-            _package = new ExcelPackage();
+            _package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             _worksheet = _package.Workbook.Worksheets.Add("Test");
 
             _worksheet.Cells["A1"].Value = 1;

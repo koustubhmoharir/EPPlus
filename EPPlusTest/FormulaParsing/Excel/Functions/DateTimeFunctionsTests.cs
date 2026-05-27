@@ -486,7 +486,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void WorkdayWithNegativeArgShouldReturnCorrectWhenRangeWithHolidayDatesIsSupplied()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("test");
                 ws.Cells["A1"].Value = new DateTime(2016, 7, 27).ToOADate();
@@ -504,7 +504,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void NetworkdaysShouldReturnNumberOfDays()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("test");
                 ws.Cells["A1"].Formula = "NETWORKDAYS(DATE(2016,1,1), DATE(2016,1,20))";
@@ -519,12 +519,12 @@ namespace EPPlusTest.Excel.Functions
             using (MemoryStream ms = new MemoryStream())
             {
                 // do something...
-                using (var package = new ExcelPackage())
+                using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
                 {
                     package.Load(ms);
                 }
             }
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("test");
                 ws.Cells["A1"].Formula = "NETWORKDAYS(DATE(2016,1,1), DATE(2016,1,20),B1)";
@@ -537,7 +537,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void NetworkdaysNegativeShouldReturnNumberOfDays()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("test");
                 ws.Cells["A1"].Formula = "NETWORKDAYS(DATE(2016,1,1), DATE(2015,12,20))";
@@ -549,7 +549,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void NetworkdayIntlShouldUseWeekendArg()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("test");
                 ws.Cells["A1"].Formula = "NETWORKDAYS.INTL(DATE(2016,1,1), DATE(2016,1,20), 11)";
@@ -561,7 +561,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void NetworkdayIntlShouldUseWeekendStringArg()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("test");
                 ws.Cells["A1"].Formula = "NETWORKDAYS.INTL(DATE(2016,1,1), DATE(2016,1,20), \"0000011\")";
@@ -573,7 +573,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void NetworkdayIntlShouldReduceHoliday()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("test");
                 ws.Cells["A1"].Formula = "NETWORKDAYS.INTL(DATE(2016,1,1), DATE(2016,1,20), \"0000011\", DATE(2016,1,4))";
@@ -585,7 +585,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void TimeAddition()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("test");
                 ws.Cells["A1"].Formula = "1 + (Time(10,0,0))";

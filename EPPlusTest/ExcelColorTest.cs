@@ -12,7 +12,7 @@ namespace EPPlusTest
         [TestMethod]
         public void LookupColorTintRounding()
         {
-            using (var p = new ExcelPackage())
+            using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = p.Workbook.Worksheets.Add("ColorTest");
                 var cell = ws.Cells["A1"];
@@ -49,7 +49,7 @@ namespace EPPlusTest
         [TestMethod]
         public void SetColorTest()
         {
-            using (var p = new ExcelPackage())
+            using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = p.Workbook.Worksheets.Add("ColorTest");
                 var cell = ws.Cells["A1"];

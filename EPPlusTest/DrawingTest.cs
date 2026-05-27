@@ -53,7 +53,7 @@ namespace EPPlusTest
         //[Ignore]
         public void ReadDrawing()
         {
-            using (ExcelPackage pck = new ExcelPackage(new FileInfo(_worksheetPath + @"Drawing.xlsx")))
+            using (ExcelPackage pck = new ExcelPackage(new FileInfo(_worksheetPath + @"Drawing.xlsx"), EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets["Pyramid"];
                 Assert.AreEqual(ws.Cells["V24"].Value, 104D);
@@ -796,7 +796,7 @@ namespace EPPlusTest
             {
                 Assert.Inconclusive("Drawing.xlsx is not created. Skippng");
             }
-            var pck = new ExcelPackage(fi, true);
+            var pck = new ExcelPackage(fi, true, EPPlusTest.TempFolderHelper.Create());
 
             foreach(var ws in pck.Workbook.Worksheets)
             {
@@ -816,7 +816,7 @@ namespace EPPlusTest
         [Ignore]
         public void ReadMultiChartSeries()
         {
-            ExcelPackage pck = new ExcelPackage(new FileInfo("c:\\temp\\chartseries.xlsx"), true);
+            ExcelPackage pck = new ExcelPackage(new FileInfo("c:\\temp\\chartseries.xlsx"), true, EPPlusTest.TempFolderHelper.Create());
 
             var ws = pck.Workbook.Worksheets[1];
             ExcelChart c = ws.Drawings[0] as ExcelChart;
@@ -852,7 +852,7 @@ namespace EPPlusTest
         [TestMethod]
         public void ChartWorksheet()
         {
-            _pck = new ExcelPackage();
+            _pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var wsChart = _pck.Workbook.Worksheets.AddChart("chart", eChartType.Bubble3DEffect);
             var ws = _pck.Workbook.Worksheets.Add("data");
             AddTestSerie(ws, wsChart.Chart);
@@ -865,7 +865,7 @@ namespace EPPlusTest
         [TestMethod]
         public void ReadChartWorksheet()
         {
-            _pck = new ExcelPackage(new FileInfo(@"c:\temp\chart.xlsx"));
+            _pck = new ExcelPackage(new FileInfo(@"c:\temp\chart.xlsx"), EPPlusTest.TempFolderHelper.Create());
             var chart = ((ExcelChartsheet)_pck.Workbook.Worksheets[1]).Chart;
 
             _pck.SaveAs(new FileInfo(@"c:\temp\chart.xlsx"));
@@ -875,7 +875,7 @@ namespace EPPlusTest
         [TestMethod]
         public void ReadWriteSmoothChart()
         {
-            _pck = new ExcelPackage(new FileInfo(@"c:\temp\bug\Xds_2014_TEST.xlsx"));
+            _pck = new ExcelPackage(new FileInfo(@"c:\temp\bug\Xds_2014_TEST.xlsx"), EPPlusTest.TempFolderHelper.Create());
             var chart = _pck.Workbook.Worksheets[1].Drawings[0] as ExcelChart;
             _pck.Workbook.Worksheets[1].Cells["B2"].Value = 33;
             _pck.SaveAs(new FileInfo(@"c:\temp\chart.xlsx"));
@@ -884,7 +884,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestHeaderaddress()
         {
-            _pck = new ExcelPackage();
+            _pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = _pck.Workbook.Worksheets.Add("Draw");
             var chart = ws.Drawings.AddChart("NewChart1",eChartType.Area) as ExcelChart;
             var ser1 = chart.Series.Add("A1:A2", "B1:B2");
@@ -910,7 +910,7 @@ namespace EPPlusTest
             string path = Path.Combine(workbooksDir, "AllDrawingsInsideMarkupCompatibility.xlsm");
 
             // Load example document.
-            _pck = new ExcelPackage(new FileInfo(path));
+            _pck = new ExcelPackage(new FileInfo(path), EPPlusTest.TempFolderHelper.Create());
             // Verify the drawing part exists:
             Uri partUri = new Uri("/xl/drawings/drawing1.xml", UriKind.Relative);
             Assert.IsTrue(_pck.Package.PartExists(partUri));
@@ -940,7 +940,7 @@ namespace EPPlusTest
             _pck.Dispose();
             
             // Reload the new saved file.
-            _pck = new ExcelPackage(new FileInfo(savedPath));
+            _pck = new ExcelPackage(new FileInfo(savedPath), EPPlusTest.TempFolderHelper.Create());
 
             // Verify the drawing part still exists.
             Assert.IsTrue(_pck.Package.PartExists(new Uri("/xl/drawings/drawing1.xml", UriKind.Relative)));

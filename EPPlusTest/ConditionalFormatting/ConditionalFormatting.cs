@@ -47,7 +47,7 @@ namespace EPPlusTest
           Directory.CreateDirectory(string.Format("Test"));
       }
 
-      _pck = new ExcelPackage(new FileInfo(@"Test\ConditionalFormatting.xlsx"));
+      _pck = new ExcelPackage(new FileInfo(@"Test\ConditionalFormatting.xlsx"), EPPlusTest.TempFolderHelper.Create());
     }
 
     // Use ClassCleanup to run code after all tests in a class have run
@@ -92,7 +92,7 @@ namespace EPPlusTest
     [Ignore]
     public void ReadConditionalFormatting()
     {
-      var pck = new ExcelPackage(new FileInfo(@"c:\temp\cf.xlsx"));
+      var pck = new ExcelPackage(new FileInfo(@"c:\temp\cf.xlsx"), EPPlusTest.TempFolderHelper.Create());
 
       var ws = pck.Workbook.Worksheets[1];
       Assert.IsTrue(ws.ConditionalFormatting.Count == 6);
@@ -111,7 +111,7 @@ namespace EPPlusTest
     [Ignore]
     public void ReadConditionalFormattingError()
     {
-      var pck = new ExcelPackage(new FileInfo(@"c:\temp\CofCTemplate.xlsx"));
+      var pck = new ExcelPackage(new FileInfo(@"c:\temp\CofCTemplate.xlsx"), EPPlusTest.TempFolderHelper.Create());
 
       var ws = pck.Workbook.Worksheets[1];
       pck.SaveAs(new FileInfo(@"c:\temp\cf2.xlsx"));

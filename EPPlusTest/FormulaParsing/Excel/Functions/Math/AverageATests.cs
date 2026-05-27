@@ -42,7 +42,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Math
 		public void AverageACellReferences()
 		{
 			// For cell references, AverageA divides by all cells, but only adds actual numbers, dates, and booleans.
-			ExcelPackage package = new ExcelPackage();
+			ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
 			var worksheet = package.Workbook.Worksheets.Add("Test");
 			double[] values =
 			{

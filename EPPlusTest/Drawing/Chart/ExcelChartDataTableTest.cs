@@ -21,7 +21,7 @@ namespace EPPlusTest.Drawing.Chart
         [TestMethod]
         public void DataTableFile()
         {
-            using (ExcelPackage pkg = new ExcelPackage())
+            using (ExcelPackage pkg = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 // Add worksheet with sample data
                 var worksheet = pkg.Workbook.Worksheets.Add("TestData");

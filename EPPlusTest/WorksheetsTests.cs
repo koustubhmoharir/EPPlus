@@ -15,7 +15,7 @@ namespace EPPlusTest
 		[TestInitialize]
 		public void TestInitialize()
 		{
-			package = new ExcelPackage();
+			package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
 			workbook = package.Workbook;
 			workbook.Worksheets.Add("NEW1");
 		}
@@ -108,7 +108,7 @@ namespace EPPlusTest
         public void DeleteFirstColumnInRangeColumnShouldBeDeleted()
         {
             // Arrange
-            ExcelPackage pck = new ExcelPackage();
+            ExcelPackage pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             using (
                 Stream file =
               Assembly.GetExecutingAssembly().GetManifestResourceStream("EPPlusTest.TestWorkbooks.PreDeleteColumn.xls"))
@@ -132,7 +132,7 @@ namespace EPPlusTest
         public void DeleteLastColumnInRangeColumnShouldBeDeleted()
         {
             // Arrange
-            ExcelPackage pck = new ExcelPackage();
+            ExcelPackage pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             using (
                 Stream file =
               Assembly.GetExecutingAssembly().GetManifestResourceStream("EPPlusTest.TestWorkbooks.PreDeleteColumn.xls"))
@@ -155,7 +155,7 @@ namespace EPPlusTest
         public void DeleteColumnAfterNormalRangeSheetShouldRemainUnchanged()
         {
             // Arrange
-            ExcelPackage pck = new ExcelPackage();
+            ExcelPackage pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             using (
                 Stream file =
               Assembly.GetExecutingAssembly().GetManifestResourceStream("EPPlusTest.TestWorkbooks.PreDeleteColumn.xls"))
@@ -181,7 +181,7 @@ namespace EPPlusTest
         public void DeleteColumnBeforeRangeMimitThrowsArgumentException()
         {
             // Arrange
-            ExcelPackage pck = new ExcelPackage();
+            ExcelPackage pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             using (
                 Stream file =
               Assembly.GetExecutingAssembly().GetManifestResourceStream("EPPlusTest.TestWorkbooks.PreDeleteColumn.xls"))
@@ -203,7 +203,7 @@ namespace EPPlusTest
         public void DeleteColumnAfterRangeLimitThrowsArgumentException()
         {
             // Arrange
-            ExcelPackage pck = new ExcelPackage();
+            ExcelPackage pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             using (
                 Stream file =
               Assembly.GetExecutingAssembly().GetManifestResourceStream("EPPlusTest.TestWorkbooks.PreDeleteColumn.xls"))
@@ -224,7 +224,7 @@ namespace EPPlusTest
         public void DeleteFirstTwoColumnsFromRangeColumnsShouldBeDeleted()
         {
             // Arrange
-            ExcelPackage pck = new ExcelPackage();
+            ExcelPackage pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             using (
                 Stream file =
               Assembly.GetExecutingAssembly().GetManifestResourceStream("EPPlusTest.TestWorkbooks.PreDeleteColumn.xls"))
@@ -263,7 +263,7 @@ namespace EPPlusTest
 			var packageStream = new MemoryStream();
 			editedPackage.SaveAs(packageStream);
 
-			var newPackage = new ExcelPackage(packageStream);
+			var newPackage = new ExcelPackage(packageStream, EPPlusTest.TempFolderHelper.Create());
             newPackage.Compatibility.IsWorksheets1Based = true;
             var positionId = 1;
 			foreach (var worksheet in editedPackage.Workbook.Worksheets)
@@ -276,7 +276,7 @@ namespace EPPlusTest
 		[TestMethod]
 		public void TestTableCalculatedColumnFormulaTranslation()
 		{
-			using (var package = new ExcelPackage())
+			using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
 			{
 				var ws = package.Workbook.Worksheets.Add("Sheet1");
 				ws.Cells["A1"].Value = "ColA";
@@ -307,7 +307,7 @@ namespace EPPlusTest
 		[TestMethod]
 		public void TestVmlCommentsPartCleanup()
 		{
-			using (var package = new ExcelPackage())
+			using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
 			{
 				var ws = package.Workbook.Worksheets.Add("Sheet1");
 				ws.Cells["A1"].AddComment("Comment 1", "Author");

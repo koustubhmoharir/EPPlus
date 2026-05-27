@@ -17,7 +17,7 @@ namespace EPPlusTest
         public void DeleteWorksheetWithReferencedImage()
         {
             var ms = new MemoryStream();
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("original");
                 ws.Drawings.AddPicture("Pic1", Properties.Resources.Test1);
@@ -26,7 +26,7 @@ namespace EPPlusTest
             }
             ms.Position = 0;
 
-            using (var pck = new ExcelPackage(ms))
+            using (var pck = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets["original"];
                 pck.Workbook.Worksheets.Delete(ws);
@@ -38,7 +38,7 @@ namespace EPPlusTest
         [TestMethod]
         public void CopyAndDeleteWorksheetWithImage()
         {
-            using (var pck = new ExcelPackage(new MemoryStream()))
+            using (var pck = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("original");
                 ws.Drawings.AddPicture("Pic1", Properties.Resources.Test1);

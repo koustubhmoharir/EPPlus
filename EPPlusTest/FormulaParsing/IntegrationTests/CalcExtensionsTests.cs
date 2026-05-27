@@ -11,7 +11,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests
         [TestMethod]
         public void ShouldCalculateChainTest()
         {
-            var package = new ExcelPackage(new FileInfo("c:\\temp\\chaintest.xlsx"));
+            var package = new ExcelPackage(new FileInfo("c:\\temp\\chaintest.xlsx"), EPPlusTest.TempFolderHelper.Create());
             package.Workbook.Calculate();
         }
 
@@ -25,7 +25,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests
             //var v = pck.Workbook.FormulaParserManager.Parse("2.5-Calc1!A1+abs(3.0)-SIN(3)");
             //Assert.AreEqual(4.358879992, Math.Round((double)v, 9));
 
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
 
             ws.SetValue("A1", (short)1);
@@ -36,7 +36,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests
         [TestMethod]
         public void CalculateTest2()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
 
             ws.SetValue("A1", (short)1);

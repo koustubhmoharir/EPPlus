@@ -11,7 +11,7 @@ namespace EPPlusTest.Table
         [TestMethod]
         public void PivotTableSourceRangeTest()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var wsSource = pck.Workbook.Worksheets.Add("Source");
                 wsSource.Cells["A1"].Value = "Col1";
@@ -29,7 +29,7 @@ namespace EPPlusTest.Table
         [TestMethod]
         public void PivotTableSourceRangeCasingTest()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var wsSource = pck.Workbook.Worksheets.Add("SourceSheet");
                 wsSource.Cells["A1"].Value = "Col1";
@@ -42,7 +42,7 @@ namespace EPPlusTest.Table
                 pck.SaveAs(stream);
                 
                 stream.Position = 0;
-                using (var pck2 = new ExcelPackage(stream))
+                using (var pck2 = new ExcelPackage(stream, EPPlusTest.TempFolderHelper.Create()))
                 {
                     var wsPivot2 = pck2.Workbook.Worksheets["Pivot"];
                     var pivotTable2 = wsPivot2.PivotTables["Pivot1"];
@@ -56,7 +56,7 @@ namespace EPPlusTest.Table
         [TestMethod]
         public void PivotTableDefaultNameTest()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var wsSource = pck.Workbook.Worksheets.Add("Source");
                 wsSource.Cells["A1"].Value = "Col1";

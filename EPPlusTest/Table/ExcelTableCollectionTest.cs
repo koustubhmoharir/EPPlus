@@ -12,7 +12,7 @@ namespace EPPlusTest.Table
         [TestMethod]
         public void TableNameValidationTest()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("Sheet1");
                 var range = ws.Cells["A1:C5"];
@@ -44,7 +44,7 @@ namespace EPPlusTest.Table
         [ExpectedException(typeof(ArgumentException))]
         public void TableNameWithSpacesShouldFail()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("Sheet1");
                 var range = ws.Cells["A1:C5"];
@@ -56,7 +56,7 @@ namespace EPPlusTest.Table
         [ExpectedException(typeof(ArgumentException))]
         public void TableNameWithInvalidStartCharShouldFail()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("Sheet1");
                 var range = ws.Cells["A1:C5"];
@@ -67,7 +67,7 @@ namespace EPPlusTest.Table
         [TestMethod]
         public void TableNameEscapingTest()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("Sheet1");
                 var range = ws.Cells["A1:C5"];

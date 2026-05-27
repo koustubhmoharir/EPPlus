@@ -39,7 +39,7 @@ namespace EPPlusTest
         [TestMethod]
         public void CalulationTestDatatypes()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws=pck.Workbook.Worksheets.Add("Calc1");
             ws.SetValue("A1", (short)1);
             ws.SetValue("A2", (long)2);
@@ -60,7 +60,7 @@ namespace EPPlusTest
         [TestMethod]
         public void CalculateTest()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
 
             ws.SetValue("A1",( short)1);
@@ -77,7 +77,7 @@ namespace EPPlusTest
         [TestMethod]
         public void CalculateTestIsFunctions()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
 
             ws.SetValue(1, 1, 1.0D);
@@ -96,7 +96,7 @@ namespace EPPlusTest
 #else
             var dir = AppDomain.CurrentDomain.BaseDirectory;
 #endif
-            var pck = new ExcelPackage(new FileInfo(Path.Combine(dir, "Workbooks", "FormulaTest.xlsx")));
+            var pck = new ExcelPackage(new FileInfo(Path.Combine(dir, "Workbooks", "FormulaTest.xlsx")), EPPlusTest.TempFolderHelper.Create());
             pck.Workbook.Calculate();
             Assert.AreEqual(490D, pck.Workbook.Worksheets[1].Cells["D5"].Value);
         }
@@ -109,7 +109,7 @@ namespace EPPlusTest
 #else
             var dir = AppDomain.CurrentDomain.BaseDirectory;
 #endif
-            var pck = new ExcelPackage(new FileInfo(Path.Combine(dir, "Workbooks", "FormulaTest.xlsx")));
+            var pck = new ExcelPackage(new FileInfo(Path.Combine(dir, "Workbooks", "FormulaTest.xlsx")), EPPlusTest.TempFolderHelper.Create());
 
             var ws = pck.Workbook.Worksheets["ValidateFormulas"];
             var fr = new Dictionary<string, object>();
@@ -156,7 +156,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestOneCell()
         {
-            var pck = new ExcelPackage(new FileInfo(@"C:\temp\EPPlusTestark\Test4.xlsm"));
+            var pck = new ExcelPackage(new FileInfo(@"C:\temp\EPPlusTestark\Test4.xlsm"), EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.First(); 
             pck.Workbook.Worksheets["Räntebärande formaterat utland"].Cells["M13"].Calculate();
             Assert.AreEqual(0d, pck.Workbook.Worksheets["Räntebärande formaterat utland"].Cells["M13"].Value);  
@@ -165,7 +165,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestPrecedence()
         {
-            var pck = new ExcelPackage(new FileInfo(@"C:\temp\EPPlusTestark\Precedence.xlsx"));
+            var pck = new ExcelPackage(new FileInfo(@"C:\temp\EPPlusTestark\Precedence.xlsx"), EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Last();
             pck.Workbook.Calculate();
             Assert.AreEqual(150d, ws.Cells["A1"].Value);
@@ -174,7 +174,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestDataType()
         {
-            var pck = new ExcelPackage(new FileInfo(@"c:\temp\EPPlusTestark\calc_amount.xlsx"));
+            var pck = new ExcelPackage(new FileInfo(@"c:\temp\EPPlusTestark\calc_amount.xlsx"), EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.First();
             //ws.Names.Add("Name1",ws.Cells["A1"]);
             //ws.Names.Add("Name2", ws.Cells["A2"]);
@@ -191,7 +191,7 @@ namespace EPPlusTest
         [TestMethod]
         public void CalcTwiceError()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("CalcTest");
             ws.Names.AddValue("PRICE", 10);
             ws.Names.AddValue("QUANTITY", 11);
@@ -214,7 +214,7 @@ namespace EPPlusTest
         [TestMethod]
         public void IfError()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("CalcTest");
             ws.Cells["A1"].Value = "test1";
             ws.Cells["A5"].Value = "test2";
@@ -232,7 +232,7 @@ namespace EPPlusTest
         [TestMethod]
         public void LeftRightFunctionTest()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("CalcTest");
             ws.SetValue("A1", "asdf");
             ws.Cells["A2"].Formula = "Left(A1, 3)";
@@ -249,7 +249,7 @@ namespace EPPlusTest
         [TestMethod]
         public void IfFunctionTest()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("CalcTest");
             ws.SetValue("A1", 123);
             ws.Cells["A2"].Formula = "IF(A1 = 123, 1, -1)";
@@ -266,7 +266,7 @@ namespace EPPlusTest
         [TestMethod]
         public void INTFunctionTest()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("CalcTest");
             var currentDate = DateTime.UtcNow.Date;
             ws.SetValue("A1", currentDate.ToString("MM/dd/yyyy"));
@@ -309,7 +309,7 @@ namespace EPPlusTest
 		[TestMethod]
 		public void CalculateDateMath()
 		{
-			using (ExcelPackage package = new ExcelPackage())
+			using (ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
 			{
 				var worksheet = package.Workbook.Worksheets.Add("Test");
 				var dateCell = worksheet.Cells[2, 2];
@@ -338,7 +338,7 @@ namespace EPPlusTest
 		}
 		private string GetOutput(string file)
         {
-            using (var pck = new ExcelPackage(new FileInfo(file)))
+            using (var pck = new ExcelPackage(new FileInfo(file), EPPlusTest.TempFolderHelper.Create()))
             {
                 var fr = new Dictionary<string, object>();
                 foreach (var ws in pck.Workbook.Worksheets)

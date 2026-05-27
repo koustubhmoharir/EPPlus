@@ -150,7 +150,7 @@ namespace EPPlusTest
         [TestMethod]
         public void NamedRangeMovesDownIfRowInsertedAbove()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("NEW");
                 var range = sheet.Cells[2, 1, 3, 3];
@@ -165,7 +165,7 @@ namespace EPPlusTest
         [TestMethod]
         public void NamedRangeDoesNotChangeIfRowInsertedBelow()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("NEW");
                 var range = sheet.Cells[2, 1, 3, 3];
@@ -180,7 +180,7 @@ namespace EPPlusTest
         [TestMethod]
         public void NamedRangeExpandsDownIfRowInsertedWithin()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("NEW");
                 var range = sheet.Cells[2, 1, 3, 3];
@@ -195,7 +195,7 @@ namespace EPPlusTest
         [TestMethod]
         public void NamedRangeMovesRightIfColInsertedBefore()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("NEW");
                 var range = sheet.Cells[2, 2, 3, 4];
@@ -210,7 +210,7 @@ namespace EPPlusTest
         [TestMethod]
         public void NamedRangeUnchangedIfColInsertedAfter()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("NEW");
                 var range = sheet.Cells[2, 2, 3, 4];
@@ -225,7 +225,7 @@ namespace EPPlusTest
         [TestMethod]
         public void NamedRangeExpandsToRightIfColInsertedWithin()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("NEW");
                 var range = sheet.Cells[2, 2, 3, 4];
@@ -240,7 +240,7 @@ namespace EPPlusTest
         [TestMethod]
         public void NamedRangeWithWorkbookScopeIsMovedDownIfRowInsertedAbove()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var workbook = package.Workbook;
                 var sheet = package.Workbook.Worksheets.Add("NEW");
@@ -256,7 +256,7 @@ namespace EPPlusTest
         [TestMethod]
         public void NamedRangeWithWorkbookScopeIsMovedRightIfColInsertedBefore()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var workbook = package.Workbook;
                 var sheet = package.Workbook.Worksheets.Add("NEW");
@@ -272,7 +272,7 @@ namespace EPPlusTest
         [TestMethod]
         public void NamedRangeIsUnchangedForOutOfScopeSheet()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var workbook = package.Workbook;
                 var sheet1 = package.Workbook.Worksheets.Add("NEW");

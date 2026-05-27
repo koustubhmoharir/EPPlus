@@ -20,7 +20,7 @@ namespace EPPlusTest
             // but EPPlus expects one from a store usually.
             
             // For now, I'll just check if the Verifier property type is correct and it can decode.
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 package.Workbook.CreateVBAProject();
                 var signature = package.Workbook.VbaProject.Signature;
@@ -34,7 +34,7 @@ namespace EPPlusTest
         {
             // The difference mentioned MD5.Create()
             // In stable it uses MD5CryptoServiceProvider.Create()
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 package.Workbook.CreateVBAProject();
                 package.Workbook.VbaProject.Constants = "";

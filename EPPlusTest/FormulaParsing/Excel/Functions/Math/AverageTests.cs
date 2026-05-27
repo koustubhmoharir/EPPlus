@@ -40,7 +40,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Math
 		public void AverageCellReferences()
 		{
 			// In the case of cell references, Average DOES NOT parse and include numeric strings, date strings, bools, unparsable strings, etc.
-			ExcelPackage package = new ExcelPackage();
+			ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
 			var worksheet = package.Workbook.Worksheets.Add("Test");
 			ExcelRange range1 = worksheet.Cells[1, 1];
 			range1.Formula = "\"1000\"";

@@ -40,10 +40,10 @@ namespace EPPlusTest.FormulaParsing
         [TestMethod]
         public void FunctionsShouldBeCopied()
         {
-            using (var package1 = new ExcelPackage())
+            using (var package1 = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 package1.Workbook.FormulaParserManager.LoadFunctionModule(new MyModule());
-                using (var package2 = new ExcelPackage())
+                using (var package2 = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
                 {
                     var origNumberOfFuncs = package2.Workbook.FormulaParserManager.GetImplementedFunctionNames().Count();
 

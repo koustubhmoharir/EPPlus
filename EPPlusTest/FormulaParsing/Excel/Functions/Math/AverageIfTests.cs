@@ -19,7 +19,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Math
         [TestInitialize]
         public void Initialize()
         {
-            _package = new ExcelPackage();
+            _package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             _provider = new EpplusExcelDataProvider(_package);
             _parsingContext = ParsingContext.Create();
             _parsingContext.Scopes.NewScope(RangeAddress.Empty);

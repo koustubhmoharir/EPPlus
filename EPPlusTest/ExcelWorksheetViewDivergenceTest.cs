@@ -11,7 +11,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestTabSelectedBaseline()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws1 = pck.Workbook.Worksheets.Add("Sheet1");
                 var ws2 = pck.Workbook.Worksheets.Add("Sheet2");
@@ -30,7 +30,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestTabSelectedMulti()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws1 = pck.Workbook.Worksheets.Add("Sheet1");
                 var ws2 = pck.Workbook.Worksheets.Add("Sheet2");

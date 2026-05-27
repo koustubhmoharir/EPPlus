@@ -12,7 +12,7 @@ namespace EPPlusTest
         [TestMethod]
         public void Workbook_Worksheets_Access_BasedOnCompatibility()
         {
-            using (var package = new ExcelPackage(new MemoryStream()))
+            using (var package = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
 #if Core
                 Assert.IsFalse(package.Compatibility.IsWorksheets1Based);
@@ -34,7 +34,7 @@ namespace EPPlusTest
         [TestMethod]
         public void Workbook_TableNames_CaseInsensitive_On_Stable()
         {
-            using (var package = new ExcelPackage(new MemoryStream()))
+            using (var package = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var table = ws.Tables.Add(ws.Cells["A1:B2"], "MyTable");
@@ -47,7 +47,7 @@ namespace EPPlusTest
         [TestMethod]
         public void Workbook_PivotTableNames_CaseSensitive_On_Stable()
         {
-            using (var package = new ExcelPackage(new MemoryStream()))
+            using (var package = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells["A1:B10"].Value = 1;
@@ -64,7 +64,7 @@ namespace EPPlusTest
         [TestMethod]
         public void Workbook_Properties_CalcMode()
         {
-            using (var package = new ExcelPackage(new MemoryStream()))
+            using (var package = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 Assert.AreEqual(ExcelCalcMode.Automatic, package.Workbook.CalcMode);
                 
@@ -79,7 +79,7 @@ namespace EPPlusTest
         [TestMethod]
         public void Workbook_Properties_Date1904()
         {
-            using (var package = new ExcelPackage(new MemoryStream()))
+            using (var package = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 package.Workbook.Worksheets.Add("Sheet1");
                 Assert.IsFalse(package.Workbook.Date1904);

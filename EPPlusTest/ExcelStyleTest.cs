@@ -12,7 +12,7 @@ namespace EPPlusTest
         [TestMethod]
         public void QuotePrefixStyle()
         {
-            using (var p = new ExcelPackage())
+            using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = p.Workbook.Worksheets.Add("QuotePrefixTest");
                 var cell = ws.Cells["B2"];
@@ -31,7 +31,7 @@ namespace EPPlusTest
         [TestMethod]
         public void FontBaselineStyle()
         {
-            using (var p = new ExcelPackage())
+            using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = p.Workbook.Worksheets.Add("BaselineTest");
                 var cell = ws.Cells["A1"];
@@ -77,7 +77,7 @@ namespace EPPlusTest
         [TestMethod]
         public void ApplyProtectionAndAlignmentTest()
         {
-            using (var p = new ExcelPackage())
+            using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = p.Workbook.Worksheets.Add("ApplyTest");
                 var cell = ws.Cells["A1"];

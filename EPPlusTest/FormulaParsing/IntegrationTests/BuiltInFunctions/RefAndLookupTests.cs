@@ -24,7 +24,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
             _excelDataProvider = A.Fake<ExcelDataProvider>();
             A.CallTo(() => _excelDataProvider.GetDimensionEnd(A<string>.Ignored)).Returns(new ExcelCellAddress(10, 1));
             _parser = new FormulaParser(_excelDataProvider);
-            _package = new ExcelPackage();
+            _package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             _worksheet = _package.Workbook.Worksheets.Add("Test");
         }
 
@@ -37,7 +37,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void VLookupShouldReturnCorrespondingValue()
         {
-            using(var pck = new ExcelPackage())
+            using(var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("test");
                 var lookupAddress = "A1:B2";
@@ -55,7 +55,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void VLookupShouldReturnClosestValueBelowIfLastArgIsTrue()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("test");
                 var lookupAddress = "A1:B2";
@@ -130,7 +130,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void RowSholdHandleReference()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("test");
                 s1.Cells["A1"].Formula = "ROW(A4)";
@@ -150,7 +150,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void ColumnSholdHandleReference()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("test");
                 s1.Cells["A1"].Formula = "COLUMN(B4)";
@@ -193,7 +193,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void IndirectShouldReturnARange()
         {
-            using (var package = new ExcelPackage(new MemoryStream()))
+            using (var package = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("Test");
                 s1.Cells["A1:A2"].Value = 2;
@@ -210,7 +210,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void OffsetShouldReturnASingleValue()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("Test");
                 s1.Cells["B3"].Value = 1d;
@@ -223,7 +223,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void OffsetShouldReturnARange()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("Test");
                 s1.Cells["B1"].Value = 1d;
@@ -238,7 +238,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void OffsetDirectReferenceToMultiRangeShouldSetValueError()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("Test");
                 s1.Cells["B1"].Value = 1d;
@@ -254,7 +254,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void OffsetShouldReturnARangeAccordingToWidth()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("Test");
                 s1.Cells["B1"].Value = 1d;
@@ -269,7 +269,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void OffsetShouldReturnARangeAccordingToHeight()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("Test");
                 s1.Cells["B1"].Value = 1d;
@@ -287,7 +287,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void OffsetShouldCoverMultipleColumns()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("Test");
                 s1.Cells["C1"].Value = 1d;
@@ -305,7 +305,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod, Ignore]
         public void VLookupShouldHandleNames()
         {
-            using (var package = new ExcelPackage(new FileInfo(@"c:\temp\Book3.xlsx")))
+            using (var package = new ExcelPackage(new FileInfo(@"c:\temp\Book3.xlsx"), EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.First();
                 var v = s1.Cells["X10"].Formula;

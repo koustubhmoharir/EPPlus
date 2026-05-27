@@ -92,7 +92,7 @@ namespace EPPlusTest.DataValidation.IntegrationTests
         [TestMethod, Ignore]
         public void DataValidations_ReadExistingWorkbookWithDataValidations()
         {
-            using (var package = new ExcelPackage(new FileInfo(GetTestOutputPath("DVTest.xlsx"))))
+            using (var package = new ExcelPackage(new FileInfo(GetTestOutputPath("DVTest.xlsx")), EPPlusTest.TempFolderHelper.Create()))
             {
                 Assert.AreEqual(3, package.Workbook.Worksheets[1].DataValidations.Count);
             }
@@ -104,7 +104,7 @@ namespace EPPlusTest.DataValidation.IntegrationTests
             var fileInfo = new FileInfo(@"c:\Temp\DvTest.xlsx");
             if(File.Exists(fileInfo.FullName))
                 File.Delete(fileInfo.FullName);
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 var validation = sheet.DataValidations.AddIntegerValidation("A1");
@@ -121,7 +121,7 @@ namespace EPPlusTest.DataValidation.IntegrationTests
 
                 package.SaveAs(fileInfo);
             }
-            using (var pck = new ExcelPackage(fileInfo))
+            using (var pck = new ExcelPackage(fileInfo, EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.First();
                 var dv = sheet.DataValidations.First();

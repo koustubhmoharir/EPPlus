@@ -21,7 +21,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.RefAndLookup
         public void Initialize()
         {
             _parsingContext = ParsingContext.Create();
-            _package = new ExcelPackage(new MemoryStream());
+            _package = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create());
             _worksheet = _package.Workbook.Worksheets.Add("test");
         }
 

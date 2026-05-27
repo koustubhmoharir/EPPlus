@@ -10,7 +10,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestPmtFunction()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells["A1"].Formula = "PMT(0.08/12, 10, 10000)";

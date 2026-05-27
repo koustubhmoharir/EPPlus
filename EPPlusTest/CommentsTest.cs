@@ -14,7 +14,7 @@ namespace EPPlusTest
         public void ReadExcelComments()
         {
             var fi = new FileInfo(@"c:\temp\googleComments\Comments.excel.xlsx");
-            using (var excelPackage = new ExcelPackage(fi))
+            using (var excelPackage = new ExcelPackage(fi, EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet1 = excelPackage.Workbook.Worksheets.First();
                 Assert.AreEqual(2, sheet1.Comments.Count);
@@ -25,7 +25,7 @@ namespace EPPlusTest
         public void ReadGoogleComments()
         {
             var fi = new FileInfo(@"c:\temp\googleComments\Comments.google.xlsx");
-            using (var excelPackage = new ExcelPackage(fi))
+            using (var excelPackage = new ExcelPackage(fi, EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet1 = excelPackage.Workbook.Worksheets.First();
                 Assert.AreEqual(2, sheet1.Comments.Count);
@@ -41,7 +41,7 @@ namespace EPPlusTest
             try
             {
                 using (var ms = File.Open(xlsxName, FileMode.OpenOrCreate))
-                using (var pkg = new ExcelPackage(ms))
+                using (var pkg = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
                 {
                     var ws = pkg.Workbook.Worksheets.Add("Comment");
                     var a1 = ws.Cells["A1"];

@@ -16,7 +16,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions
         [TestInitialize]
         public void Initialize()
         {
-            _package = new ExcelPackage();
+            _package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var s1 = _package.Workbook.Worksheets.Add("test");
             s1.Cells["A1"].Value = 1;
             s1.Cells["A2"].Value = 2;

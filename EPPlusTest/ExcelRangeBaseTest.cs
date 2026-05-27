@@ -11,7 +11,7 @@ namespace EPPlusTest
         public void CopyCopiesCommentsFromSingleCellRanges()
         {
             InitBase();
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws1 = pck.Workbook.Worksheets.Add("CommentCopying");
             var sourceExcelRange = ws1.Cells[3, 3];
             Assert.IsNull(sourceExcelRange.Comment);
@@ -33,7 +33,7 @@ namespace EPPlusTest
         public void CopyCopiesCommentsFromMultiCellRanges()
         {
             InitBase();
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws1 = pck.Workbook.Worksheets.Add("CommentCopying");
             var sourceExcelRangeC3 = ws1.Cells[3, 3];
             var sourceExcelRangeD3 = ws1.Cells[3, 4];
@@ -77,7 +77,7 @@ namespace EPPlusTest
         [TestMethod]
         public void SettingAddressHandlesMultiAddresses()
         {
-            using (ExcelPackage package = new ExcelPackage())
+            using (ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var worksheet = package.Workbook.Worksheets.Add("Sheet1");
                 var name = package.Workbook.Names.Add("Test", worksheet.Cells[3, 3]);
@@ -94,7 +94,7 @@ namespace EPPlusTest
         [TestMethod]
         public void ExcelNamedRangeLocalSheetIdTests()
         {
-            using (ExcelPackage package = new ExcelPackage())
+            using (ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet1 = package.Workbook.Worksheets.Add("Sheet1");
                 var sheet2 = package.Workbook.Worksheets.Add("Sheet2");
@@ -116,7 +116,7 @@ namespace EPPlusTest
         [TestMethod]
         public void GetValueTypedConversions()
         {
-            using (ExcelPackage package = new ExcelPackage())
+            using (ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 
@@ -156,7 +156,7 @@ namespace EPPlusTest
         [TestMethod]
         public void LoadFromTextComprehensiveTests()
         {
-            using (ExcelPackage package = new ExcelPackage())
+            using (ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 
@@ -199,7 +199,7 @@ namespace EPPlusTest
         [TestMethod]
         public void ClearAndDeleteTests()
         {
-            using (ExcelPackage package = new ExcelPackage())
+            using (ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells["A1"].Value = "Val1";
@@ -217,7 +217,7 @@ namespace EPPlusTest
         [TestMethod]
         public void GetDateTextFormattingTests()
         {
-            using (ExcelPackage package = new ExcelPackage())
+            using (ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var date = new DateTime(2023, 10, 5, 12, 30, 45);

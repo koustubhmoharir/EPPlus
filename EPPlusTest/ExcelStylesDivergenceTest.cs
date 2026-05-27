@@ -12,7 +12,7 @@ namespace EPPlusTest
         [TestMethod]
         public void CreateNamedStyleFromOtherWorkbookTest()
         {
-            using (var p1 = new ExcelPackage())
+            using (var p1 = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws1 = p1.Workbook.Worksheets.Add("Sheet1");
                 var ns1 = p1.Workbook.Styles.CreateNamedStyle("CustomStyle1");
@@ -20,7 +20,7 @@ namespace EPPlusTest
                 ns1.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 ns1.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Red);
 
-                using (var p2 = new ExcelPackage())
+                using (var p2 = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
                 {
                     var ws2 = p2.Workbook.Worksheets.Add("Sheet1");
                     
@@ -41,7 +41,7 @@ namespace EPPlusTest
         [TestMethod]
         public void AddNewStyleColumnContiguousRangeTest()
         {
-            using (var p = new ExcelPackage())
+            using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = p.Workbook.Worksheets.Add("Sheet1");
                 

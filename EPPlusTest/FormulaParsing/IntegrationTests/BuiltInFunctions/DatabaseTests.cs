@@ -10,7 +10,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void DgetShouldReturnCorrectResult()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 // database
@@ -40,7 +40,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void DcountShouldReturnCorrectResult()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 // database
@@ -70,7 +70,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void DcountaShouldReturnCorrectResult()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 // database
@@ -100,7 +100,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void DMaxShouldReturnCorrectResult()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 // database
@@ -128,7 +128,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void DMinShouldReturnCorrectResult()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 // database
@@ -156,7 +156,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void DSumShouldReturnCorrectResult()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 // database
@@ -184,7 +184,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void DAverageShouldReturnCorrectResult()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 // database
@@ -212,7 +212,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void DVarShouldReturnCorrectResult()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 // database
@@ -240,7 +240,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void DVarpShouldReturnCorrectResult()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 // database
@@ -268,7 +268,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void DVarpShouldReturnByFieldIndex()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 // database

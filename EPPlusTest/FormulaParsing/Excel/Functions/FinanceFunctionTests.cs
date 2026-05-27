@@ -10,7 +10,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions
         [TestMethod]
         public void PmtTest1()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 sheet.Cells["A1"].Formula = "PMT( 5%/12, 60, 50000 )";

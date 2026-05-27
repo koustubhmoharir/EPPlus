@@ -69,7 +69,7 @@ namespace EPPlusTest
             var di=new DirectoryInfo(_worksheetPath);            
             _worksheetPath = di.FullName + "\\";
 
-            _pck = new ExcelPackage();
+            _pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
         }
 
         protected ExcelPackage OpenPackage(string name, bool delete=false)
@@ -79,7 +79,7 @@ namespace EPPlusTest
             {
                 fi.Delete();
             }
-            _pck = new ExcelPackage(fi);
+            _pck = new ExcelPackage(fi, EPPlusTest.TempFolderHelper.Create());
             return _pck;
         }
         protected ExcelPackage OpenTemplatePackage(string name)
@@ -88,7 +88,7 @@ namespace EPPlusTest
             if (t.Exists)
             {
                 var fi = new FileInfo(_worksheetPath + name);
-                _pck = new ExcelPackage(fi, t);
+                _pck = new ExcelPackage(fi, t, EPPlusTest.TempFolderHelper.Create());
             }
             else
             {

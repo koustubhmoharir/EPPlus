@@ -105,7 +105,7 @@ namespace EPPlusTest
         private void ReadFile(byte[] b, int noSheets)
         {
             var ms = new MemoryStream(b);
-            using (var p = new ExcelPackage(ms))
+            using (var p = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
             {
                 Assert.AreEqual(p.Workbook.VbaProject.Modules.Count,noSheets+2);
                 Assert.AreEqual(noSheets, p.Workbook.Worksheets.Count);
@@ -114,7 +114,7 @@ namespace EPPlusTest
 
         public byte[] CreateFile(int noSheets)
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheets = Enumerable.Range(1, noSheets)   //460
                     .Select(x => $"Sheet{x}");
@@ -142,7 +142,7 @@ namespace EPPlusTest
         [TestMethod, Ignore]
         public void ReadVba()
         {
-            var p = new ExcelPackage(new FileInfo(@"c:\temp\pricecheck.xlsm"));
+            var p = new ExcelPackage(new FileInfo(@"c:\temp\pricecheck.xlsm"), EPPlusTest.TempFolderHelper.Create());
             var vba = p.Workbook.VbaProject;
             p.SaveAs(new FileInfo(@"c:\temp\pricecheckSaved.xlsm"));
         }
@@ -156,7 +156,7 @@ namespace EPPlusTest
         {
             var src = TempFile("report.xlsm");
             if (src.Exists) src.Delete();
-            var package = new ExcelPackage(src);
+            var package = new ExcelPackage(src, EPPlusTest.TempFolderHelper.Create());
             var sheets = Enumerable.Range(1, 500)   //460
                 .Select(x => $"Sheet{x}");
             foreach (var sheet in sheets)
@@ -179,7 +179,7 @@ namespace EPPlusTest
                 newFile.Delete();  // ensures we create a new workbook
                 newFile = new FileInfo(@"C:\temp\bug\sample7compdoctest.xlsx");
             }
-            using (ExcelPackage package = new ExcelPackage())
+            using (ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 Console.WriteLine("{0:HH.mm.ss}\tStarting...", DateTime.Now);
 
@@ -267,7 +267,7 @@ namespace EPPlusTest
         [TestMethod, Ignore]
         public void ReadPerfTest()
         {
-            var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\sample7compdoctest.xlsx"), "");
+            var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\sample7compdoctest.xlsx"), "", EPPlusTest.TempFolderHelper.Create());
             //var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\sample7compdoctest_4.5.xlsx"), "");
             //var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\sample7compdoctest.310k.xlsx"), "");
         }
@@ -276,7 +276,7 @@ namespace EPPlusTest
         {
             //var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\report.xlsm"));
             //var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\report411.xlsm"));
-            var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\sample7.xlsx"),"");
+            var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\sample7.xlsx"),"", EPPlusTest.TempFolderHelper.Create());
             var vba = p.Workbook.VbaProject;
         }
         

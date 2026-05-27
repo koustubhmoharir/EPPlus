@@ -11,7 +11,7 @@ namespace EPPlusTest
         [TestMethod]
         public void VBACollection_Indexer_ReturnsModule()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 package.Workbook.CreateVBAProject();
                 var moduleName = "TestModule";
@@ -26,7 +26,7 @@ namespace EPPlusTest
         [TestMethod]
         public void VBACollection_Indexer_IsCaseInsensitive()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 package.Workbook.CreateVBAProject();
                 var moduleName = "TestModule";
@@ -41,7 +41,7 @@ namespace EPPlusTest
         [TestMethod]
         public void VBACollection_Exists_ReturnsTrue()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 package.Workbook.CreateVBAProject();
                 var moduleName = "TestModule";
@@ -55,7 +55,7 @@ namespace EPPlusTest
         [TestMethod]
         public void VBACollection_ReferenceIndexer_ReturnsReference()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 package.Workbook.CreateVBAProject();
                 var refName = "TestRef";
