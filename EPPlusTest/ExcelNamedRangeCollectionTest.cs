@@ -11,7 +11,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestNamedRangeCollectionAddAndLookup()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 
@@ -37,7 +37,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestNamedRangeCollectionAddValueAndFormula()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 
@@ -63,7 +63,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestNamedRangeCollectionRemoveAndClear()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 
@@ -91,7 +91,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestNamedRangeCollectionNameValidation()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 
@@ -123,7 +123,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestNamedRangeCollectionInsertRowsAndColumnsBounds()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 

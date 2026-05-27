@@ -12,7 +12,7 @@ namespace EPPlusTest.FormulaParsing
         [TestMethod]
         public void GetRange_WithTableThisRow_ShouldReturnCorrectRange()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells["A1"].Value = "Header1";
@@ -36,7 +36,7 @@ namespace EPPlusTest.FormulaParsing
         [TestMethod]
         public void GetRange_WithTableAll_ShouldReturnCorrectRange()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells["A1"].Value = "Header1";
@@ -60,7 +60,7 @@ namespace EPPlusTest.FormulaParsing
         [TestMethod]
         public void GetRange_WithTableAddress_ShouldReturnCorrectRange()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells["A1"].Value = "Header1";
@@ -82,7 +82,7 @@ namespace EPPlusTest.FormulaParsing
         [TestMethod]
         public void GetRange_WithTableHeaders_ShouldReturnCorrectRange()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells["A1"].Value = "Header1";
@@ -101,7 +101,7 @@ namespace EPPlusTest.FormulaParsing
         [TestMethod]
         public void GetRange_WithTableData_ShouldReturnCorrectRange()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells["A1"].Value = "Header1";
@@ -123,7 +123,7 @@ namespace EPPlusTest.FormulaParsing
         [TestMethod]
         public void GetRange_WithTableTotals_ShouldReturnCorrectRange()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells["A1"].Value = "Header1";
@@ -144,7 +144,7 @@ namespace EPPlusTest.FormulaParsing
         [TestMethod]
         public void GetRange_WithNormalAddress_ShouldReturnCorrectRange()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells["A1"].Value = 1;

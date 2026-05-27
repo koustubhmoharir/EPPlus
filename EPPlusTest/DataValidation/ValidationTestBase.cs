@@ -21,7 +21,7 @@ namespace EPPlusTest.DataValidation
 
         public void SetupTestData()
         {
-            _package = new ExcelPackage();
+            _package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             _sheet = _package.Workbook.Worksheets.Add("test");
             _cultureInfo = new CultureInfo("en-US");
         }

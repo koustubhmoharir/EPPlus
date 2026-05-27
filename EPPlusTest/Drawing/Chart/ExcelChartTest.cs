@@ -16,7 +16,7 @@ namespace EPPlusTest.Drawing.Chart
         [TestInitialize]
         public void Initialize()
         {
-            _package = new ExcelPackage();
+            _package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             _worksheet = _package.Workbook.Worksheets.Add("TestSheet");
         }
 
@@ -66,7 +66,7 @@ namespace EPPlusTest.Drawing.Chart
                 _package.SaveAs(stream);
                 
                 stream.Position = 0;
-                using (var loadedPackage = new ExcelPackage(stream))
+                using (var loadedPackage = new ExcelPackage(stream, EPPlusTest.TempFolderHelper.Create()))
                 {
                     var loadedWorksheet = loadedPackage.Workbook.Worksheets["TestSheet"];
                     Assert.AreEqual(1, loadedWorksheet.Drawings.Count);
@@ -98,7 +98,7 @@ namespace EPPlusTest.Drawing.Chart
             {
                 _package.SaveAs(stream);
                 stream.Position = 0;
-                using (var loadedPackage = new ExcelPackage(stream))
+                using (var loadedPackage = new ExcelPackage(stream, EPPlusTest.TempFolderHelper.Create()))
                 {
                     var loadedWorksheet = loadedPackage.Workbook.Worksheets["TestSheet"];
                     var loadedChart = loadedWorksheet.Drawings["PivotChart"] as ExcelChart;

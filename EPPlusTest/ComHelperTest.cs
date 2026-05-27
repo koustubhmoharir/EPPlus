@@ -21,7 +21,7 @@ namespace EPPlusTest
             // Create a valid zip (xlsx) file
             var validZipPath = Path.Combine(Path.GetTempPath(), "validZip.xlsx");
             if (File.Exists(validZipPath)) File.Delete(validZipPath);
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 package.Workbook.Worksheets.Add("Sheet1");
                 package.SaveAs(new FileInfo(validZipPath));

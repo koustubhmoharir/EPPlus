@@ -46,7 +46,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void IsTextShouldReturnTrueWhenReferencedCellContainsText()
         {
-            using(var pck = new ExcelPackage())
+            using(var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("Test");
                 sheet.Cells["A1"].Value = "Abc";
@@ -60,7 +60,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void IsErrShouldReturnFalseIfErrorCodeIsNa()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("Test");
                 sheet.Cells["A1"].Value = ExcelErrorValue.Parse("#N/A");
@@ -74,7 +74,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void IsNaShouldReturnTrueCodeIsNa()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("Test");
                 sheet.Cells["A1"].Value = ExcelErrorValue.Parse("#N/A");
@@ -88,7 +88,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void ErrorTypeShouldReturnCorrectErrorCodes()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("Test");
                 sheet.Cells["A1"].Value = ExcelErrorValue.Create(eErrorType.Null);

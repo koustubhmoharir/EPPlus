@@ -14,7 +14,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests
         public void BaseInitialize()
         {
             var dir = AppDomain.CurrentDomain.BaseDirectory;
-            var Package = new ExcelPackage(new FileInfo(Path.Combine(dir, "Workbooks", "FormulaTest.xlsx")));
+            var Package = new ExcelPackage(new FileInfo(Path.Combine(dir, "Workbooks", "FormulaTest.xlsx")), EPPlusTest.TempFolderHelper.Create());
             Worksheet = Package.Workbook.Worksheets["ValidateFormulas"];
             Package.Workbook.Calculate();
         }

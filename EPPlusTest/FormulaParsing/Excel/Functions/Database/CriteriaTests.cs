@@ -13,7 +13,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Database
         [TestMethod]
         public void CriteriaShouldReadFieldsAndValues()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 sheet.Cells["A1"].Value = "Crit1";
@@ -36,7 +36,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Database
         [TestMethod]
         public void CriteriaShouldIgnoreEmptyFields1()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 sheet.Cells["A1"].Value = "Crit1";
@@ -56,7 +56,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Database
         [TestMethod]
         public void CriteriaShouldIgnoreEmptyFields2()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 sheet.Cells["A1"].Value = "Crit1";

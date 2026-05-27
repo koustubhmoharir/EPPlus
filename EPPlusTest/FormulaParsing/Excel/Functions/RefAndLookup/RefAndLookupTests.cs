@@ -359,7 +359,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod, Ignore]
         public void MatchShouldHandleAddressOnOtherSheet()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet1 = package.Workbook.Worksheets.Add("Sheet1");
                 var sheet2 = package.Workbook.Worksheets.Add("Sheet2");

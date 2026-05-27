@@ -137,7 +137,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void MinaShouldCalculateStringAs0()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("test");
                 sheet.Cells["A1"].Value = 1;
@@ -158,7 +158,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void AverageShouldReturnDiv0IfEmptyCell()
         {
-            using(var pck = new ExcelPackage())
+            using(var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("test");
                 ws.Cells["A2"].Formula = "AVERAGE(A1)";
@@ -380,7 +380,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void CountBlankShouldCalculateEmptyCells()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("test");
                 sheet.Cells["A1"].Value = 1;
@@ -402,7 +402,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void AverateIfsShouldCaluclateResult()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("test");
                 sheet.Cells["F4"].Value = 1;
@@ -432,7 +432,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void AbsShouldHandleEmptyCell()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("test");
                 sheet.Cells["A1"].Formula = "ABS(B1)";

@@ -241,8 +241,12 @@ namespace OfficeOpenXml
 
         internal string tempFolder;
         private string GetTempFile()
-        {
-            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
+		{
+			if (tempFolder != null && !Directory.Exists(tempFolder))
+			{
+				Directory.CreateDirectory(tempFolder);
+			}
+			return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
         }
         internal static FileStream CreateTempStream(string filePath)
         {

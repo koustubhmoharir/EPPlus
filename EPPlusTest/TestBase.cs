@@ -52,13 +52,13 @@ namespace EPPlusTest
             var di=new DirectoryInfo(_worksheetPath);            
             _worksheetPath = di.FullName + "\\";
 
-            _pck = new ExcelPackage();
+            _pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
         }
 
         protected void OpenPackage(string name)
         {
             var fi = new FileInfo(_worksheetPath + name);
-            _pck = new ExcelPackage(fi);
+            _pck = new ExcelPackage(fi, EPPlusTest.TempFolderHelper.Create());
         }
         
         protected void SaveWorksheet(string name)

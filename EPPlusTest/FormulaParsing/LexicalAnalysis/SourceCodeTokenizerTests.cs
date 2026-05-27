@@ -154,7 +154,7 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
         public void TestBug9_12_14()
         {
             //(( W60 -(- W63 )-( W29 + W30 + W31 ))/( W23 + W28 + W42 - W51 )* W4 )
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws1 = pck.Workbook.Worksheets.Add("test");
                 for (var x = 1; x <= 10; x++)

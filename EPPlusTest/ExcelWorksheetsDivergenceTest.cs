@@ -14,7 +14,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestWorksheetIndexingBaseline()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws1 = pck.Workbook.Worksheets.Add("Sheet1");
                 var ws2 = pck.Workbook.Worksheets.Add("Sheet2");
@@ -29,7 +29,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestExtendedPropertiesSyncBaseline()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("SyncTest");
                 
@@ -55,7 +55,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestWorksheetCopyingWithPivotTable()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("Source");
                 ws.Cells["A1"].Value = "Category";
@@ -78,7 +78,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestWorksheetCopyingWithMergedCells()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("Source");
                 ws.Cells["A1:B2"].Merge = true;
@@ -92,7 +92,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestVBAModuleCreationBaseline()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 pck.Workbook.CreateVBAProject();
                 var ws = pck.Workbook.Worksheets.Add("SheetWithVBA");
@@ -109,7 +109,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestNextTableIdInitializationBaseline()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("TableTest");
                 var table = ws.Tables.Add(ws.Cells["A1:B2"], "Table1");

@@ -13,7 +13,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Database
         [TestMethod]
         public void DatabaseShouldReadFields()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var database = GetDatabase(package);
 
@@ -26,7 +26,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Database
         [TestMethod]
         public void HasMoreRowsShouldBeTrueWhenInitialized()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var database = GetDatabase(package);
 
@@ -38,7 +38,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Database
         [TestMethod]
         public void HasMoreRowsShouldBeFalseWhenLastRowIsRead()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var database = GetDatabase(package);
                 database.Read();
@@ -51,7 +51,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Database
         [TestMethod]
         public void DatabaseShouldReadFieldsInRow()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var database = GetDatabase(package);
                 var row = database.Read();

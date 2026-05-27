@@ -19,7 +19,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestExcelPackageConstructorDefault()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
 #if Core
                 Assert.IsNotNull(package.Stream);
@@ -58,7 +58,7 @@ namespace EPPlusTest
                     tempFile.Delete();
                 }
 
-                using (var package = new ExcelPackage(tempFile))
+                using (var package = new ExcelPackage(tempFile, EPPlusTest.TempFolderHelper.Create()))
                 {
                     Assert.AreEqual(tempFile.FullName, package.File.FullName);
                     var ws = package.Workbook.Worksheets.Add("Sheet1");
@@ -69,7 +69,7 @@ namespace EPPlusTest
                 tempFile.Refresh();
                 Assert.IsTrue(tempFile.Exists);
 
-                using (var package = new ExcelPackage(tempFile))
+                using (var package = new ExcelPackage(tempFile, EPPlusTest.TempFolderHelper.Create()))
                 {
                     Assert.AreEqual(1, package.Workbook.Worksheets.Count);
                     Assert.AreEqual("Sheet1", package.Workbook.Worksheets["Sheet1"].Name);
@@ -92,7 +92,7 @@ namespace EPPlusTest
             byte[] packageBytes;
             using (var ms = new MemoryStream())
             {
-                using (var package = new ExcelPackage(ms))
+                using (var package = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
                 {
                     var ws = package.Workbook.Worksheets.Add("SheetFromStream");
                     ws.Cells["A1"].Value = "Stream Test Data";
@@ -105,7 +105,7 @@ namespace EPPlusTest
             Assert.IsTrue(packageBytes.Length > 0);
 
             using (var ms = new MemoryStream(packageBytes))
-            using (var package = new ExcelPackage(ms))
+            using (var package = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
             {
                 Assert.AreEqual(1, package.Workbook.Worksheets.Count);
                 Assert.AreEqual("SheetFromStream", package.Workbook.Worksheets["SheetFromStream"].Name);
@@ -121,7 +121,7 @@ namespace EPPlusTest
             try
             {
                 // Create template
-                using (var package = new ExcelPackage(templateFile))
+                using (var package = new ExcelPackage(templateFile, EPPlusTest.TempFolderHelper.Create()))
                 {
                     var ws = package.Workbook.Worksheets.Add("TemplateSheet");
                     ws.Cells["B2"].Value = "Template Value";
@@ -129,7 +129,7 @@ namespace EPPlusTest
                 }
 
                 // Create from template
-                using (var package = new ExcelPackage(newFile, templateFile))
+                using (var package = new ExcelPackage(newFile, templateFile, EPPlusTest.TempFolderHelper.Create()))
                 {
                     Assert.AreEqual(1, package.Workbook.Worksheets.Count);
                     Assert.AreEqual("TemplateSheet", package.Workbook.Worksheets["TemplateSheet"].Name);
@@ -144,7 +144,7 @@ namespace EPPlusTest
                 Assert.IsTrue(newFile.Exists);
 
                 // Verify new file
-                using (var package = new ExcelPackage(newFile))
+                using (var package = new ExcelPackage(newFile, EPPlusTest.TempFolderHelper.Create()))
                 {
                     Assert.AreEqual(2, package.Workbook.Worksheets.Count);
                     Assert.AreEqual("TemplateSheet", package.Workbook.Worksheets["TemplateSheet"].Name);
@@ -154,7 +154,7 @@ namespace EPPlusTest
                 }
 
                 // Verify template remains unchanged
-                using (var package = new ExcelPackage(templateFile))
+                using (var package = new ExcelPackage(templateFile, EPPlusTest.TempFolderHelper.Create()))
                 {
                     Assert.AreEqual(1, package.Workbook.Worksheets.Count);
                 }
@@ -174,7 +174,7 @@ namespace EPPlusTest
             byte[] templateBytes;
             using (var ms = new MemoryStream())
             {
-                using (var package = new ExcelPackage(ms))
+                using (var package = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
                 {
                     var ws = package.Workbook.Worksheets.Add("TemplateSheet");
                     ws.Cells["A1"].Value = "Stream Template Value";
@@ -186,7 +186,7 @@ namespace EPPlusTest
             using (var templateStream = new MemoryStream(templateBytes))
             using (var outputStream = new MemoryStream())
             {
-                using (var package = new ExcelPackage(outputStream, templateStream))
+                using (var package = new ExcelPackage(outputStream, templateStream, EPPlusTest.TempFolderHelper.Create()))
                 {
                     Assert.AreEqual(1, package.Workbook.Worksheets.Count);
                     Assert.AreEqual("Stream Template Value", package.Workbook.Worksheets["TemplateSheet"].Cells["A1"].Value);
@@ -198,7 +198,7 @@ namespace EPPlusTest
 
                 byte[] outputBytes = outputStream.ToArray();
                 using (var ms = new MemoryStream(outputBytes))
-                using (var package = new ExcelPackage(ms))
+                using (var package = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
                 {
                     Assert.AreEqual(2, package.Workbook.Worksheets.Count);
                     Assert.AreEqual("Stream Template Value", package.Workbook.Worksheets["TemplateSheet"].Cells["A1"].Value);
@@ -213,7 +213,7 @@ namespace EPPlusTest
             var destFile = new FileInfo(GetSafeWorksheetPath("SaveAsDest_" + Guid.NewGuid() + ".xlsx"));
             try
             {
-                using (var package = new ExcelPackage())
+                using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
                 {
                     var ws = package.Workbook.Worksheets.Add("SaveAsSheet");
                     ws.Cells["A1"].Value = "Saved As Value";
@@ -223,7 +223,7 @@ namespace EPPlusTest
                 destFile.Refresh();
                 Assert.IsTrue(destFile.Exists);
 
-                using (var package = new ExcelPackage(destFile))
+                using (var package = new ExcelPackage(destFile, EPPlusTest.TempFolderHelper.Create()))
                 {
                     Assert.AreEqual(1, package.Workbook.Worksheets.Count);
                     Assert.AreEqual("Saved As Value", package.Workbook.Worksheets["SaveAsSheet"].Cells["A1"].Value);
@@ -239,7 +239,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestExcelPackageSaveAsStream()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("SaveAsStreamSheet");
                 ws.Cells["A1"].Value = "Stream Saved Value";
@@ -251,7 +251,7 @@ namespace EPPlusTest
                     Assert.IsTrue(bytes.Length > 0);
 
                     using (var ms = new MemoryStream(bytes))
-                    using (var package2 = new ExcelPackage(ms))
+                    using (var package2 = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
                     {
                         Assert.AreEqual(1, package2.Workbook.Worksheets.Count);
                         Assert.AreEqual("Stream Saved Value", package2.Workbook.Worksheets["SaveAsStreamSheet"].Cells["A1"].Value);
@@ -263,12 +263,11 @@ namespace EPPlusTest
         [TestMethod]
         public void TestExcelPackageEncryptionSupport()
         {
-#if Core
             // On dotnetport branch (.NET 9), encryption is supported and should successfully save and load
             var file = new FileInfo(GetSafeWorksheetPath("EncryptedPackage_" + Guid.NewGuid() + ".xlsx"));
             try
             {
-                using (var package = new ExcelPackage(file))
+                using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
                 {
                     package.Workbook.Worksheets.Add("SecureSheet");
                     package.Encryption.Password = "StrongPassword";
@@ -282,7 +281,7 @@ namespace EPPlusTest
                 // Attempt to open with wrong password should fail
                 try
                 {
-                    using (var package = new ExcelPackage(file, "WrongPassword"))
+                    using (var package = new ExcelPackage(file, "WrongPassword", EPPlusTest.TempFolderHelper.Create()))
                     {
                         var name = package.Workbook.Worksheets["SecureSheet"].Name;
                         Assert.Fail("Opening encrypted workbook with wrong password should have failed");
@@ -294,7 +293,7 @@ namespace EPPlusTest
                 }
 
                 // Successfully open with correct password
-                using (var package = new ExcelPackage(file, "StrongPassword"))
+                using (var package = new ExcelPackage(file, "StrongPassword", EPPlusTest.TempFolderHelper.Create()))
                 {
                     Assert.AreEqual(1, package.Workbook.Worksheets.Count);
                     Assert.AreEqual("SecureSheet", package.Workbook.Worksheets["SecureSheet"].Name);
@@ -305,42 +304,6 @@ namespace EPPlusTest
                 file.Refresh();
                 if (file.Exists) file.Delete();
             }
-#else
-            // On stable branch (Mono), encryption throws NotImplementedException, NotSupportedException or DllNotFoundException (ole32)
-            var file = new FileInfo(GetSafeWorksheetPath("MonoEncrypted_" + Guid.NewGuid() + ".xlsx"));
-            try
-            {
-                using (var package = new ExcelPackage(file))
-                {
-                    package.Workbook.Worksheets.Add("MonoSheet");
-                    package.Encryption.Password = "MonoPass";
-                    package.Encryption.IsEncrypted = true;
-
-                    try
-                    {
-                        package.Save();
-                        Assert.Fail("Encryption save should have thrown exception under Mono");
-                    }
-                    catch (NotImplementedException)
-                    {
-                        // Expected on Mono
-                    }
-                    catch (NotSupportedException)
-                    {
-                        // Expected on Mono
-                    }
-                    catch (DllNotFoundException)
-                    {
-                        // Expected on Mono (missing ole32.dll on Linux)
-                    }
-                }
-            }
-            finally
-            {
-                file.Refresh();
-                if (file.Exists) file.Delete();
-            }
-#endif
         }
 
 #if Core
@@ -348,7 +311,7 @@ namespace EPPlusTest
         public void TestExcelPackageCompatibilitySettingsIsWorksheets1Based()
         {
             // This tests the dotnetport specific CompatibilitySettings logic.
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 // Default is false on dotnetport (.NET 9) under Core conditional if not configured, 
                 // but let's test toggling it.

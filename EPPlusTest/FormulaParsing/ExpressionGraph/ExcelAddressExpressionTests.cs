@@ -84,7 +84,7 @@ namespace EPPlusTest.FormulaParsing.ExpressionGraph
         {
             var parsingContext = ParsingContext.Create();
             var file = new FileInfo("filename.xlsx");
-            using (var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
             using (var sheet = package.Workbook.Worksheets.Add("NewSheet"))
             using (var excelDataProvider = new EpplusExcelDataProvider(package))
             {
@@ -103,7 +103,7 @@ namespace EPPlusTest.FormulaParsing.ExpressionGraph
         {
             var parsingContext = ParsingContext.Create();
             var file = new FileInfo("filename.xlsx");
-            using (var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
             using (var sheet = package.Workbook.Worksheets.Add("NewSheet"))
             using (var excelDataProvider = new EpplusExcelDataProvider(package))
             {
@@ -123,7 +123,7 @@ namespace EPPlusTest.FormulaParsing.ExpressionGraph
         {
             var parsingContext = ParsingContext.Create();
             var file = new FileInfo("filename.xlsx");
-            using (var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
             using (var sheet = package.Workbook.Worksheets.Add("NewSheet"))
             using (var excelDataProvider = new EpplusExcelDataProvider(package))
             {
@@ -145,7 +145,7 @@ namespace EPPlusTest.FormulaParsing.ExpressionGraph
         {
             var parsingContext = ParsingContext.Create();
             var file = new FileInfo("filename.xlsx");
-            using (var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
             using (var sheet = package.Workbook.Worksheets.Add("NewSheet"))
             using (var excelDataProvider = new EpplusExcelDataProvider(package))
             {
@@ -167,7 +167,7 @@ namespace EPPlusTest.FormulaParsing.ExpressionGraph
         {
             var parsingContext = ParsingContext.Create();
             var file = new FileInfo("filename.xlsx");
-            using (var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
             using (var sheet = package.Workbook.Worksheets.Add("NewSheet"))
             using (var excelDataProvider = new EpplusExcelDataProvider(package))
             {
@@ -189,7 +189,7 @@ namespace EPPlusTest.FormulaParsing.ExpressionGraph
         {
             var parsingContext = ParsingContext.Create();
             var file = new FileInfo("filename.xlsx");
-            using (var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
             using (var sheet = package.Workbook.Worksheets.Add("NewSheet"))
             using (var excelDataProvider = new EpplusExcelDataProvider(package))
             {
@@ -211,7 +211,7 @@ namespace EPPlusTest.FormulaParsing.ExpressionGraph
         {
             var parsingContext = ParsingContext.Create();
             var file = new FileInfo("filename.xlsx");
-            using (var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
             using (var sheet = package.Workbook.Worksheets.Add("NewSheet"))
             using (var excelDataProvider = new EpplusExcelDataProvider(package))
             {
@@ -234,7 +234,7 @@ namespace EPPlusTest.FormulaParsing.ExpressionGraph
         {
             var parsingContext = ParsingContext.Create();
             var file = new FileInfo("filename.xlsx");
-            using (var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
             using (var sheet = package.Workbook.Worksheets.Add("NewSheet"))
             using (var excelDataProvider = new EpplusExcelDataProvider(package))
             {
@@ -266,7 +266,7 @@ namespace EPPlusTest.FormulaParsing.ExpressionGraph
         {
             var parsingContext = ParsingContext.Create();
             var file = new FileInfo("filename.xlsx");
-            using (var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
             using (var sheet = package.Workbook.Worksheets.Add("NewSheet"))
             using (var excelDataProvider = new EpplusExcelDataProvider(package))
             {
@@ -289,7 +289,7 @@ namespace EPPlusTest.FormulaParsing.ExpressionGraph
         {
             var parsingContext = ParsingContext.Create();
             var file = new FileInfo("filename.xlsx");
-            using (var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
             using (var sheet = package.Workbook.Worksheets.Add("NewSheet"))
             using (var excelDataProvider = new EpplusExcelDataProvider(package))
             {
@@ -312,7 +312,7 @@ namespace EPPlusTest.FormulaParsing.ExpressionGraph
         {
             var parsingContext = ParsingContext.Create();
             var file = new FileInfo("filename.xlsx");
-            using (var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
             using (var sheet = package.Workbook.Worksheets.Add("NewSheet"))
             using (var excelDataProvider = new EpplusExcelDataProvider(package))
             {

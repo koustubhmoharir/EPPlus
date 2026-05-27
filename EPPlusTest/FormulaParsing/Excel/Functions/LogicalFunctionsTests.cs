@@ -28,7 +28,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod, Ignore]
         public void IfShouldIgnoreCase()
         {
-            using (var pck = new ExcelPackage(new FileInfo(@"c:\temp\book1.xlsx")))
+            using (var pck = new ExcelPackage(new FileInfo(@"c:\temp\book1.xlsx"), EPPlusTest.TempFolderHelper.Create()))
             {
                 pck.Workbook.Calculate();
                 Assert.AreEqual("Sant", pck.Workbook.Worksheets.First().Cells["C3"].Value);
@@ -65,7 +65,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void NotShouldHandleExcelReference()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("sheet1");
                 sheet.Cells["A1"].Value = false;
@@ -78,7 +78,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void NotShouldHandleExcelReferenceToStringFalse()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("sheet1");
                 sheet.Cells["A1"].Value = "false";
@@ -91,7 +91,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void NotShouldHandleExcelReferenceToStringTrue()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("sheet1");
                 sheet.Cells["A1"].Value = "TRUE";
@@ -104,7 +104,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void AndShouldHandleStringLiteralTrue()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("sheet1");
                 sheet.Cells["A1"].Value = "tRuE";
@@ -171,7 +171,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void IfErrorShouldReturnSecondArgIfCriteriaEvaluatesAsAnError()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("test");
                 s1.Cells["A1"].Formula = "IFERROR(0/0, \"hello\")";
@@ -183,7 +183,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void IfErrorShouldReturnSecondArgIfCriteriaEvaluatesAsAnError2()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("test");
                 s1.Cells["A1"].Formula = "IFERROR(A2, \"hello\")";
@@ -196,7 +196,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void IfErrorShouldReturnResultOfFormulaIfNoError()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("test");
                 s1.Cells["A1"].Formula = "IFERROR(A2, \"hello\")";
@@ -209,7 +209,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void IfNaShouldReturnSecondArgIfCriteriaEvaluatesAsAnError2()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("test");
                 s1.Cells["A1"].Formula = "IFERROR(A2, \"hello\")";
@@ -222,7 +222,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void IfNaShouldReturnResultOfFormulaIfNoError()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var s1 = package.Workbook.Worksheets.Add("test");
                 s1.Cells["A1"].Formula = "IFNA(A2, \"hello\")";

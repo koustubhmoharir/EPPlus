@@ -15,7 +15,7 @@ namespace EPPlusTest
         {
             // 1. Create a simple valid XLSX package in memory using ExcelPackage
             byte[] packageData;
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("TestSheet");
                 ws.Cells["A1"].Value = "Hello World";
@@ -44,7 +44,7 @@ namespace EPPlusTest
                 {
                     Assert.IsNotNull(decryptedStream);
                     decryptedStream.Position = 0;
-                    using (var decryptedPck = new ExcelPackage(decryptedStream))
+                    using (var decryptedPck = new ExcelPackage(decryptedStream, EPPlusTest.TempFolderHelper.Create()))
                     {
                         Assert.AreEqual(1, decryptedPck.Workbook.Worksheets.Count);
                         var ws = decryptedPck.Workbook.Worksheets["TestSheet"];
@@ -72,7 +72,7 @@ namespace EPPlusTest
             }
 
             decryptedStream.Position = 0;
-            using (var decryptedPck = new ExcelPackage(decryptedStream))
+            using (var decryptedPck = new ExcelPackage(decryptedStream, EPPlusTest.TempFolderHelper.Create()))
             {
                 Assert.AreEqual(1, decryptedPck.Workbook.Worksheets.Count);
                 var ws = decryptedPck.Workbook.Worksheets["TestSheet"];
@@ -87,7 +87,7 @@ namespace EPPlusTest
         {
             // 1. Create a simple valid XLSX package in memory using ExcelPackage
             byte[] packageData;
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("TestSheet");
                 ws.Cells["A1"].Value = "Standard Encryption Test";
@@ -115,7 +115,7 @@ namespace EPPlusTest
                 {
                     Assert.IsNotNull(decryptedStream);
                     decryptedStream.Position = 0;
-                    using (var decryptedPck = new ExcelPackage(decryptedStream))
+                    using (var decryptedPck = new ExcelPackage(decryptedStream, EPPlusTest.TempFolderHelper.Create()))
                     {
                         Assert.AreEqual(1, decryptedPck.Workbook.Worksheets.Count);
                         var ws = decryptedPck.Workbook.Worksheets["TestSheet"];
@@ -142,7 +142,7 @@ namespace EPPlusTest
             }
 
             decryptedStream.Position = 0;
-            using (var decryptedPck = new ExcelPackage(decryptedStream))
+            using (var decryptedPck = new ExcelPackage(decryptedStream, EPPlusTest.TempFolderHelper.Create()))
             {
                 Assert.AreEqual(1, decryptedPck.Workbook.Worksheets.Count);
                 var ws = decryptedPck.Workbook.Worksheets["TestSheet"];

@@ -11,7 +11,7 @@ namespace EPPlusTest
         [TestMethod]
         public void WorksheetLookup_ShouldBeCaseInsensitive()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("MySheet");
                 Assert.IsNotNull(package.Workbook.Worksheets["MYSHEET"]);
@@ -22,7 +22,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TableLookup_ShouldBeCaseInsensitive()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var table = ws.Tables.Add(ws.Cells["A1:B2"], "MyTable");

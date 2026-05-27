@@ -11,7 +11,7 @@ namespace EPPlusTest
         [TestMethod]
         public void RichTextHtml_HtmlDecode_Test()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Test");
                 var range = ws.Cells["A1"];
@@ -40,7 +40,7 @@ namespace EPPlusTest
         [TestMethod]
         public void RichTextHtml_NonBreakingSpace_Test()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Test");
                 var range = ws.Cells["A1"];
@@ -57,7 +57,7 @@ namespace EPPlusTest
         [TestMethod]
         public void RichTextHtml_BrTag_Test()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Test");
                 var range = ws.Cells["A1"];
@@ -74,7 +74,7 @@ namespace EPPlusTest
         [TestMethod]
         public void RichTextHtml_AllTags_Test()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Test");
                 var range = ws.Cells["A1"];

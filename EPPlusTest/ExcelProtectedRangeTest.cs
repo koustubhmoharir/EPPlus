@@ -12,7 +12,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestProtectedRangePropertiesAndSetPassword()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var range = ws.ProtectedRanges.Add("Range1", new ExcelAddress("A1:B2"));
@@ -74,7 +74,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestProtectedRangeCollectionOperations()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var prCollection = ws.ProtectedRanges;
@@ -139,7 +139,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestProtectedRangeDuplicateName()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.ProtectedRanges.Add("Range1", new ExcelAddress("A1:B2"));
@@ -171,7 +171,7 @@ namespace EPPlusTest
             var xlsxFile = new FileInfo(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".xlsx"));
             try
             {
-                using (var package = new ExcelPackage(xlsxFile))
+                using (var package = new ExcelPackage(xlsxFile, EPPlusTest.TempFolderHelper.Create()))
                 {
                     var ws = package.Workbook.Worksheets.Add("Sheet1");
                     var r1 = ws.ProtectedRanges.Add("Range1", new ExcelAddress("A1:B2"));
@@ -195,7 +195,7 @@ namespace EPPlusTest
             }
 
             using (var ms = new MemoryStream(packageBytes))
-            using (var package = new ExcelPackage(ms))
+            using (var package = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets["Sheet1"];
 #if Core

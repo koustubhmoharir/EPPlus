@@ -11,7 +11,7 @@ namespace EPPlusTest.Drawing
         [TestMethod]
         public void ExcelPicture_AddPicture_SetsPropertiesCorrectly()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("TestSheet");
                 

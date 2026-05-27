@@ -12,7 +12,7 @@ namespace EPPlusTest
         [Ignore]
         public void ReadWriteEncrypt()
         {
-            using (ExcelPackage pck = new ExcelPackage(new FileInfo(@"Test\Drawing.xlsx"), true))   
+            using (ExcelPackage pck = new ExcelPackage(new FileInfo(@"Test\Drawing.xlsx"), true, EPPlusTest.TempFolderHelper.Create()))   
             {
                 pck.Encryption.Password = "EPPlus";
                 pck.Encryption.Algorithm = EncryptionAlgorithm.AES192;
@@ -23,14 +23,14 @@ namespace EPPlusTest
                 pck.SaveAs(new FileInfo(@"Test\DrawingEncr.xlsx"));                
             }
 
-            using (ExcelPackage pck = new ExcelPackage(new FileInfo(_worksheetPath + @"\DrawingEncr.xlsx"), true, "EPPlus"))            
+            using (ExcelPackage pck = new ExcelPackage(new FileInfo(_worksheetPath + @"\DrawingEncr.xlsx"), true, "EPPlus", EPPlusTest.TempFolderHelper.Create()))            
             {
                 pck.Encryption.IsEncrypted = false;
                 pck.SaveAs(new FileInfo(_worksheetPath + @"\DrawingNotEncr.xlsx"));
             }
 
             FileStream fs = new FileStream(_worksheetPath + @"\DrawingEncr.xlsx", FileMode.Open, FileAccess.ReadWrite);
-            using (ExcelPackage pck = new ExcelPackage(fs, "EPPlus"))
+            using (ExcelPackage pck = new ExcelPackage(fs, "EPPlus", EPPlusTest.TempFolderHelper.Create()))
             {
                 pck.Encryption.IsEncrypted = false;
                 pck.SaveAs(new FileInfo(_worksheetPath + @"DrawingNotEncr.xlsx"));
@@ -41,7 +41,7 @@ namespace EPPlusTest
         [Ignore]
         public void WriteEncrypt()
         {
-            ExcelPackage package = new ExcelPackage();
+            ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             //Load the sheet with one string column, one date column and a few random numbers.
             var ws = package.Workbook.Worksheets.Add("First line test");
 
@@ -63,7 +63,7 @@ namespace EPPlusTest
         [Ignore]
         public void WriteProtect()
         {
-            ExcelPackage package = new ExcelPackage(new FileInfo(@"c:\temp\workbookprot2.xlsx"), "");
+            ExcelPackage package = new ExcelPackage(new FileInfo(@"c:\temp\workbookprot2.xlsx"), "", EPPlusTest.TempFolderHelper.Create());
             //Load the sheet with one string column, one date column and a few random numbers.
             //package.Workbook.Protection.LockWindows = true;
             //package.Encryption.IsEncrypted = true;
@@ -88,7 +88,7 @@ namespace EPPlusTest
         [Ignore]
         public void DecrypTest()
         {
-            var p = new ExcelPackage(new FileInfo(@"c:\temp\encr.xlsx"), "test");
+            var p = new ExcelPackage(new FileInfo(@"c:\temp\encr.xlsx"), "test", EPPlusTest.TempFolderHelper.Create());
 
             var n = p.Workbook.Worksheets[1].Name;
             p.Encryption.Password = null;
@@ -98,7 +98,7 @@ namespace EPPlusTest
         [TestMethod, Ignore]
         public void DecrypTestBug()
         {
-            var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\TestExcel_2040.xlsx"), "");
+            var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\TestExcel_2040.xlsx"), "", EPPlusTest.TempFolderHelper.Create());
 
             var n = p.Workbook.Worksheets[1].Name;
             p.Encryption.Password = null;
@@ -114,7 +114,7 @@ namespace EPPlusTest
             {
                 f.Delete();
             }
-            var p = new ExcelPackage(f);
+            var p = new ExcelPackage(f, EPPlusTest.TempFolderHelper.Create());
             
             p.Workbook.Protection.SetPassword("");
             p.Workbook.Protection.LockStructure = true;

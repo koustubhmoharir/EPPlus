@@ -14,7 +14,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions.ExcelRange
         [TestInitialize]
         public void Init()
         {
-            _package = new ExcelPackage();
+            _package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             _firstSheet = _package.Workbook.Worksheets.Add("sheet1");
             _secondSheet = _package.Workbook.Worksheets.Add("sheet2");
             _firstSheet.Cells["A1"].Value = 1;

@@ -62,7 +62,11 @@ namespace OfficeOpenXml.Packaging
         private string tempFolder;
         public string GetTempFile()
         {
-            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
+			if (tempFolder != null && !Directory.Exists(tempFolder))
+			{
+				Directory.CreateDirectory(tempFolder);
+			}
+			return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
         }
         internal class ContentType
         {

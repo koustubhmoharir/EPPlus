@@ -39,7 +39,7 @@ namespace EPPlusTest
             {
                 new Aclass(){ Id = "123", Name = "Item 1", Number = 3}
             };
-            using (var pck = new ExcelPackage(new MemoryStream()))
+            using (var pck = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("sheet");
                 sheet.Cells["C1"].LoadFromCollection(items, true, TableStyles.Dark1);
@@ -55,7 +55,7 @@ namespace EPPlusTest
             {
                 new Implementation(){ Id = "123", Name = "Item 1", Number = 3}
             };
-            using (var pck = new ExcelPackage(new MemoryStream()))
+            using (var pck = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("sheet");
                 sheet.Cells["C1"].LoadFromCollection(items, true, TableStyles.Dark1);
@@ -72,7 +72,7 @@ namespace EPPlusTest
                 new Implementation(){ Id = "123", Name = "Item 1", Number = 3}
             };
             var items = objs.Select(x => new {Id = x.Id, Name = x.Name}).ToList();
-            using (var pck = new ExcelPackage(new MemoryStream()))
+            using (var pck = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("sheet");
                 sheet.Cells["C1"].LoadFromCollection(items, true, TableStyles.Dark1);
@@ -89,7 +89,7 @@ namespace EPPlusTest
                 new Implementation(){ Id = "123", Name = "Item 1", Number = 3}
             };
             var items = objs.Select(x => new { Id = x.Id, Name = x.Name }).ToList();
-            using (var pck = new ExcelPackage(new MemoryStream()))
+            using (var pck = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("sheet");
                 sheet.Cells["C1"].LoadFromCollection(items, true, TableStyles.Dark1, BindingFlags.Public | BindingFlags.Instance, typeof(string).GetMembers());

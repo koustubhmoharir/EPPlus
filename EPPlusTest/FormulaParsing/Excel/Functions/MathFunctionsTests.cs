@@ -1019,7 +1019,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void CountIfShouldHandleNegativeCriteria()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet1 = package.Workbook.Worksheets.Add("test");
                 sheet1.Cells["A1"].Value = -1;
@@ -1032,7 +1032,7 @@ namespace EPPlusTest.Excel.Functions
         [TestMethod]
         public void Rank()
         {
-            using (var p = new ExcelPackage())
+            using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var w = p.Workbook.Worksheets.Add("testsheet");
                 w.SetValue(1, 1, 1);

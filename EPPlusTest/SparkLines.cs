@@ -24,7 +24,7 @@ namespace EPPlusTest
         }
         public void ReadSparklines()
         {
-            _pck = new ExcelPackage();
+            _pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             OpenPackage(_pckfile);
             var ws = _pck.Workbook.Worksheets[_pck.Compatibility.IsWorksheets1Based?1:0];
             Assert.AreEqual(4, ws.SparklineGroups.Count);

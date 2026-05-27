@@ -14,7 +14,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestHeaderFooterProperties()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var hf = ws.HeaderFooter;
@@ -59,7 +59,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestHeaderFooterTextFormatting()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var hf = ws.HeaderFooter;
@@ -88,7 +88,7 @@ namespace EPPlusTest
         [TestMethod]
         public void TestHeaderFooterInsertPictureImage()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var hf = ws.HeaderFooter;
@@ -117,7 +117,7 @@ namespace EPPlusTest
                 Image img = Properties.Resources.Test1;
                 img.Save(tempImagePath, System.Drawing.Imaging.ImageFormat.Jpeg);
 
-                using (var package = new ExcelPackage())
+                using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
                 {
                     var ws = package.Workbook.Worksheets.Add("Sheet1");
                     var hf = ws.HeaderFooter;
@@ -147,7 +147,7 @@ namespace EPPlusTest
         [ExpectedException(typeof(InvalidOperationException))]
         public void TestHeaderFooterInsertDuplicatePictureThrows()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var hf = ws.HeaderFooter;
@@ -164,7 +164,7 @@ namespace EPPlusTest
         [ExpectedException(typeof(InvalidDataException))]
         public void TestHeaderFooterInsertMissingFileInfoThrows()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var hf = ws.HeaderFooter;
@@ -185,7 +185,7 @@ namespace EPPlusTest
             }
 
             byte[] bin;
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var hf = ws.HeaderFooter;
@@ -200,7 +200,7 @@ namespace EPPlusTest
             }
 
             using (var ms = new MemoryStream(bin))
-            using (var package = new ExcelPackage(ms))
+            using (var package = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets["Sheet1"];
                 var hf = ws.HeaderFooter;
@@ -219,7 +219,7 @@ namespace EPPlusTest
             }
 
             using (var ms = new MemoryStream(bin))
-            using (var package = new ExcelPackage(ms))
+            using (var package = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets["Sheet1"];
                 var hf = ws.HeaderFooter;

@@ -19,7 +19,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Math
         [TestInitialize]
         public void Initialize()
         {
-            _package = new ExcelPackage();
+            _package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             _provider = new EpplusExcelDataProvider(_package);
             _parsingContext = ParsingContext.Create();
             _parsingContext.Scopes.NewScope(RangeAddress.Empty);
@@ -303,7 +303,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Math
         [TestMethod]
         public void SumIfShouldHandleBooleanArg()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("test");
                 sheet.Cells["A1"].Value = true;

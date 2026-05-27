@@ -42,7 +42,7 @@ namespace EPPlusTest
 
             try
             {
-                using (var package = new ExcelPackage())
+                using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
                 {
                     package.Workbook.Worksheets.Add("Secured").Cells["A1"].Value = "secret";
                     package.Encryption.Password = "write-password";
@@ -53,14 +53,14 @@ namespace EPPlusTest
                 encryptedFile.Refresh();
                 Assert.IsTrue(encryptedFile.Exists);
 
-                using (var reopened = new ExcelPackage(encryptedFile, "write-password", null))
+                using (var reopened = new ExcelPackage(encryptedFile, "write-password", EPPlusTest.TempFolderHelper.Create()))
                 {
                     Assert.AreEqual("secret", reopened.Workbook.Worksheets["Secured"].Cells["A1"].Value);
                     reopened.Encryption.IsEncrypted = false;
                     reopened.SaveAs(unencryptedFile);
                 }
 
-                using (var reopened = new ExcelPackage(unencryptedFile))
+                using (var reopened = new ExcelPackage(unencryptedFile, EPPlusTest.TempFolderHelper.Create()))
                 {
                     Assert.AreEqual("secret", reopened.Workbook.Worksheets["Secured"].Cells["A1"].Value);
                 }
@@ -82,7 +82,7 @@ namespace EPPlusTest
         [TestMethod]
         public void WorksheetReplacementPreservesDestinationOrderAndHiddenState()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var before = package.Workbook.Worksheets.Add("Before");
                 var oldTarget = package.Workbook.Worksheets.Add("Target");
@@ -108,7 +108,7 @@ namespace EPPlusTest
         [TestMethod]
         public void WorksheetCopyPreservesTablesChartsPivotTablesMergedCellsAndLocalNames()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var source = package.Workbook.Worksheets.Add("Source");
                 source.Cells["A1"].Value = "Category";
@@ -203,7 +203,7 @@ namespace EPPlusTest
         [TestMethod]
         public void ClearingArrayFormulaRemovesFormulaAndValuesFromEntireRange()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("ClearArray");
                 sheet.Cells["A1:B2"].CreateArrayFormula("ROW(A1:B2)");
@@ -222,7 +222,7 @@ namespace EPPlusTest
         [TestMethod]
         public void InsertRowsAndColumnsShiftFormulasMergedCellsNamedRangesAndDrawings()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("Insert");
                 sheet.Cells["A1"].Formula = "B2";
@@ -251,7 +251,7 @@ namespace EPPlusTest
         [TestMethod]
         public void AbsoluteDrawingDoesNotMoveWhenRowsAndColumnsAreInserted()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("AbsoluteDrawing");
                 var shape = sheet.Drawings.AddShape("Shape1", eShapeStyle.Rect);
@@ -336,7 +336,7 @@ namespace EPPlusTest
         [TestMethod]
         public void NamedRangeAddUpdateRemoveAndSheetKraftNameCleanupBehaviors()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("Names");
                 sheet.Cells["A1:B2"].Value = 1;
@@ -418,7 +418,7 @@ namespace EPPlusTest
         [TestMethod]
         public void ConditionalFormattingXmlCleanupRemovesOnlySheetKraftRules()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("Conditional");
                 sheet.ConditionalFormatting.AddExpression(sheet.Cells["A1:A3"]).Formula = "IF(SheetKraftFormat,A1>0,FALSE)";
@@ -439,7 +439,7 @@ namespace EPPlusTest
         [TestMethod]
         public void ChartSeriesCanBeRewrittenAndDeletedLikeSheetKraftNamedSeriesCleanup()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("ChartData");
                 sheet.Cells["A1"].Value = "X";
@@ -467,7 +467,7 @@ namespace EPPlusTest
         [TestMethod]
         public void PivotTableCacheRefreshOnLoadCanBeSetThroughCacheDefinitionXml()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var data = package.Workbook.Worksheets.Add("Data");
                 data.Cells["A1"].Value = "Category";
@@ -505,7 +505,7 @@ namespace EPPlusTest
         [TestMethod]
         public void FooterCopyThenDeleteRowsAndColumnsPreservesCopiedValuesFormulasAndStyles()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 VerifyFooterHandling(
                     package,
@@ -655,7 +655,7 @@ namespace EPPlusTest
         [TestMethod]
         public void OverwriteOptionsCanPreserveExistingCellsWhenSkippingBlanksAndErrors()
         {
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = package.Workbook.Worksheets.Add("Overwrite");
                 sheet.Cells["A1"].Value = "keep blank";
@@ -688,7 +688,7 @@ namespace EPPlusTest
         private static ExcelPackage SaveAndReopen(Action<ExcelPackage> configure, string password = null)
         {
             var stream = new MemoryStream();
-            using (var package = new ExcelPackage())
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 configure(package);
                 if (password == null)
@@ -702,7 +702,7 @@ namespace EPPlusTest
             }
 
             stream.Position = 0;
-            return password == null ? new ExcelPackage(stream) : new ExcelPackage(stream, password);
+            return password == null ? new ExcelPackage(stream, EPPlusTest.TempFolderHelper.Create()) : new ExcelPackage(stream, password, EPPlusTest.TempFolderHelper.Create());
         }
 
         private static void RemoveSheetKraftConditionalFormatting(ExcelPackage package, ExcelWorksheet sheet)

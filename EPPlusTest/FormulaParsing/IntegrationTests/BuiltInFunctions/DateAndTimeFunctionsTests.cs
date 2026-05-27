@@ -33,7 +33,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void DateShouldHandleCellReference()
         {
-            using (var pck = new ExcelPackage())
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("test");
                 sheet.Cells["A1"].Value = 2012d;
@@ -175,7 +175,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void Calculation5()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
             ws.Cells["A1"].Value = "John";
             ws.Cells["B1"].Value = "Doe";
@@ -187,7 +187,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void HourWithExcelReference()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
             ws.Cells["A1"].Value = new DateTime(2014, 1, 1, 10, 11, 12).ToOADate();
             ws.Cells["B1"].Formula = "HOUR(A1)";
@@ -198,7 +198,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void MinuteWithExcelReference()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
             ws.Cells["A1"].Value = new DateTime(2014, 1, 1, 10, 11, 12).ToOADate();
             ws.Cells["B1"].Formula = "MINUTE(A1)";
@@ -209,7 +209,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void SecondWithExcelReference()
         {
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
             ws.Cells["A1"].Value = new DateTime(2014, 1, 1, 10, 11, 12).ToOADate();
             ws.Cells["B1"].Formula = "SECOND(A1)";
@@ -221,7 +221,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         public void DateValueTest1()
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
             ws.Cells["A1"].Value = "21 JAN 2015";
             ws.Cells["B1"].Formula = "DateValue(A1)";
@@ -233,7 +233,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         public void DateValueTestWithoutYear()
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
             var currentYear = DateTime.Now.Year;
             ws.Cells["A1"].Value = "21 JAN";
@@ -246,7 +246,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         public void DateValueTestWithTwoDigitYear()
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
             var expectedYear = 1930;
             ws.Cells["A1"].Value = "01/01/30";
@@ -259,7 +259,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         public void DateValueTestWithTwoDigitYear2()
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
             var expectedYear = 2029;
             ws.Cells["A1"].Value = "01/01/29";
@@ -272,7 +272,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         public void TimeValueTestPm()
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
             var currentYear = DateTime.Now.Year;
             ws.Cells["A1"].Value = "2:23 pm";
@@ -286,7 +286,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         public void TimeValueTestFullDate()
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-            var pck = new ExcelPackage();
+            var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             var ws = pck.Workbook.Worksheets.Add("Calc1");
             var currentYear = DateTime.Now.Year;
             ws.Cells["A1"].Value = "01/01/2011 02:23";
