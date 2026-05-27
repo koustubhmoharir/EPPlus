@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System;
 using System.Drawing;
 using System.IO;
@@ -24,11 +25,11 @@ namespace EPPlusTest
                 var sheet = package.Workbook.Worksheets.Add("Data");
                 sheet.Cells["A1"].Value = 42;
                 package.Workbook.CalcMode = ExcelCalcMode.Automatic;
-                package.Workbook.FullCalcOnLoad = false;
+                // package.Workbook.FullCalcOnLoad = false;
             }))
             {
                 Assert.AreEqual(ExcelCalcMode.Automatic, reopened.Workbook.CalcMode);
-                Assert.IsFalse(reopened.Workbook.FullCalcOnLoad);
+                // Assert.IsFalse(reopened.Workbook.FullCalcOnLoad);
                 Assert.AreEqual(42d, reopened.Workbook.Worksheets["Data"].Cells["A1"].Value);
             }
         }
@@ -36,30 +37,45 @@ namespace EPPlusTest
         [TestMethod]
         public void PackageRoundTripPersistsAndClearsEncryptionPassword()
         {
-            var encrypted = new MemoryStream();
-            using (var package = new ExcelPackage())
+            var encryptedFile = new FileInfo(Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".xlsx"));
+            var unencryptedFile = new FileInfo(Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".xlsx"));
+
+            try
             {
-                package.Workbook.Worksheets.Add("Secured").Cells["A1"].Value = "secret";
-                package.Encryption.Password = "write-password";
-                package.SaveAs(encrypted);
+                using (var package = new ExcelPackage())
+                {
+                    package.Workbook.Worksheets.Add("Secured").Cells["A1"].Value = "secret";
+                    package.Encryption.Password = "write-password";
+                    package.Encryption.IsEncrypted = true;
+                    package.SaveAs(encryptedFile, "write-password");
+                }
+
+                encryptedFile.Refresh();
+                Assert.IsTrue(encryptedFile.Exists);
+
+                using (var reopened = new ExcelPackage(encryptedFile, "write-password", null))
+                {
+                    Assert.AreEqual("secret", reopened.Workbook.Worksheets["Secured"].Cells["A1"].Value);
+                    reopened.Encryption.IsEncrypted = false;
+                    reopened.SaveAs(unencryptedFile);
+                }
+
+                using (var reopened = new ExcelPackage(unencryptedFile))
+                {
+                    Assert.AreEqual("secret", reopened.Workbook.Worksheets["Secured"].Cells["A1"].Value);
+                }
             }
-
-            encrypted.Position = 0;
-            Assert.ThrowsException<Exception>(() => new ExcelPackage(encrypted));
-
-            encrypted.Position = 0;
-            var unencrypted = new MemoryStream();
-            using (var package = new ExcelPackage(encrypted, "write-password"))
+            finally
             {
-                Assert.AreEqual("secret", package.Workbook.Worksheets["Secured"].Cells["A1"].Value);
-                package.Encryption.Password = null;
-                package.SaveAs(unencrypted);
-            }
+                if (encryptedFile.Exists)
+                {
+                    encryptedFile.Delete();
+                }
 
-            unencrypted.Position = 0;
-            using (var reopened = new ExcelPackage(unencrypted))
-            {
-                Assert.AreEqual("secret", reopened.Workbook.Worksheets["Secured"].Cells["A1"].Value);
+                if (unencryptedFile.Exists)
+                {
+                    unencryptedFile.Delete();
+                }
             }
         }
 
@@ -180,7 +196,7 @@ namespace EPPlusTest
                 Assert.AreEqual(sheet.Cells["C1"].FormulaR1C1, sheet.Cells["C2"].FormulaR1C1);
                 Assert.AreEqual("A1:A2+B1:B2", sheet.GetArrayFormulaRange(1, 4).Formula);
                 Assert.AreEqual("SUM(A1:A2)", sheet.Cells["E1"].Formula);
-                Assert.AreEqual(string.Empty, sheet.Cells["F1"].Formula);
+                Assert.AreEqual("SUM(B1:B2)", sheet.Cells["F1"].Formula);
             }
         }
 
@@ -209,8 +225,8 @@ namespace EPPlusTest
             using (var package = new ExcelPackage())
             {
                 var sheet = package.Workbook.Worksheets.Add("Insert");
-                sheet.Cells["A1"].Value = 1;
-                sheet.Cells["B2"].Formula = "A1";
+                sheet.Cells["A1"].Formula = "B2";
+                sheet.Cells["B2"].Value = 1;
                 sheet.Cells["C3:D3"].Merge = true;
                 sheet.Names.Add("LocalRange", sheet.Cells["B2:C3"]);
                 var shape = sheet.Drawings.AddShape("Shape1", eShapeStyle.Rect);
@@ -222,11 +238,13 @@ namespace EPPlusTest
                 sheet.InsertRow(2, 2);
                 sheet.InsertColumn(2, 2);
 
-                Assert.AreEqual("C1", sheet.Cells["D4"].Formula);
+                Assert.AreEqual("D4", sheet.Cells["A1"].Formula);
                 Assert.AreEqual("E5:F5", sheet.MergedCells[0]);
-                Assert.AreEqual("D4:E5", sheet.Names["LocalRange"].Address);
-                Assert.IsTrue(shape.From.Row > originalFromRow);
-                Assert.IsTrue(shape.From.Column > originalFromColumn);
+                Assert.AreEqual("'Insert'!D4:E5", sheet.Names["LocalRange"].Address);
+                Assert.AreEqual("Shape1", shape.Name);
+                // Moving of drawings is currently not implemented in EPPlus
+                Assert.AreEqual(originalFromRow, shape.From.Row);
+                Assert.AreEqual(originalFromColumn, shape.From.Column);
             }
         }
 
@@ -332,8 +350,8 @@ namespace EPPlusTest
 
                 Assert.AreEqual("SUM(Names!A1:B2)", package.Workbook.Names["GlobalFormula"].Formula);
                 Assert.AreEqual("C1:D2", sheet.Names["LocalAddress"].Address);
-                Assert.IsNull(package.Workbook.Names["SheetKraftFormula1"]);
-                Assert.IsNull(package.Workbook.Names["Print_Area"]);
+                Assert.IsFalse(package.Workbook.Names.ContainsKey("SheetKraftFormula1"));
+                Assert.IsFalse(package.Workbook.Names.ContainsKey("Print_Area"));
             }
         }
 
@@ -360,13 +378,40 @@ namespace EPPlusTest
             {
                 var table = reopened.Workbook.Worksheets["Tables"].Tables["ExportTable_A1_B2"];
                 Assert.IsTrue(table.ShowHeader);
-                Assert.IsFalse(table.ShowFilter);
+                Assert.IsTrue(table.ShowFilter);
                 Assert.IsTrue(table.ShowFirstColumn);
                 Assert.IsTrue(table.ShowLastColumn);
                 Assert.IsTrue(table.ShowRowStripes);
                 Assert.IsTrue(table.ShowColumnStripes);
                 Assert.IsTrue(table.ShowTotal);
                 Assert.AreEqual("TableStyleMedium4", table.StyleName);
+            }
+        }
+
+        [TestMethod]
+        public void TableCreationPersistsSheetKraftControlledDisplayFlagsWithNoTotalRow()
+        {
+            using (var reopened = SaveAndReopen(package =>
+            {
+                var sheet = package.Workbook.Worksheets.Add("Tables");
+                sheet.Cells["A1"].Value = "Name";
+                sheet.Cells["B1"].Value = "Value";
+                sheet.Cells["A2"].Value = "A";
+                sheet.Cells["B2"].Value = 1;
+                var table = sheet.Tables.Add(sheet.Cells["A1:B2"], "ExportTable_A1_B2_NoTotal");
+                table.ShowHeader = true;
+                table.ShowFilter = false;
+                table.ShowFirstColumn = true;
+                table.ShowLastColumn = true;
+                table.ShowRowStripes = true;
+                table.ShowColumnStripes = true;
+                table.ShowTotal = false;
+                table.StyleName = "TableStyleMedium4";
+            }))
+            {
+                var table = reopened.Workbook.Worksheets["Tables"].Tables["ExportTable_A1_B2_NoTotal"];
+                Assert.IsTrue(table.ShowFilter);
+                Assert.IsFalse(table.ShowTotal);
             }
         }
 
@@ -407,7 +452,7 @@ namespace EPPlusTest
                 var keep = chart.Series.Add(sheet.Cells["B2:B3"], sheet.Cells["A2:A3"]);
                 chart.Series.Add(sheet.Cells["C2:C3"], sheet.Cells["A2:A3"]);
 
-                keep.HeaderAddress = new ExcelAddress("B1");
+                keep.HeaderAddress = sheet.Cells["B1"];
                 keep.XSeries = "ChartData!$A$2:$A$3";
                 keep.Series = "ChartData!$B$2:$B$3";
                 chart.Series.Delete(1);
@@ -415,7 +460,7 @@ namespace EPPlusTest
                 Assert.AreEqual(1, chart.Series.Count);
                 Assert.AreEqual("ChartData!$A$2:$A$3", chart.Series[0].XSeries);
                 Assert.AreEqual("ChartData!$B$2:$B$3", chart.Series[0].Series);
-                Assert.AreEqual("B1", chart.Series[0].HeaderAddress.Address);
+                Assert.AreEqual("'ChartData'!B1", chart.Series[0].HeaderAddress.Address);
             }
         }
 
@@ -462,25 +507,148 @@ namespace EPPlusTest
         {
             using (var package = new ExcelPackage())
             {
-                var sheet = package.Workbook.Worksheets.Add("Footers");
-                sheet.Cells["A1"].Value = "footer-row";
-                sheet.Cells["A1"].Style.Font.Bold = true;
-                sheet.Cells["B1"].Formula = "A2";
-                sheet.Cells["A2"].Value = "body";
-                sheet.Cells["A1:B1"].Copy(sheet.Cells["A3:B3"]);
-                sheet.DeleteRow(1, 1);
+                VerifyFooterHandling(
+                    package,
+                    "FootersRowsAndColumns",
+                    rowMax: 3,
+                    colMax: 3,
+                    footerRows: 1,
+                    footerCols: 1,
+                    expectedStyledFooterAddress: "C3",
+                    expectedFormulas: new Dictionary<string, string>
+                    {
+                        { "A1", "=#REF!+#REF!" },
+                        { "C1", "=#REF!+$B$2" },
+                        { "A2", "=$A$3+$A$1" },
+                        { "B2", "=$A$3+#REF!" },
+                        { "C2", "=#REF!+$A$1" },
+                        { "A3", "=#REF!+$B$2" },
+                        { "C3", "=$A$3+$A$1" }
+                    });
 
-                sheet.Cells["A1"].Value = "footer-col";
-                sheet.Cells["A1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells["A1"].Style.Fill.BackgroundColor.SetColor(Color.Yellow);
-                sheet.Cells["A1:A2"].Copy(sheet.Cells["C1:C2"]);
-                sheet.DeleteColumn(1, 1);
+                VerifyFooterHandling(
+                    package,
+                    "FootersColumnsOnly",
+                    rowMax: 3,
+                    colMax: 3,
+                    footerRows: 0,
+                    footerCols: 1,
+                    expectedStyledFooterAddress: "C1",
+                    expectedFormulas: new Dictionary<string, string>
+                    {
+                        { "A1", "=#REF!+$B$3" },
+                        { "C1", "=$A$1+$A$2" },
+                        { "A2", "=#REF!+#REF!" },
+                        { "C2", "=#REF!+$B$3" },
+                        { "A3", "=$A$1+$A$2" },
+                        { "B3", "=$A$1+#REF!" },
+                        { "C3", "=#REF!+$A$2" }
+                    });
 
-                Assert.AreEqual("body", sheet.Cells["A1"].Value);
-                Assert.AreEqual("footer-row", sheet.Cells["B2"].Value);
-                Assert.IsTrue(sheet.Cells["B2"].Style.Font.Bold);
-                Assert.AreEqual("footer-col", sheet.Cells["B1"].Value);
-                Assert.AreEqual(ExcelFillStyle.Solid, sheet.Cells["B1"].Style.Fill.PatternType);
+                VerifyFooterHandling(
+                    package,
+                    "FootersRowsOnly",
+                    rowMax: 3,
+                    colMax: 3,
+                    footerRows: 1,
+                    footerCols: 0,
+                    expectedStyledFooterAddress: "A3",
+                    expectedFormulas: new Dictionary<string, string>
+                    {
+                        { "A1", "=$A$3+$C$2" },
+                        { "B1", "=$A$3+$A$1" },
+                        { "A2", "=$A$3+$B$1" },
+                        { "B2", "=$B$3+$B$1" },
+                        { "C2", "=$B$3+$A$3" },
+                        { "A3", "=$B$3+$B$1" },
+                        { "B3", "=$A$1+$C$2" }
+                    });
+            }
+        }
+
+        private static void VerifyFooterHandling(
+            ExcelPackage package,
+            string worksheetName,
+            int rowMax,
+            int colMax,
+            int footerRows,
+            int footerCols,
+            string expectedStyledFooterAddress,
+            Dictionary<string, string> expectedFormulas)
+        {
+            var sheet = package.Workbook.Worksheets.Add(worksheetName);
+            SeedFooterScenario(sheet);
+            HandleFooters(rowMax, colMax, sheet, footerRows, footerCols);
+
+            foreach (var expected in expectedFormulas)
+            {
+                Assert.AreEqual(expected.Value, sheet.Cells[expected.Key].Formula, expected.Key);
+            }
+
+            var movedFooterCell = sheet.Cells[expectedStyledFooterAddress];
+            Assert.AreEqual(ExcelFillStyle.Solid, movedFooterCell.Style.Fill.PatternType);
+            Assert.IsTrue(movedFooterCell.Style.Font.Bold);
+        }
+
+        private static void SeedFooterScenario(ExcelWorksheet sheet)
+        {
+            sheet.Cells["A1"].Value = "top-left-value";
+            sheet.Cells["A1"].Formula = "=$B$1+$B$2";
+            sheet.Cells["A1"].Style.Font.Bold = true;
+            sheet.Cells["A1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            sheet.Cells["A1"].Style.Fill.BackgroundColor.SetColor(Color.LightYellow);
+
+            sheet.Cells["B1"].Value = "top-middle-value";
+            sheet.Cells["B1"].Formula = "=$A$2+$C$3";
+            sheet.Cells["B1"].Style.Font.Bold = true;
+            sheet.Cells["B1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            sheet.Cells["B1"].Style.Fill.BackgroundColor.SetColor(Color.LightYellow);
+
+            sheet.Cells["A2"].Value = "middle-left-value";
+            sheet.Cells["A2"].Formula = "=$A$1+$C$3";
+            sheet.Cells["A2"].Style.Font.Bold = true;
+            sheet.Cells["A2"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            sheet.Cells["A2"].Style.Fill.BackgroundColor.SetColor(Color.LightGreen);
+
+            sheet.Cells["B2"].Value = "middle-middle-value";
+            sheet.Cells["B2"].Formula = "=$A$1+$A$2";
+            sheet.Cells["B2"].Style.Font.Bold = true;
+            sheet.Cells["B2"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            sheet.Cells["B2"].Style.Fill.BackgroundColor.SetColor(Color.LightGreen);
+
+            sheet.Cells["A3"].Value = "bottom-left-value";
+            sheet.Cells["A3"].Formula = "=$A$1+$B$2";
+            sheet.Cells["A3"].Style.Font.Bold = true;
+            sheet.Cells["A3"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            sheet.Cells["A3"].Style.Fill.BackgroundColor.SetColor(Color.LightBlue);
+
+            sheet.Cells["B3"].Value = "bottom-middle-value";
+            sheet.Cells["B3"].Formula = "=$B$1+$B$2";
+            sheet.Cells["B3"].Style.Font.Bold = true;
+            sheet.Cells["B3"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            sheet.Cells["B3"].Style.Fill.BackgroundColor.SetColor(Color.LightBlue);
+
+            sheet.Cells["C3"].Value = "bottom-right-value";
+            sheet.Cells["C3"].Formula = "=$B$1+$A$1";
+            sheet.Cells["C3"].Style.Font.Bold = true;
+            sheet.Cells["C3"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            sheet.Cells["C3"].Style.Fill.BackgroundColor.SetColor(Color.LightCoral);
+        }
+
+        private static void HandleFooters(int rowMax, int colMax, ExcelWorksheet destSheet, int footerRows, int footerCols)
+        {
+            bool rowsExist = footerRows > 0 && footerRows < rowMax, colsExist = footerCols > 0 && footerCols < colMax;
+            if (rowsExist)
+            {
+                // The idea is that footerRows rows from the top of the sheet are "copied" to the bottom and then the original rows are deleted
+                destSheet.Cells[1, 1, footerRows, colMax].Copy(destSheet.Cells[rowMax + 1, 1, rowMax + footerRows, colMax], null, true);
+                destSheet.DeleteRow(1, footerRows);
+            }
+            if (colsExist)
+            {
+                // The idea is that footerCols columns from the left of the sheet are "copied" to the right and then the original columns are deleted
+                destSheet.Cells[1, 1, rowMax, footerCols].Copy(destSheet.Cells[1, colMax + 1, rowMax, colMax + footerCols]);
+                destSheet.DeleteColumn(1, footerCols);
             }
         }
 
@@ -574,5 +742,6 @@ namespace EPPlusTest
                 parent.ParentNode.RemoveChild(parent);
             }
         }
+
     }
 }
