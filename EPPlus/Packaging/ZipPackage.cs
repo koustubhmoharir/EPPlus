@@ -57,7 +57,7 @@ namespace OfficeOpenXml.Packaging
     /// <summary>
     /// Represent an OOXML Zip package.
     /// </summary>
-    public class ZipPackage : ZipPackageRelationshipBase
+    public class ZipPackage : ZipPackageRelationshipBase, IDisposable
     {
         internal class ContentType
         {
@@ -71,11 +71,21 @@ namespace OfficeOpenXml.Packaging
                 Match = match;
             }
         }
+        private string tempFolder;
+        public string GetTempFile()
+        {
+            if (tempFolder != null && !Directory.Exists(tempFolder))
+            {
+                Directory.CreateDirectory(tempFolder);
+            }
+            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
+        }
         Dictionary<string, ZipPackagePart> Parts = new Dictionary<string, ZipPackagePart>(StringComparer.OrdinalIgnoreCase);
         internal Dictionary<string, ContentType> _contentTypes = new Dictionary<string, ContentType>(StringComparer.OrdinalIgnoreCase);
         internal char _dirSeparator='/';
-        internal ZipPackage()
+        internal ZipPackage(string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             AddNew();
         }
 
@@ -85,8 +95,9 @@ namespace OfficeOpenXml.Packaging
             _contentTypes.Add("rels", new ContentType(ExcelPackage.schemaRelsExtension, true, "rels"));
         }
 
-        internal ZipPackage(Stream stream)
+        internal ZipPackage(Stream stream, string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             bool hasContentTypeXml = false;
             if (stream == null || stream.Length == 0)
             {
@@ -135,8 +146,8 @@ namespace OfficeOpenXml.Packaging
                                 else
                                 {                                    
                                     var part = new ZipPackagePart(this, e);
-                                    part.Stream = new MemoryStream();
-                                    part.Stream.Write(b, 0, b.Length);
+                                    var fs = part.GetStream(FileMode.Create, FileAccess.Write);
+                                    fs.Write(b, 0, b.Length);
                                     Parts.Add(GetUriKey(e.FileName), part);
                                 }
                             }
@@ -332,7 +343,15 @@ namespace OfficeOpenXml.Packaging
         }
         internal void Close()
         {
-            
+        }
+
+        public void Dispose()
+        {
+            foreach (var part in Parts.Values.ToList())
+            {
+                part.Dispose();
+            }
+            Parts.Clear();
         }
         CompressionLevel _compression = CompressionLevel.Default;
         public CompressionLevel Compression 

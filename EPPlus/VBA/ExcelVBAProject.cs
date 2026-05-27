@@ -598,9 +598,12 @@ namespace OfficeOpenXml.VBA
                     Part = _pck.CreatePart(Uri, ExcelPackage.schemaVBA);
                     var rel = _wb.Part.CreateRelationship(Uri, Packaging.TargetMode.Internal, schemaRelVba);
                 }
-                var st = Part.GetStream(FileMode.Create);
-                doc.Save(st);
-                st.Flush();
+                using (var fs = ExcelPackage.CreateTempStream(_pck.GetTempFile()))
+                {
+                    doc.Save(fs);
+                    Stream st = Part.GetStream(FileMode.Create);
+                    ExcelPackage.CopyStream(fs, ref st);
+                }
                 //Save the digital signture
                 Signature.Save(this);
             }

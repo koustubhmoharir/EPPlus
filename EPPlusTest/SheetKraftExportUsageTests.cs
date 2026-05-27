@@ -702,7 +702,7 @@ namespace EPPlusTest
             }
 
             stream.Position = 0;
-            return password == null ? new ExcelPackage(stream) : new ExcelPackage(stream, password);
+            return password == null ? new ExcelPackage(stream) : new ExcelPackage(stream, password, null);
         }
 
         private static void RemoveSheetKraftConditionalFormatting(ExcelPackage package, ExcelWorksheet sheet)
@@ -746,7 +746,7 @@ namespace EPPlusTest
         private static ExcelPackage CreateOpenedPackage(FileInfo fileInfo, string password)
         {
 #if NET9_0
-            return new ExcelPackage(fileInfo, password);
+            return new ExcelPackage(fileInfo, password: password);
 #else
             return new ExcelPackage(fileInfo, password, null);
 #endif

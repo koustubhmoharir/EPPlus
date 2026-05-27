@@ -282,7 +282,7 @@ namespace EPPlusTest
                 // Attempt to open with wrong password should fail
                 try
                 {
-                    using (var package = new ExcelPackage(file, "WrongPassword"))
+                    using (var package = new ExcelPackage(file, password: "WrongPassword"))
                     {
                         var name = package.Workbook.Worksheets["SecureSheet"].Name;
                         Assert.Fail("Opening encrypted workbook with wrong password should have failed");
@@ -294,7 +294,7 @@ namespace EPPlusTest
                 }
 
                 // Successfully open with correct password
-                using (var package = new ExcelPackage(file, "StrongPassword"))
+                using (var package = new ExcelPackage(file, password: "StrongPassword"))
                 {
                     Assert.AreEqual(1, package.Workbook.Worksheets.Count);
                     Assert.AreEqual("SecureSheet", package.Workbook.Worksheets["SecureSheet"].Name);

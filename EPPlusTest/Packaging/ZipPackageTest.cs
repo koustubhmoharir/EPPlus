@@ -11,20 +11,19 @@ namespace EPPlusTest.Packaging
     [TestClass]
     public class ZipPackageTest
     {
-        private ZipPackage CreatePackage(Stream stream = null)
+        private ZipPackage CreatePackage(Stream stream = null, string tempFolder = null)
         {
             var type = typeof(ZipPackage);
             if (stream == null)
             {
-                // On .NET 9 / dotnetport, ZipPackage has a parameterless internal constructor
-                var ctor = type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, Type.EmptyTypes, null);
-                return (ZipPackage)ctor.Invoke(null);
+                var ctorWithTemp = type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, new[] { typeof(string) }, null);
+                return (ZipPackage)ctorWithTemp.Invoke(new object[] { tempFolder });
             }
             else
             {
-                // On .NET 9 / dotnetport, ZipPackage has a (Stream) internal constructor
-                var ctor = type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, new[] { typeof(Stream) }, null);
-                return (ZipPackage)ctor.Invoke(new object[] { stream });
+                // On .NET 9 / dotnetport, ZipPackage has a (Stream, string) internal constructor
+                var ctor = type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, new[] { typeof(Stream), typeof(string) }, null);
+                return (ZipPackage)ctor.Invoke(new object[] { stream, tempFolder });
             }
         }
 
@@ -189,6 +188,33 @@ namespace EPPlusTest.Packaging
                     }
                 }
             }
+        }
+
+        [TestMethod]
+        public void TempFolderPartsUseDeleteOnCloseFiles()
+        {
+            var tempFolder = Path.Combine(Path.GetTempPath(), "EPPlus", "ZipPackageTest", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(tempFolder);
+
+            var package = CreatePackage(tempFolder: tempFolder);
+            var uri = new Uri("/test/temp.xml", UriKind.Relative);
+            var part = CreatePart(package, uri, "text/xml");
+            var stream = GetStream(part);
+
+            Assert.IsInstanceOfType(stream, typeof(FileStream));
+
+            var fileStream = (FileStream)stream;
+            var tempFile = fileStream.Name;
+            StringAssert.StartsWith(Path.GetFullPath(tempFile), Path.GetFullPath(tempFolder));
+
+            var content = Encoding.UTF8.GetBytes("<root>temp</root>");
+            stream.Write(content, 0, content.Length);
+            stream.Flush();
+
+            var disposeMethod = package.GetType().GetMethod("Dispose", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            disposeMethod.Invoke(package, null);
+
+            Assert.IsFalse(File.Exists(tempFile));
         }
     }
 }

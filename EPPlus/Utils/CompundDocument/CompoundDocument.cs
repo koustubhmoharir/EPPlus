@@ -120,6 +120,16 @@ namespace OfficeOpenXml.Utils.CompundDocument
             doc.Write(ms);
         }
 
+        internal void Save(Stream stream)
+        {
+            using (var ms = new MemoryStream())
+            {
+                Save(ms);
+                ms.Seek(0, SeekOrigin.Begin);
+                ms.CopyTo(stream);
+            }
+        }
+
         private void WriteStorageAndStreams(StoragePart storage, CompoundDocumentItem parent)
         {
             foreach(var item in storage.SubStorage)

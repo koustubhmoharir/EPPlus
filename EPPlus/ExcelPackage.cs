@@ -253,13 +253,27 @@ namespace OfficeOpenXml
         /// </summary>
         public const int MaxRows = 1048576;
 		#endregion
+        internal string tempFolder;
+        private string GetTempFile()
+        {
+            if (tempFolder != null && !Directory.Exists(tempFolder))
+            {
+                Directory.CreateDirectory(tempFolder);
+            }
+            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
+        }
+        internal static FileStream CreateTempStream(string filePath)
+        {
+            return new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose);
+        }
 		#region ExcelPackage Constructors
         /// <summary>
         /// Create a new instance of the ExcelPackage. 
         /// Output is accessed through the Stream property, using the <see cref="SaveAs(FileInfo)"/> method or later set the <see cref="File" /> property.
         /// </summary>
-        public ExcelPackage()
+        public ExcelPackage(string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             Init();
             ConstructNewFile(null);
         }
@@ -267,19 +281,21 @@ namespace OfficeOpenXml
 		/// Create a new instance of the ExcelPackage class based on a existing file or creates a new file. 
 		/// </summary>
 		/// <param name="newFile">If newFile exists, it is opened.  Otherwise it is created from scratch.</param>
-        public ExcelPackage(FileInfo newFile)
+        public ExcelPackage(FileInfo newFile, string tempFolder = null)
 		{
+            this.tempFolder = tempFolder;
             Init();
             File = newFile;
             ConstructNewFile(null);
-        }
+		}
         /// <summary>
         /// Create a new instance of the ExcelPackage class based on a existing file or creates a new file. 
         /// </summary>
         /// <param name="newFile">If newFile exists, it is opened.  Otherwise it is created from scratch.</param>
         /// <param name="password">Password for an encrypted package</param>
-        public ExcelPackage(FileInfo newFile, string password)
+        public ExcelPackage(FileInfo newFile, string password, string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             Init();
             File = newFile;
             ConstructNewFile(password);
@@ -290,8 +306,9 @@ namespace OfficeOpenXml
 		/// </summary>
 		/// <param name="newFile">The name of the Excel file to be created</param>
 		/// <param name="template">The name of the Excel template to use as the basis of the new Excel file</param>
-		public ExcelPackage(FileInfo newFile, FileInfo template)
+		public ExcelPackage(FileInfo newFile, FileInfo template, string tempFolder = null)
 		{
+            this.tempFolder = tempFolder;
             Init();
             File = newFile;
             CreateFromTemplate(template, null);
@@ -303,8 +320,9 @@ namespace OfficeOpenXml
         /// <param name="newFile">The name of the Excel file to be created</param>
         /// <param name="template">The name of the Excel template to use as the basis of the new Excel file</param>
         /// <param name="password">Password to decrypted the template</param>
-        public ExcelPackage(FileInfo newFile, FileInfo template, string password)
+        public ExcelPackage(FileInfo newFile, FileInfo template, string password, string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             Init();
             File = newFile;
             CreateFromTemplate(template, password);
@@ -314,13 +332,14 @@ namespace OfficeOpenXml
         /// </summary>
         /// <param name="template">The name of the Excel template to use as the basis of the new Excel file</param>
         /// <param name="useStream">if true use a stream. If false create a file in the temp dir with a random name</param>
-        public ExcelPackage(FileInfo template, bool useStream)
+        public ExcelPackage(FileInfo template, bool useStream, string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             Init();
             CreateFromTemplate(template, null);
             if (useStream == false)
             {
-                File = new FileInfo(Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx");
+                File = new FileInfo(GetTempFile() + ".xlsx");
             }
         }
         /// <summary>
@@ -329,21 +348,23 @@ namespace OfficeOpenXml
         /// <param name="template">The name of the Excel template to use as the basis of the new Excel file</param>
         /// <param name="useStream">if true use a stream. If false create a file in the temp dir with a random name</param>
         /// <param name="password">Password to decrypted the template</param>
-        public ExcelPackage(FileInfo template, bool useStream, string password)
+        public ExcelPackage(FileInfo template, bool useStream, string password, string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             Init();
             CreateFromTemplate(template, password);
             if (useStream == false)
             {
-                File = new FileInfo(Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx");
+                File = new FileInfo(GetTempFile() + ".xlsx");
             }
         }
         /// <summary>
         /// Create a new instance of the ExcelPackage class based on a stream
         /// </summary>
         /// <param name="newStream">The stream object can be empty or contain a package. The stream must be Read/Write</param>
-        public ExcelPackage(Stream newStream) 
+        public ExcelPackage(Stream newStream, string tempFolder = null) 
         {
+            this.tempFolder = tempFolder;
             Init();
             if (newStream.Length == 0)
             {
@@ -361,8 +382,9 @@ namespace OfficeOpenXml
         /// </summary>
         /// <param name="newStream">The stream object can be empty or contain a package. The stream must be Read/Write</param>
         /// <param name="Password">The password to decrypt the document</param>
-        public ExcelPackage(Stream newStream, string Password)
+        public ExcelPackage(Stream newStream, string Password, string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             if (!(newStream.CanRead && newStream.CanWrite))
             {
                 throw new Exception("The stream must be read/write");
@@ -377,7 +399,7 @@ namespace OfficeOpenXml
             {
                 _stream = newStream;
                 _isExternalStream = true;
-                _package = new Packaging.ZipPackage(_stream);
+                _package = new Packaging.ZipPackage(_stream, this.tempFolder);
                 CreateBlankWb();
             }
         }
@@ -386,8 +408,9 @@ namespace OfficeOpenXml
         /// </summary>
         /// <param name="newStream">The output stream. Must be an empty read/write stream.</param>
         /// <param name="templateStream">This stream is copied to the output stream at load</param>
-        public ExcelPackage(Stream newStream, Stream templateStream)
+        public ExcelPackage(Stream newStream, Stream templateStream, string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             if (newStream.Length > 0)
             {
                 throw(new Exception("The output stream must be empty. Length > 0"));
@@ -405,8 +428,9 @@ namespace OfficeOpenXml
         /// <param name="newStream">The output stream. Must be an empty read/write stream.</param>
         /// <param name="templateStream">This stream is copied to the output stream at load</param>
         /// <param name="Password">Password to decrypted the template</param>
-        public ExcelPackage(Stream newStream, Stream templateStream, string Password)
+        public ExcelPackage(Stream newStream, Stream templateStream, string Password, string tempFolder = null)
         {
+            this.tempFolder = tempFolder;
             if (newStream.Length > 0)
             {
                 throw (new Exception("The output stream must be empty. Length > 0"));
@@ -574,7 +598,7 @@ namespace OfficeOpenXml
                 try
                 {
                     //_package = Package.Open(_stream, FileMode.Open, FileAccess.ReadWrite);
-                    _package = new Packaging.ZipPackage(ms);
+                    _package = new Packaging.ZipPackage(ms, this.tempFolder);
                 }
                 catch (Exception ex)
                 {
@@ -614,7 +638,7 @@ namespace OfficeOpenXml
                 try
                 {
                     //_package = Package.Open(_stream, FileMode.Open, FileAccess.ReadWrite);
-                    _package = new Packaging.ZipPackage(ms);
+                    _package = new Packaging.ZipPackage(ms, this.tempFolder);
                 }
                 catch (Exception ex)
                {
@@ -631,7 +655,7 @@ namespace OfficeOpenXml
             else
             {
                 //_package = Package.Open(_stream, FileMode.Create, FileAccess.ReadWrite);
-                _package = new Packaging.ZipPackage(ms);
+                _package = new Packaging.ZipPackage(ms, this.tempFolder);
                 CreateBlankWb();
             }
         }
@@ -800,11 +824,11 @@ namespace OfficeOpenXml
 		{
             if(_package != null)
             {
-		        if (_isExternalStream==false && _stream != null && (_stream.CanRead || _stream.CanWrite))
+                if (_isExternalStream==false && _stream != null && (_stream.CanRead || _stream.CanWrite))
                 {
                     CloseStream();
                 }
-                _package.Close();
+                _package.Dispose();
                 if(_workbook != null)
                 {
                     _workbook.Dispose();
@@ -1194,7 +1218,7 @@ namespace OfficeOpenXml
                 try
                 {
                     //this._package = Package.Open(this._stream, FileMode.Open, FileAccess.ReadWrite);
-                    _package = new Packaging.ZipPackage(ms);
+                _package = new Packaging.ZipPackage(ms, this.tempFolder);
                 }
                 catch (Exception ex)
                 {
