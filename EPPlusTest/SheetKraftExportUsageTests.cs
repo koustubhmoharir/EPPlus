@@ -53,7 +53,7 @@ namespace EPPlusTest
                 encryptedFile.Refresh();
                 Assert.IsTrue(encryptedFile.Exists);
 
-                using (var reopened = new ExcelPackage(encryptedFile, "write-password", null))
+                using (var reopened = CreateOpenedPackage(encryptedFile, "write-password"))
                 {
                     Assert.AreEqual("secret", reopened.Workbook.Worksheets["Secured"].Cells["A1"].Value);
                     reopened.Encryption.IsEncrypted = false;
@@ -741,6 +741,15 @@ namespace EPPlusTest
             {
                 parent.ParentNode.RemoveChild(parent);
             }
+        }
+
+        private static ExcelPackage CreateOpenedPackage(FileInfo fileInfo, string password)
+        {
+#if NET9_0
+            return new ExcelPackage(fileInfo, password);
+#else
+            return new ExcelPackage(fileInfo, password, null);
+#endif
         }
 
     }

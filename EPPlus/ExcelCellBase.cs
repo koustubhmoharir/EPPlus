@@ -999,6 +999,63 @@ namespace OfficeOpenXml
                 return formula;
             }
         }
+
+        internal static string MoveFormulaReferences(string formula, int sourceRow, int sourceCol, int numRows, int numCols, int destRow, int destCol, string currentSheet, string modifiedSheet)
+        {
+            var srcRange = new ExcelAddress(sourceRow, sourceCol, sourceRow + numRows - 1, sourceCol + numCols - 1);
+            var d = new Dictionary<string, object>();
+            try
+            {
+                var sct = new SourceCodeTokenizer(FunctionNameProvider.Empty, NameValueProvider.Empty);
+                var tokens = sct.Tokenize(formula);
+                string f = "";
+                foreach (var t in tokens)
+                {
+                    if (t.TokenType == TokenType.ExcelAddress)
+                    {
+                        var a = new ExcelAddressBase(t.Value);
+                        var referencesModifiedWorksheet = (string.IsNullOrEmpty(a._ws) && currentSheet.Equals(modifiedSheet, StringComparison.CurrentCultureIgnoreCase)) || modifiedSheet.Equals(a._ws, StringComparison.CurrentCultureIgnoreCase);
+
+                        if (!string.IsNullOrEmpty(a._wb) || !referencesModifiedWorksheet)
+                        {
+                            f += a.Address;
+                            continue;
+                        }
+
+                        if (!string.IsNullOrEmpty(a._ws))
+                        {
+                            f += "'" + a._ws.Replace("'", "''") + "'!";
+                        }
+                        var collision = srcRange.Collide(a, true);
+                        if (collision == ExcelAddressBase.eAddressCollition.Inside || collision == ExcelAddressBase.eAddressCollition.Equal)
+                        {
+                            a = a.Move(destRow - sourceRow, destCol - sourceCol);
+                        }
+                        if (a == null || !a.IsValidRowCol())
+                        {
+                            f += "#REF!";
+                        }
+                        else
+                        {
+                            var address = a.Address.Split('!');
+                            if (address.Length > 1)
+                                f += address[1];
+                            else
+                                f += a.Address;
+                        }
+                    }
+                    else
+                    {
+                        f += t.Value;
+                    }
+                }
+                return f;
+            }
+            catch
+            {
+                return formula;
+            }
+        }
     
         /// <summary>
         /// Updates all the references to a renamed sheet in a formula.

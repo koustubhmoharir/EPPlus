@@ -2482,7 +2482,8 @@ namespace OfficeOpenXml
         /// </summary>
         /// <param name="Destination">The start cell where the range will be copied.</param>
         /// <param name="excelRangeCopyOptionFlags">Cell parts that will not be copied. If Formulas are specified, the formulas will NOT be copied.</param>
-        public void Copy(ExcelRangeBase Destination, ExcelRangeCopyOptionFlags? excelRangeCopyOptionFlags)
+        /// <param name="simulateCut">If true, attempts to simulate the cut-paste operation in Excel. However source is not cleared.</param>
+        public void Copy(ExcelRangeBase Destination, ExcelRangeCopyOptionFlags? excelRangeCopyOptionFlags, bool simulateCut = false)
         {
             bool sameWorkbook = Destination._worksheet.Workbook == _worksheet.Workbook;
             ExcelStyles sourceStyles = _worksheet.Workbook.Styles,
@@ -2686,6 +2687,13 @@ namespace OfficeOpenXml
                 {
                     var destinationCol = Destination.Worksheet.Column(Destination.Start.Column + c);
                     destinationCol.OutlineLevel = this.Worksheet.Column(_fromCol + c).OutlineLevel;
+                }
+            }
+            if (simulateCut && sameWorkbook && _worksheet.Name == Destination.WorkSheet)
+            {
+                foreach (var worksheet in _worksheet.Workbook.Worksheets)
+                {
+                    worksheet.MoveFormulaReferences(_worksheet.Name, _fromRow, _fromCol, _toRow - _fromRow + 1, _toCol - _fromCol + 1, Destination._fromRow, Destination._fromCol);
                 }
             }
 

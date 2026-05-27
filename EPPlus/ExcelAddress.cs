@@ -813,6 +813,14 @@ namespace OfficeOpenXml
                 }
             }
         }
+        internal ExcelAddressBase Move(int rows, int columns)
+        {
+            var fromRow = _fromRow + rows;
+            var toRow = _toRow + rows;
+            var fromCol = _fromCol + columns;
+            var toCol = _toCol + columns;
+            return new ExcelAddressBase(fromRow, fromCol, toRow, toCol, _fromRowFixed, _fromColFixed, _toRowFixed, _toColFixed);
+        }
         internal ExcelAddressBase Insert(ExcelAddressBase address, eShiftType Shift/*, out ExcelAddressBase topAddress, out ExcelAddressBase leftAddress, out ExcelAddressBase rightAddress, out ExcelAddressBase bottomAddress*/)
         {
             //Before or after, no change

@@ -2912,6 +2912,22 @@ namespace OfficeOpenXml
           }
         }
 
+        internal void MoveFormulaReferences(string sourceSheetName, int sourceRow, int sourceCol, int numRows, int numCols, int destRow, int destCol)
+        {
+          foreach (var sf in _sharedFormulas.Values)
+          {
+            sf.Formula = ExcelCellBase.MoveFormulaReferences(sf.Formula, sourceRow, sourceCol, numRows, numCols, destRow, destCol, this.Name, sourceSheetName);
+          }
+          var cse = new CellsStoreEnumerator<object>(_formulas, 1, 1, ExcelPackage.MaxRows, ExcelPackage.MaxColumns);
+          while (cse.Next())
+          {
+            if (cse.Value is string)
+            {
+              cse.Value = ExcelCellBase.MoveFormulaReferences(cse.Value.ToString(), sourceRow, sourceCol, numRows, numCols, destRow, destCol, this.Name, sourceSheetName);
+            }
+          }
+        }
+
         private void UpdateCrossSheetReferenceNames(string oldName, string newName)
         {
           if (string.IsNullOrEmpty(oldName))
