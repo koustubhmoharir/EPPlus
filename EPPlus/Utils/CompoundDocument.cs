@@ -71,6 +71,88 @@ namespace OfficeOpenXml.Utils
             }
         }
         internal StoragePart Storage = null;
+        private const STGM ReadStorageMode = STGM.DIRECT_SWMR | STGM.READ | STGM.SHARE_DENY_NONE;
+        private const STGM ReadSubStorageMode = STGM.READ | STGM.SHARE_EXCLUSIVE;
+        private const STGM ReadStreamMode = STGM.READ | STGM.SHARE_EXCLUSIVE;
+        [ClassInterface(ClassInterfaceType.None)]
+        private sealed class FileLockBytes : ILockBytes, IDisposable
+        {
+            private const int CopyBufferSize = 81920;
+            private readonly FileStream _stream;
+            private readonly string _name;
+            private readonly object _syncRoot = new object();
+
+            internal FileLockBytes(string path)
+            {
+                _name = path;
+                _stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            }
+
+            [SecuritySafeCritical]
+            public void ReadAt(long ulOffset, IntPtr pv, int cb, out int pcbRead)
+            {
+                var buffer = new byte[Math.Min(cb, CopyBufferSize)];
+                var totalBytesRead = 0;
+
+                lock (_syncRoot)
+                {
+                    _stream.Seek(ulOffset, SeekOrigin.Begin);
+                    while (totalBytesRead < cb)
+                    {
+                        var bytesToRead = Math.Min(buffer.Length, cb - totalBytesRead);
+                        var bytesRead = _stream.Read(buffer, 0, bytesToRead);
+                        if (bytesRead == 0)
+                        {
+                            break;
+                        }
+
+                        Marshal.Copy(buffer, 0, new IntPtr(pv.ToInt64() + totalBytesRead), bytesRead);
+                        totalBytesRead += bytesRead;
+                    }
+                }
+
+                pcbRead = totalBytesRead;
+            }
+
+            public void WriteAt(long ulOffset, IntPtr pv, int cb, out int pcbWritten)
+            {
+                pcbWritten = 0;
+                throw new UnauthorizedAccessException("The compound document is opened for read-only access.");
+            }
+
+            public void Flush()
+            {
+            }
+
+            public void SetSize(long cb)
+            {
+                throw new UnauthorizedAccessException("The compound document is opened for read-only access.");
+            }
+
+            public void LockRegion(long libOffset, long cb, int dwLockType)
+            {
+            }
+
+            public void UnlockRegion(long libOffset, long cb, int dwLockType)
+            {
+            }
+
+            public void Stat(out comTypes.STATSTG pstatstg, int grfStatFlag)
+            {
+                pstatstg = new comTypes.STATSTG
+                {
+                    cbSize = _stream.Length,
+                    grfMode = (int)ReadStorageMode,
+                    type = (int)STGTY.STGTY_LOCKBYTES,
+                    pwcsName = grfStatFlag == (int)STATFLAG.STATFLAG_NONAME ? null : _name
+                };
+            }
+
+            public void Dispose()
+            {
+                _stream.Dispose();
+            }
+        }
         internal CompoundDocument(string tempFolder)
         {
             this.tempFolder = tempFolder;
@@ -93,8 +175,6 @@ namespace OfficeOpenXml.Utils
         }
         internal void Read(FileInfo fi)
         {
-            //var b = File.ReadAllBytes(fi.FullName);
-            //Read(b);
             ReadFile(fi.FullName);
         }
         [SecuritySafeCritical]
@@ -105,7 +185,7 @@ namespace OfficeOpenXml.Utils
 
             IntPtr buffer = Marshal.AllocHGlobal(doc.Length);
             Marshal.Copy(doc, 0, buffer, doc.Length);
-            UIntPtr readSize;
+            int readSize;
             lb.WriteAt(0, buffer, doc.Length, out readSize);
             Marshal.FreeHGlobal(buffer);
 
@@ -114,12 +194,48 @@ namespace OfficeOpenXml.Utils
         [SecuritySafeCritical]
         internal void ReadFile(string path)
         {
-            IStorage storage = null;
-            if (StgOpenStorage(path, null, STGM.DIRECT | STGM.READ | STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0, out storage) == 0)
+            using (var lockBytes = new FileLockBytes(path))
             {
-                Storage = new StoragePart();
-                ReadParts(storage, Storage);
-                Marshal.ReleaseComObject(storage);
+                IntPtr lockBytesPointer = IntPtr.Zero;
+                try
+                {
+                    lockBytesPointer = Marshal.GetComInterfaceForObject(lockBytes, typeof(ILockBytes));
+                    Read(lockBytesPointer);
+                }
+                finally
+                {
+                    if (lockBytesPointer != IntPtr.Zero)
+                    {
+                        Marshal.Release(lockBytesPointer);
+                    }
+                }
+            }
+        }
+
+        [SecuritySafeCritical]
+        internal void Read(IntPtr lb)
+        {
+            IStorage storage = null;
+            try
+            {
+                if (StgOpenStorageOnILockBytes(
+                    lb,
+                    null,
+                    ReadStorageMode,
+                    IntPtr.Zero,
+                    0,
+                    out storage) == 0)
+                {
+                    Storage = new StoragePart();
+                    ReadParts(storage, Storage);
+                }
+            }
+            finally
+            {
+                if (storage != null)
+                {
+                    Marshal.FinalReleaseComObject(storage);
+                }
             }
         }
 
@@ -129,17 +245,26 @@ namespace OfficeOpenXml.Utils
             if (StgIsStorageILockBytes(lb) == 0)
             {
                 IStorage storage = null;
-                if (StgOpenStorageOnILockBytes(
-                    lb,
-                    null,
-                    STGM.DIRECT | STGM.READ | STGM.SHARE_EXCLUSIVE,
-                    IntPtr.Zero,
-                    0,
-                    out storage) == 0)
+                try
                 {
-                    Storage = new StoragePart();
-                    ReadParts(storage, Storage);
-                    Marshal.ReleaseComObject(storage);
+                    if (StgOpenStorageOnILockBytes(
+                        lb,
+                        null,
+                        ReadStorageMode,
+                        IntPtr.Zero,
+                        0,
+                        out storage) == 0)
+                    {
+                        Storage = new StoragePart();
+                        ReadParts(storage, Storage);
+                    }
+                }
+                finally
+                {
+                    if (storage != null)
+                    {
+                        Marshal.FinalReleaseComObject(storage);
+                    }
                 }
             }
             else
@@ -515,8 +640,8 @@ namespace OfficeOpenXml.Utils
         [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("0000000A-0000-0000-C000-000000000046")]
         internal interface ILockBytes
         {
-            void ReadAt(long ulOffset, System.IntPtr pv, int cb, out UIntPtr pcbRead);
-            void WriteAt(long ulOffset, System.IntPtr pv, int cb, out UIntPtr pcbWritten);
+            void ReadAt(long ulOffset, System.IntPtr pv, int cb, out int pcbRead);
+            void WriteAt(long ulOffset, System.IntPtr pv, int cb, out int pcbWritten);
             void Flush();
             void SetSize(long cb);
             void LockRegion(long libOffset, long cb, int dwLockType);
@@ -586,6 +711,14 @@ namespace OfficeOpenXml.Utils
             IntPtr snbEnclude,
             uint reserved,
             out IStorage ppstgOpen);
+        [DllImport("ole32.dll", EntryPoint = "StgOpenStorageOnILockBytes")]
+        static extern int StgOpenStorageOnILockBytes(
+            IntPtr plkbyt,
+            IStorage pStgPriority,
+            STGM grfMode,
+            IntPtr snbEnclude,
+            uint reserved,
+            out IStorage ppstgOpen);
         [DllImport("ole32.dll")]
         static extern int CreateILockBytesOnHGlobal(
             IntPtr hGlobal,
@@ -615,7 +748,7 @@ namespace OfficeOpenXml.Utils
 
             IntPtr buffer = Marshal.AllocHGlobal(docArray.Length);
             Marshal.Copy(docArray, 0, buffer, docArray.Length);
-            UIntPtr readSize;
+            int readSize;
             lb.WriteAt(0, buffer, docArray.Length, out readSize);
             Marshal.FreeHGlobal(buffer);
 
@@ -646,10 +779,17 @@ namespace OfficeOpenXml.Utils
                     if (item.type == 1)
                     {
                         IStorage subStorage;
-                        storage.OpenStorage(item.pwcsName, null, STGM.DIRECT | STGM.READ | STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0, out subStorage);
-                        StoragePart subStoragePart = new StoragePart();
-                        storagePart.SubStorage.Add(item.pwcsName, subStoragePart);
-                        ReadParts(subStorage, subStoragePart);
+                        storage.OpenStorage(item.pwcsName, null, ReadSubStorageMode, IntPtr.Zero, 0, out subStorage);
+                        try
+                        {
+                            StoragePart subStoragePart = new StoragePart();
+                            storagePart.SubStorage.Add(item.pwcsName, subStoragePart);
+                            ReadParts(subStorage, subStoragePart);
+                        }
+                        finally
+                        {
+                            Marshal.FinalReleaseComObject(subStorage);
+                        }
                     }
                     else
                     {
@@ -658,7 +798,7 @@ namespace OfficeOpenXml.Utils
                 }
                 res = pIEnumStatStg.Next(1, regelt, out fetched);
             }
-            Marshal.ReleaseComObject(pIEnumStatStg);
+            Marshal.FinalReleaseComObject(pIEnumStatStg);
         }
         // Help method to print a storage part binary to c:\temp
         //private void PrintStorage(IStorage storage, System.Runtime.InteropServices.ComTypes.STATSTG sTATSTG, string topName)
@@ -708,7 +848,7 @@ namespace OfficeOpenXml.Utils
             comTypes.IStream pIStream;
             storage.OpenStream(statstg.pwcsName,
                IntPtr.Zero,
-               (uint)(STGM.READ | STGM.SHARE_EXCLUSIVE),
+               (uint)ReadStreamMode,
                0,
                out pIStream);
 
@@ -727,11 +867,12 @@ namespace OfficeOpenXml.Utils
                 }
             }
             //pIStream.Read(data, (int)statstg.cbSize, IntPtr.Zero);
-            Marshal.ReleaseComObject(pIStream);
+            Marshal.FinalReleaseComObject(pIStream);
             return outputStream;
         }
 
         private const int bufferSize = 4096;
+        [SecuritySafeCritical]
         public static void CopyStream(comTypes.IStream inputStream, int size, FileStream outStream)
         {
             var amtRead = Marshal.AllocCoTaskMem(Marshal.SizeOf(typeof(int)));
@@ -773,7 +914,7 @@ namespace OfficeOpenXml.Utils
                 lb.Stat(out statstg, 0);
                 int size = (int)statstg.cbSize;
                 IntPtr buffer = Marshal.AllocHGlobal(size);
-                UIntPtr readSize;
+                int readSize;
                 ret = new byte[size];
                 lb.ReadAt(0, buffer, size, out readSize);
                 Marshal.Copy(buffer, ret, 0, size);
