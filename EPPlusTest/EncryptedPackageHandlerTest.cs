@@ -1,4 +1,3 @@
-#if !MONO
 using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -152,4 +151,4 @@ namespace EPPlusTest
         }
     }
 }
-#endif
+

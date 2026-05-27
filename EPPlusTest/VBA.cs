@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,6 @@ namespace EPPlusTest
     [TestClass]
     public class VBA
     {
-#if !MONO
         [TestMethod]
         public void Compression()
         {
@@ -32,7 +31,6 @@ namespace EPPlusTest
             decompValue = Encoding.GetEncoding(1252).GetString(CompoundDocument.DecompressPart(compValue));
             Assert.AreEqual(value, decompValue);
         }
-#endif
         [Ignore]
         [TestMethod]
         public void ReadVBA()

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -40,7 +40,6 @@ using System.Security;
 
 namespace OfficeOpenXml.Utils
 {
-#if !MONO
     internal class CompoundDocument : IDisposable
     {
         private string tempFolder;
@@ -960,5 +959,5 @@ namespace OfficeOpenXml.Utils
     public static class FileStreamExtensions
     {
     }
-#endif
 }
+

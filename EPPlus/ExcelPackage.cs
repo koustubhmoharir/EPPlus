@@ -4,7 +4,7 @@
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
  * See https://github.com/JanKallman/EPPlus for details.
  *
- * Copyright (C) 2011  Jan Källman
+ * Copyright (C) 2011  Jan KÃ¤llman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,11 +26,11 @@
  * 
  * Author							Change						Date
  * ******************************************************************************
- * Jan Källman		                Initial Release		        2009-10-01
- * Starnuto Di Topo & Jan Källman   Added stream constructors 
+ * Jan KÃ¤llman		                Initial Release		        2009-10-01
+ * Starnuto Di Topo & Jan KÃ¤llman   Added stream constructors 
  *                                  and Load method Save as 
  *                                  stream                      2010-03-14
- * Jan Källman		License changed GPL-->LGPL 2011-12-27
+ * Jan KÃ¤llman		License changed GPL-->LGPL 2011-12-27
  *******************************************************************************/
 using System;
 using System.Xml;
@@ -145,14 +145,14 @@ namespace OfficeOpenXml
     ///
     ///         // set some document properties
     ///         package.Workbook.Properties.Title = "Invertory";
-    ///         package.Workbook.Properties.Author = "Jan Källman";
+    ///         package.Workbook.Properties.Author = "Jan KÃ¤llman";
     ///         package.Workbook.Properties.Comments = "This sample demonstrates how to create an Excel 2007 workbook using EPPlus";
     ///
     ///         // set some extended property values
     ///         package.Workbook.Properties.Company = "AdventureWorks Inc.";
     ///
     ///         // set some custom property values
-    ///         package.Workbook.Properties.SetCustomPropertyValue("Checked by", "Jan Källman");
+    ///         package.Workbook.Properties.SetCustomPropertyValue("Checked by", "Jan KÃ¤llman");
     ///         package.Workbook.Properties.SetCustomPropertyValue("AssemblyName", "EPPlus");
     ///
     ///         // save our new workbook and we are done!
@@ -541,17 +541,12 @@ namespace OfficeOpenXml
                 Stream readStream;
                 if (password != null)
                 {
-#if !MONO
                     Encryption.IsEncrypted = true;
                     Encryption.Password = password;
                     var encrHandler = new EncryptedPackageHandler(tempFolder);
                     readStream = CreateTempStream(GetTempFile());
                     encrHandler.DecryptPackage(template, Encryption, readStream);
                     readStream.Seek(0, SeekOrigin.Begin);
-#endif
-#if MONO
-	            throw (new NotImplementedException("No support for Encrypted packages in Mono"));
-#endif
                 }
                 else
                 {
@@ -566,7 +561,6 @@ namespace OfficeOpenXml
                     }
                     catch (Exception ex)
                     {
-#if !MONO
                         if (password == null && CompoundDocument.IsStorageFile(template.FullName) == 0)
                         {
                             throw new Exception("Can not open the package. Package is an OLE compound document. If this is an encrypted package, please supply the password", ex);
@@ -575,10 +569,6 @@ namespace OfficeOpenXml
                         {
                             throw;
                         }
-#endif
-#if MONO
-                throw;
-#endif
                     }
                 }
             }
@@ -594,7 +584,6 @@ namespace OfficeOpenXml
             {
                 if (password != null)
                 {
-#if !MONO
                     var encrHandler = new EncryptedPackageHandler(tempFolder);
                     Encryption.IsEncrypted = true;
                     Encryption.Password = password;
@@ -611,10 +600,6 @@ namespace OfficeOpenXml
                             outputStream.Dispose();
                     }
                     encrHandler = null;
-#endif
-#if MONO
-                throw new NotImplementedException("No support for Encrypted packages in Mono");
-#endif
                 }
                 else
                 {
@@ -631,7 +616,6 @@ namespace OfficeOpenXml
                     }
                     catch (Exception ex)
                     {
-#if !MONO
                         if (password == null && CompoundDocument.IsStorageFile(File.FullName) == 0)
                         {
                             throw new Exception("Can not open the package. Package is an OLE compound document. If this is an encrypted package, please supply the password", ex);
@@ -640,10 +624,6 @@ namespace OfficeOpenXml
                         {
                             throw;
                         }
-#endif
-#if MONO
-                throw;
-#endif
                     }
                 }
             }
@@ -832,17 +812,12 @@ namespace OfficeOpenXml
                 if (Stream == null) Stream = CreateTempStream(GetTempFile());
                 if (Encryption.IsEncrypted)
                 {
-#if !MONO
                     using (var file = CreateTempStream(GetTempFile()))
                     {
                         _package.Save(file);
                         EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
                         eph.EncryptPackage(file, Encryption, Stream);
                     }
-#endif
-#if MONO
-                        throw new NotSupportedException("Encryption is not supported under Mono.");
-#endif
                 }
                 else
                 {
@@ -869,7 +844,6 @@ namespace OfficeOpenXml
                 {
                     if (Encryption.IsEncrypted)
                     {
-#if !MONO
                         Stream tempStream = null;
                         if (Stream == null)
                             tempStream = Stream = CreateTempStream(GetTempFile());
@@ -888,10 +862,6 @@ namespace OfficeOpenXml
                         }
 
                         //fi.Write(ms.GetBuffer(), 0, (int)ms.Length);
-#endif
-#if MONO
-                            throw new NotSupportedException("Encryption is not supported under Mono.");
-#endif
                     }
                     else
                     {
@@ -957,7 +927,6 @@ namespace OfficeOpenXml
             {
                 if (Encryption.IsEncrypted)
                 {
-#if !MONO
                     //Encrypt Workbook
                     Byte[] file = new byte[Stream.Length];
                     long pos = Stream.Position;
@@ -966,10 +935,6 @@ namespace OfficeOpenXml
                     EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
                     eph.EncryptPackage(new MemoryStream(file), Encryption, OutputStream);
                     //CopyStream(ms, ref );
-#endif
-#if MONO
-                throw new NotSupportedException("Encryption is not supported under Mono.");
-#endif
                 }
                 else
                 {
@@ -1117,7 +1082,6 @@ namespace OfficeOpenXml
             //Encrypt Workbook?
             if (Encryption.IsEncrypted)
             {
-#if !MONO
                 try
                 {
                     EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
@@ -1129,7 +1093,6 @@ namespace OfficeOpenXml
                 {
 
                 }
-#endif
             }
 
             Stream.Seek(pos, SeekOrigin.Begin);
@@ -1184,7 +1147,6 @@ namespace OfficeOpenXml
                 this.Stream = output;
                 if (Password != null)
                 {
-#if !MONO
                     Stream encrStream = new MemoryStream();
                     CopyStream(input, encrStream);
                     EncryptedPackageHandler eph = new EncryptedPackageHandler(tempFolder);
@@ -1193,10 +1155,6 @@ namespace OfficeOpenXml
                     eph.DecryptPackage((MemoryStream)encrStream, Encryption, decrInput);
                     decrInput.Seek(0, SeekOrigin.Begin);
                     input = decrInput;
-#endif
-#if MONO
-                    throw new NotSupportedException("Encryption is not supported under Mono.");
-#endif
                 }
                 //this._package = Package.Open(this._stream, FileMode.Open, FileAccess.ReadWrite);
                 _package = new Packaging.ZipPackage(input, this.tempFolder);

@@ -4,7 +4,7 @@
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
  * See https://github.com/JanKallman/EPPlus for details.
  *
- * Copyright (C) 2011  Jan Källman
+ * Copyright (C) 2011  Jan KÃ¤llman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,8 +26,8 @@
  * 
  * Author							Change						Date
  * ******************************************************************************
- * Jan Källman		    Initial Release		       2011-01-01
- * Jan Källman		    License changed GPL-->LGPL 2011-12-27
+ * Jan KÃ¤llman		    Initial Release		       2011-01-01
+ * Jan KÃ¤llman		    License changed GPL-->LGPL 2011-12-27
  * Richard Tallent		Fix escaping of quotes					2012-10-31
  *******************************************************************************/
 using System;
@@ -507,7 +507,6 @@ namespace OfficeOpenXml
         /// </summary>
         public void CreateVBAProject()
         {
-#if !MONO
             if (_vba != null || _package.Package.PartExists(new Uri(ExcelVbaProject.PartUri, UriKind.Relative)))
             {
                 throw (new InvalidOperationException("VBA project already exists."));
@@ -515,10 +514,6 @@ namespace OfficeOpenXml
                         
             _vba = new ExcelVbaProject(this);
             _vba.Create();
-#endif
-#if MONO
-            throw new NotSupportedException("Creating a VBA project is not supported under Mono.");
-#endif
 				}
 		/// <summary>
 		/// URI to the workbook inside the package
@@ -883,9 +878,7 @@ namespace OfficeOpenXml
             //VBA
             if (_vba!=null)
             {
-#if !MONO
                 VbaProject.Save();
-#endif
             }
 
 		}
@@ -1241,3 +1234,4 @@ namespace OfficeOpenXml
         }
     } // end Workbook
 }
+

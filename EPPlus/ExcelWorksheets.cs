@@ -4,7 +4,7 @@
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
  * See https://github.com/JanKallman/EPPlus for details.
  *
- * Copyright (C) 2011  Jan Källman
+ * Copyright (C) 2011  Jan KÃ¤llman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,8 +26,8 @@
  * 
  * Author							Change						Date
  * ******************************************************************************
- * Jan Källman		    Initial Release		       2009-10-01
- * Jan Källman		    License changed GPL-->LGPL 2011-12-27
+ * Jan KÃ¤llman		    Initial Release		       2009-10-01
+ * Jan KÃ¤llman		    License changed GPL-->LGPL 2011-12-27
  *******************************************************************************/
 using System;
 using System.Collections;
@@ -187,7 +187,6 @@ namespace OfficeOpenXml
                 }
 
                 _worksheets.Add(positionID, worksheet);
-#if !MONO
                 if (_pck.Workbook.VbaProject != null)
                 {
                     var name = _pck.Workbook.VbaProject.GetModuleNameFromWorksheet(worksheet);
@@ -195,7 +194,6 @@ namespace OfficeOpenXml
                     worksheet.CodeModuleName = name;
 
                 }
-#endif
                 return worksheet;
             }
         }
@@ -272,14 +270,12 @@ namespace OfficeOpenXml
                 CloneCells(Copy, added);
 
                 //Copy the VBA code
-#if !MONO
                 if (_pck.Workbook.VbaProject != null)
                 {
                     var name = _pck.Workbook.VbaProject.GetModuleNameFromWorksheet(added);
                     _pck.Workbook.VbaProject.Modules.Add(new ExcelVBAModule(added.CodeNameChange) { Name = name, Code = Copy.CodeModule.Code, Attributes = _pck.Workbook.VbaProject.GetDocumentAttributes(Name, "0{00020820-0000-0000-C000-000000000046}"), Type = eModuleType.Document, HelpContext = 0 });
                     Copy.CodeModuleName = name;
                 }
-#endif
 
                 _worksheets.Add(_worksheets.Count + 1, added);
 
@@ -1283,3 +1279,4 @@ namespace OfficeOpenXml
         }
     } // end class Worksheets
 }
+

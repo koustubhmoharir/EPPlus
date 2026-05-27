@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -63,9 +63,7 @@ namespace OfficeOpenXml.VBA
             {
                 Uri = UriHelper.ResolvePartUri(rel.SourceUri, rel.TargetUri);
                 Part = _pck.GetPart(Uri);
-#if !MONO
                 GetProject();                
-#endif
             }
             else
             {
@@ -154,7 +152,6 @@ namespace OfficeOpenXml.VBA
             }
         }
         #endregion
-#if !MONO
         #region Read Project
         private void GetProject()
         {
@@ -1023,10 +1020,8 @@ namespace OfficeOpenXml.VBA
             return sUC.Length == 0 ? s : sUC;
         }
         internal CompoundDocument Document { get; set; }
-#endif
         internal Packaging.ZipPackagePart Part { get; set; }
         internal Uri Uri { get; private set; }
-#if !MONO
         /// <summary>
         /// Create a new VBA Project
         /// </summary>
@@ -1116,7 +1111,6 @@ namespace OfficeOpenXml.VBA
         //    ret += "Attribute VB_Customizable = False\r\n";
         //    return ret;
         //}
-#endif
         /// <summary>
         /// Remove the project from the package
         /// </summary>
@@ -1154,3 +1148,4 @@ namespace OfficeOpenXml.VBA
         }
     }
 }
+

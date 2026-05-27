@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -375,10 +375,9 @@ namespace OfficeOpenXml.VBA
         /// The verifier
         /// </summary>
         public SignedCms Verifier { get; internal set; }
-#if !MONO
         internal CompoundDocument Signature { get; set; }
-#endif
         internal Packaging.ZipPackagePart Part { get; set; }
         internal Uri Uri { get; private set; }
     }
 }
+
