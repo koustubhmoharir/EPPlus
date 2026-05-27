@@ -1,4 +1,4 @@
-// ZipFile.saveSelfExtractor.cs
+﻿// ZipFile.saveSelfExtractor.cs
 // ------------------------------------------------------------------
 //
 // Copyright (c) 2008-2011 Dino Chiesa.

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 #if !Core
 using System.Runtime.Serialization.Formatters.Binary;
