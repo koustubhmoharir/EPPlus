@@ -25,16 +25,6 @@ namespace EPPlusTest.Excel.Functions
             Assert.AreEqual("A", result.Result);
         }
 
-        [TestMethod, Ignore]
-        public void IfShouldIgnoreCase()
-        {
-            using (var pck = new ExcelPackage(new FileInfo(@"c:\temp\book1.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                pck.Workbook.Calculate();
-                Assert.AreEqual("Sant", pck.Workbook.Worksheets.First().Cells["C3"].Value);
-            }
-        }
-
         [TestMethod]
         public void NotShouldReturnFalseIfArgumentIsTrue()
         {

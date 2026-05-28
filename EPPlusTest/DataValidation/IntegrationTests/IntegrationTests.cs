@@ -27,7 +27,7 @@ namespace EPPlusTest.DataValidation.IntegrationTests
             CleanupTestData();
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         public void DataValidations_AddOneValidationOfTypeWhole()
         {
             _sheet.Cells["B1"].Value = 2;
@@ -42,7 +42,7 @@ namespace EPPlusTest.DataValidation.IntegrationTests
 
             _package.SaveAs(new FileInfo(GetTestOutputPath("AddOneValidationOfTypeWhole.xlsx")));
         }
-        [TestMethod, Ignore]
+        [TestMethod]
         public void DataValidations_AddOneValidationOfTypeDecimal()
         {
             var validation = _sheet.DataValidations.AddDecimalValidation("A1");
@@ -89,20 +89,42 @@ namespace EPPlusTest.DataValidation.IntegrationTests
             _package.SaveAs(new FileInfo(GetTestOutputPath("AddOneValidationOfTypeTime.xlsx")));
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         public void DataValidations_ReadExistingWorkbookWithDataValidations()
         {
-            using (var package = new ExcelPackage(new FileInfo(GetTestOutputPath("DVTest.xlsx")), EPPlusTest.TempFolderHelper.Create()))
+            var fileInfo = new FileInfo(GetTestOutputPath("DVTest.xlsx"));
+            if (File.Exists(fileInfo.FullName))
             {
-                Assert.AreEqual(3, package.Workbook.Worksheets[1].DataValidations.Count);
+                File.Delete(fileInfo.FullName);
+            }
+
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
+            {
+                var sheet = package.Workbook.Worksheets.Add("test");
+
+                var whole = sheet.DataValidations.AddIntegerValidation("A1");
+                whole.Formula.Value = 1;
+
+                var decimalValidation = sheet.DataValidations.AddDecimalValidation("B1");
+                decimalValidation.Formula.Value = 1.5;
+
+                var listValidation = sheet.DataValidations.AddListValidation("C1");
+                listValidation.Formula.Values.Add("one");
+                listValidation.Formula.Values.Add("two");
+
+                package.SaveAs(fileInfo);
+            }
+            using (var package = new ExcelPackage(fileInfo, EPPlusTest.TempFolderHelper.Create()))
+            {
+                Assert.AreEqual(3, package.Workbook.Worksheets.First().DataValidations.Count);
             }
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         public void RemoveDataValidation()
         {
-            var fileInfo = new FileInfo(@"c:\Temp\DvTest.xlsx");
-            if(File.Exists(fileInfo.FullName))
+            var fileInfo = new FileInfo(GetTestOutputPath("DVTest.xlsx"));
+            if (File.Exists(fileInfo.FullName))
                 File.Delete(fileInfo.FullName);
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {

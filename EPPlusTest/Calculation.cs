@@ -90,10 +90,10 @@ namespace EPPlusTest
         [TestMethod]
         public void Calulation4()
         {
-			var dir = TestBase.GetProjectRootDirectory();
-			var pck = new ExcelPackage(new FileInfo(Path.Combine(dir, "Workbooks", "FormulaTest.xlsx")), EPPlusTest.TempFolderHelper.Create());
+            var dir = TestBase.GetProjectRootDirectory();
+            var pck = new ExcelPackage(new FileInfo(Path.Combine(dir, "Workbooks", "FormulaTest.xlsx")), EPPlusTest.TempFolderHelper.Create());
             pck.Workbook.Calculate();
-            Assert.AreEqual(490D, pck.Workbook.Worksheets[1].Cells["D5"].Value);
+            Assert.AreEqual(490D, pck.Workbook.Worksheets.First().Cells["D5"].Value);
         }
         [TestMethod]
         public void CalulationValidationExcel()
@@ -142,42 +142,6 @@ namespace EPPlusTest
                 }
             }
 		}
-        [Ignore]
-        [TestMethod]
-        public void TestOneCell()
-        {
-            var pck = new ExcelPackage(new FileInfo(@"C:\temp\EPPlusTestark\Test4.xlsm"), EPPlusTest.TempFolderHelper.Create());
-            var ws = pck.Workbook.Worksheets.First(); 
-            pck.Workbook.Worksheets["Räntebärande formaterat utland"].Cells["M13"].Calculate();
-            Assert.AreEqual(0d, pck.Workbook.Worksheets["Räntebärande formaterat utland"].Cells["M13"].Value);  
-        }
-        [Ignore]
-        [TestMethod]
-        public void TestPrecedence()
-        {
-            var pck = new ExcelPackage(new FileInfo(@"C:\temp\EPPlusTestark\Precedence.xlsx"), EPPlusTest.TempFolderHelper.Create());
-            var ws = pck.Workbook.Worksheets.Last();
-            pck.Workbook.Calculate();
-            Assert.AreEqual(150d, ws.Cells["A1"].Value);
-        }
-        [Ignore]
-        [TestMethod]
-        public void TestDataType()
-        {
-            var pck = new ExcelPackage(new FileInfo(@"c:\temp\EPPlusTestark\calc_amount.xlsx"), EPPlusTest.TempFolderHelper.Create());
-            var ws = pck.Workbook.Worksheets[1];
-            //ws.Names.Add("Name1",ws.Cells["A1"]);
-            //ws.Names.Add("Name2", ws.Cells["A2"]);
-            ws.Names["PRICE"].Value = 30;
-            ws.Names["QUANTITY"].Value = 10;
-
-            ws.Calculate();
-
-            ws.Names["PRICE"].Value = 40;
-            ws.Names["QUANTITY"].Value = 20;
-
-            ws.Calculate();
-        }
         [TestMethod]
         public void CalcTwiceError()
         {
@@ -348,7 +312,7 @@ namespace EPPlusTest
                 var errors = new List<Tuple<string, object, object>>();
                 ExcelWorksheet sheet=null;
                 string adr="";
-                var fileErr = new System.IO.StreamWriter("c:\\temp\\err.txt");
+                var fileErr = new System.IO.StreamWriter(new FileStream("c:\\temp\\err.txt",FileMode.Append));
                 foreach (var cell in fr.Keys)
                 {
                     try

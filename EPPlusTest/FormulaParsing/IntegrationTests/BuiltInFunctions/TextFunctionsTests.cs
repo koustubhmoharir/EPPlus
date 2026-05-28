@@ -128,21 +128,5 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
             }
         }
 
-        [TestMethod, Ignore]
-        public void Logtest1()
-        {
-            var sw = new Stopwatch();
-            sw.Start();
-            using (var pck = new ExcelPackage(new FileInfo(@"c:\temp\denis.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                var logger = LoggerFactory.CreateTextFileLogger(new FileInfo(@"c:\temp\log1.txt"));
-                pck.Workbook.FormulaParser.Configure(x => x.AttachLogger(logger));
-                pck.Workbook.Calculate();
-                //
-            }
-            sw.Stop();
-            var elapsed = sw.Elapsed;
-            Console.WriteLine(string.Format("{0} seconds", elapsed.TotalSeconds));
-        }
     }
 }
