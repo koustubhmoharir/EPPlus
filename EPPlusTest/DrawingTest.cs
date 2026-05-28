@@ -816,6 +816,7 @@ namespace EPPlusTest
         [Ignore]
         public void ReadMultiChartSeries()
         {
+            // TODO: Replace this with saving a workbook with a chart in a worksheet. The subsequent code will test whether modifying an existing chart works correctly
             ExcelPackage pck = new ExcelPackage(new FileInfo("c:\\temp\\chartseries.xlsx"), true, EPPlusTest.TempFolderHelper.Create());
 
             var ws = pck.Workbook.Worksheets[1];
@@ -861,26 +862,6 @@ namespace EPPlusTest
             wsChart.Chart.Series[0].Header = "Serie";
             _pck.SaveAs(new FileInfo(@"c:\temp\chart.xlsx"));
         }
-        [Ignore]
-        [TestMethod]
-        public void ReadChartWorksheet()
-        {
-            _pck = new ExcelPackage(new FileInfo(@"c:\temp\chart.xlsx"), EPPlusTest.TempFolderHelper.Create());
-            var chart = ((ExcelChartsheet)_pck.Workbook.Worksheets[1]).Chart;
-
-            _pck.SaveAs(new FileInfo(@"c:\temp\chart.xlsx"));
-
-        }
-        [Ignore]
-        [TestMethod]
-        public void ReadWriteSmoothChart()
-        {
-            _pck = new ExcelPackage(new FileInfo(@"c:\temp\bug\Xds_2014_TEST.xlsx"), EPPlusTest.TempFolderHelper.Create());
-            var chart = _pck.Workbook.Worksheets[1].Drawings[0] as ExcelChart;
-            _pck.Workbook.Worksheets[1].Cells["B2"].Value = 33;
-            _pck.SaveAs(new FileInfo(@"c:\temp\chart.xlsx"));
-
-        }
         [TestMethod]
         public void TestHeaderaddress()
         {
@@ -893,64 +874,6 @@ namespace EPPlusTest
             ser1.HeaderAddress = new ExcelAddress("A1");
             _pck.Dispose();
             _pck = null;
-        }
-        [Ignore]
-        [TestMethod]
-        public void AllDrawingsInsideMarkupCompatibility()
-        {
-            string workbooksDir = Path.Combine(TestBase.GetBaseDirectory(), @"..\..\workbooks");
-
-            // This is codeplex issue 15028: Making an unrelated change to an Excel file that contains drawings that ALL exist
-            // inside MarkupCompatibility/Choice nodes causes the drawings.xml file to be incorrectly garbage collected
-            // when an unrelated change is made.
-            string path = Path.Combine(workbooksDir, "AllDrawingsInsideMarkupCompatibility.xlsm");
-
-            // Load example document.
-            _pck = new ExcelPackage(new FileInfo(path), EPPlusTest.TempFolderHelper.Create());
-            // Verify the drawing part exists:
-            Uri partUri = new Uri("/xl/drawings/drawing1.xml", UriKind.Relative);
-            Assert.IsTrue(_pck.Package.PartExists(partUri));
-
-            // The Excel Drawings NamespaceManager from ExcelDrawing.CreateNSM:
-            NameTable nt = new NameTable();
-            var xmlNsm = new XmlNamespaceManager(nt);
-            xmlNsm.AddNamespace("a", ExcelPackage.schemaDrawings);
-            xmlNsm.AddNamespace("xdr", ExcelPackage.schemaSheetDrawings);
-            xmlNsm.AddNamespace("c", ExcelPackage.schemaChart);
-            xmlNsm.AddNamespace("r", ExcelPackage.schemaRelationships);
-            xmlNsm.AddNamespace("mc", ExcelPackage.schemaMarkupCompatibility);
-
-            XmlDocument drawingsXml = new XmlDocument();
-            drawingsXml.PreserveWhitespace = false;
-            XmlHelper.LoadXmlSafe(drawingsXml, _pck.Package.GetPart(partUri).GetStream());
-
-            // Verify that there are the correct # of drawings:
-            Assert.AreEqual(drawingsXml.SelectNodes("//*[self::xdr:twoCellAnchor or self::xdr:oneCellAnchor or self::xdr:absoluteAnchor]", xmlNsm).Count, 5);
-
-            // Make unrelated change. (in this case a useless additional worksheet)
-            _pck.Workbook.Worksheets.Add("NewWorksheet");
-
-            // Save it out.
-            string savedPath = Path.Combine(workbooksDir, "AllDrawingsInsideMarkupCompatibility2.xlsm");
-            _pck.SaveAs(new FileInfo(savedPath));
-            _pck.Dispose();
-            
-            // Reload the new saved file.
-            _pck = new ExcelPackage(new FileInfo(savedPath), EPPlusTest.TempFolderHelper.Create());
-
-            // Verify the drawing part still exists.
-            Assert.IsTrue(_pck.Package.PartExists(new Uri("/xl/drawings/drawing1.xml", UriKind.Relative)));
-
-            drawingsXml = new XmlDocument();
-            drawingsXml.PreserveWhitespace = false;
-            XmlHelper.LoadXmlSafe(drawingsXml, _pck.Package.GetPart(partUri).GetStream());
-
-            // Verify that there are the correct # of drawings:
-            Assert.AreEqual(drawingsXml.SelectNodes("//*[self::xdr:twoCellAnchor or self::xdr:oneCellAnchor or self::xdr:absoluteAnchor]", xmlNsm).Count, 5);
-            // Verify that the new worksheet exists:
-            Assert.IsNotNull(_pck.Workbook.Worksheets["NewWorksheet"]);
-            // Cleanup:
-            File.Delete(savedPath);
         }
         public void DrawingRowheightDynamic()
         {

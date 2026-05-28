@@ -101,93 +101,6 @@ namespace EPPlusTest
             }
 
         }
-        [Ignore]
-        [TestMethod]
-        public void Issue15058()
-        {
-            System.IO.FileInfo newFile = new System.IO.FileInfo(@"C:\Temp\output.xlsx");
-            ExcelPackage excelP = new ExcelPackage(newFile, EPPlusTest.TempFolderHelper.Create());
-            ExcelWorksheet ws = excelP.Workbook.Worksheets[1];
-        }
-        [Ignore]
-        [TestMethod]
-        public void Issue15063()
-        {
-            System.IO.FileInfo newFile = new System.IO.FileInfo(@"C:\Temp\bug\TableFormula.xlsx");
-            ExcelPackage excelP = new ExcelPackage(newFile, EPPlusTest.TempFolderHelper.Create());
-            ExcelWorksheet ws = excelP.Workbook.Worksheets[1];
-            ws.Calculate();
-        }
-        [Ignore]
-        [TestMethod]
-        public void Issue15112()
-        {
-            System.IO.FileInfo case1 = new System.IO.FileInfo(@"c:\temp\bug\src\src\DeleteRowIssue\Template.xlsx");
-            var p = new ExcelPackage(case1, EPPlusTest.TempFolderHelper.Create());
-            var first = p.Workbook.Worksheets[1];
-            first.DeleteRow(5);
-            p.SaveAs(new System.IO.FileInfo(@"c:\temp\bug\DeleteCol_case1.xlsx"));
-
-            var case2 = new System.IO.FileInfo(@"c:\temp\bug\src2\DeleteRowIssue\Template.xlsx");
-            p = new ExcelPackage(case2, EPPlusTest.TempFolderHelper.Create());
-            first = p.Workbook.Worksheets[1];
-            first.DeleteRow(5);
-            p.SaveAs(new System.IO.FileInfo(@"c:\temp\bug\DeleteCol_case2.xlsx"));
-        }
-
-        [Ignore]
-        [TestMethod]
-        public void Issue15118()
-        {
-            using (var package = new OfficeOpenXml.ExcelPackage(new FileInfo(@"c:\temp\bugOutput.xlsx"), new FileInfo(@"c:\temp\bug\DeleteRowIssue\Template.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                ExcelWorkbook workBook = package.Workbook;
-                var worksheet = workBook.Worksheets[1];
-                worksheet.Cells[9, 6, 9, 7].Merge = true;
-                worksheet.Cells[9, 8].Merge = false;
-
-                worksheet.DeleteRow(5);
-                worksheet.DeleteColumn(5);
-                worksheet.DeleteColumn(5);
-                worksheet.DeleteColumn(5);
-                worksheet.DeleteColumn(5);
-
-                package.Save();
-            }
-        }
-        [Ignore]
-        [TestMethod]
-        public void Issue15109()
-        {
-            System.IO.FileInfo newFile = new System.IO.FileInfo(@"C:\Temp\bug\test01.xlsx");
-            ExcelPackage excelP = new ExcelPackage(newFile, EPPlusTest.TempFolderHelper.Create());
-            ExcelWorksheet ws = excelP.Workbook.Worksheets[1];
-            Assert.AreEqual("A1:Z75", ws.Dimension.Address);
-            excelP.Dispose();
-
-            newFile = new System.IO.FileInfo(@"C:\Temp\bug\test02.xlsx");
-            excelP = new ExcelPackage(newFile, EPPlusTest.TempFolderHelper.Create());
-            ws = excelP.Workbook.Worksheets[1];
-            Assert.AreEqual("A1:AF501", ws.Dimension.Address);
-            excelP.Dispose();
-
-            newFile = new System.IO.FileInfo(@"C:\Temp\bug\test03.xlsx");
-            excelP = new ExcelPackage(newFile, EPPlusTest.TempFolderHelper.Create());
-            ws = excelP.Workbook.Worksheets[1];
-            Assert.AreEqual("A1:AD406", ws.Dimension.Address);
-            excelP.Dispose();
-        }
-        [Ignore]
-        [TestMethod]
-        public void Issue15120()
-        {
-            var p = new ExcelPackage(new System.IO.FileInfo(@"C:\Temp\bug\pp.xlsx"), EPPlusTest.TempFolderHelper.Create());
-            ExcelWorksheet ws = p.Workbook.Worksheets["tum_liste"];
-            ExcelWorksheet wPvt = p.Workbook.Worksheets.Add("pvtSheet");
-            var pvSh = wPvt.PivotTables.Add(wPvt.Cells["B5"], ws.Cells[ws.Dimension.Address.ToString()], "pvtS");
-
-            //p.Save();
-        }
         [TestMethod]
         public void Issue15113()
         {
@@ -214,53 +127,6 @@ namespace EPPlusTest
                 ExcelColumn column = sheet.Column(3); // fails with exception
             }
         }
-        [TestMethod, Ignore]
-        public void Issue15145()
-        {
-            using (ExcelPackage p = new ExcelPackage(new System.IO.FileInfo(@"C:\Temp\bug\ColumnInsert.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                ExcelWorksheet ws = p.Workbook.Worksheets[1];
-                ws.InsertColumn(12, 3);
-                ws.InsertRow(30, 3);
-                ws.DeleteRow(31, 1);
-                ws.DeleteColumn(7, 1);
-                p.SaveAs(new System.IO.FileInfo(@"C:\Temp\bug\InsertCopyFail.xlsx"));
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue15150()
-        {
-            var template = new FileInfo(@"c:\temp\bug\ClearIssue.xlsx");
-            const string output = @"c:\temp\bug\ClearIssueSave.xlsx";
-
-            using (var pck = new ExcelPackage(template, false, EPPlusTest.TempFolderHelper.Create()))
-            {
-                var ws = pck.Workbook.Worksheets[1];
-                ws.Cells["A2:C3"].Value = "Test";
-                var c = ws.Cells["B2:B3"];
-                c.Clear();
-
-                pck.SaveAs(new FileInfo(output));
-            }
-        }
-
-        [TestMethod, Ignore]
-        public void Issue15146()
-        {
-            var template = new FileInfo(@"c:\temp\bug\CopyFail.xlsx");
-            const string output = @"c:\temp\bug\CopyFail-Save.xlsx";
-
-            using (var pck = new ExcelPackage(template, false, EPPlusTest.TempFolderHelper.Create()))
-            {
-                var ws = pck.Workbook.Worksheets[3];
-
-                //ws.InsertColumn(3, 1);
-                CustomColumnInsert(ws, 3, 1);
-
-                pck.SaveAs(new FileInfo(output));
-            }
-        }
-
         private static void CustomColumnInsert(ExcelWorksheet ws, int column, int columns)
         {
             var source = ws.Cells[1, column, ws.Dimension.End.Row, ws.Dimension.End.Column];
@@ -330,27 +196,6 @@ namespace EPPlusTest
             ws.Cells["A1:A8"].Merge = false;
             p.Dispose();
         }
-        [Ignore]
-        [TestMethod]
-        public void Issue15158()
-        {
-            using (var package = new OfficeOpenXml.ExcelPackage(new FileInfo(@"c:\temp\Output.xlsx"), new FileInfo(@"C:\temp\bug\DeleteColFormula\FormulasIssue\demo.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                ExcelWorkbook workBook = package.Workbook;
-                ExcelWorksheet worksheet = workBook.Worksheets[1];
-
-                //string column = ColumnIndexToColumnLetter(28);
-                worksheet.DeleteColumn(28);
-
-                if (worksheet.Cells["AA19"].Formula != "")
-                {
-                    throw new Exception("this cell should not have formula");
-                }
-
-                package.Save();
-            }
-        }
-
         public class cls1
         {
             public int prop1 { get; set; }
@@ -388,18 +233,6 @@ namespace EPPlusTest
                 Assert.AreEqual("A1", ws.Cells[1, 1].Value);
             }
         }
-        [Ignore]
-        [TestMethod]
-        public void Issue15159()
-        {
-            var fs = new FileStream(@"C:\temp\bug\DeleteColFormula\FormulasIssue\demo.xlsx", FileMode.OpenOrCreate);
-            using (var package = new OfficeOpenXml.ExcelPackage(fs, EPPlusTest.TempFolderHelper.Create()))
-            {
-                package.Save();
-            }
-            fs.Seek(0, SeekOrigin.Begin);
-            var fs2 = fs;
-        }
         [TestMethod]
         public void Issue15179()
         {
@@ -414,137 +247,6 @@ namespace EPPlusTest
 
             }
         }
-        [Ignore]
-        [TestMethod]
-        public void Issue15169()
-        {
-            FileInfo fileInfo = new FileInfo(@"C:\temp\bug\issue\input.xlsx");
-
-            ExcelPackage excelPackage = new ExcelPackage(fileInfo, EPPlusTest.TempFolderHelper.Create());
-            {
-                string sheetName = "Labour Costs";
-
-                ExcelWorksheet ws = excelPackage.Workbook.Worksheets[sheetName];
-                excelPackage.Workbook.Worksheets.Delete(ws);
-
-                ws = excelPackage.Workbook.Worksheets.Add(sheetName);
-
-                excelPackage.SaveAs(new FileInfo(@"C:\temp\bug\issue\output2.xlsx"));
-            }
-        }
-        [Ignore]
-        [TestMethod]
-        public void Issue15172()
-        {
-            FileInfo fileInfo = new FileInfo(@"C:\temp\bug\book2.xlsx");
-
-            ExcelPackage excelPackage = new ExcelPackage(fileInfo, EPPlusTest.TempFolderHelper.Create());
-            {
-                ExcelWorksheet ws = excelPackage.Workbook.Worksheets[1];
-
-                Assert.AreEqual("IF($R10>=X$2,1,0)", ws.Cells["X10"].Formula);
-                ws.Calculate();
-                Assert.AreEqual(0D, ws.Cells["X10"].Value);
-            }
-        }
-        [Ignore]
-        [TestMethod]
-        public void Issue15174()
-        {
-            using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\temp\bug\MyTemplate.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                package.Workbook.Worksheets[1].Column(2).Style.Numberformat.Format = "dd/mm/yyyy";
-
-                package.SaveAs(new FileInfo(@"C:\temp\bug\MyTemplate2.xlsx"));
-            }
-        }
-        [Ignore]
-        [TestMethod]
-        public void PictureIssue()
-        {
-            var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
-            var ws = p.Workbook.Worksheets.Add("t");
-            ws.Drawings.AddPicture("Test", new FileInfo(@"c:\temp\bug\2152228.jpg"));
-            p.SaveAs(new FileInfo(@"c:\temp\bug\pic.xlsx"));
-        }
-
-        [Ignore]
-        [TestMethod]
-        public void Issue14988()
-        {
-            var guid = Guid.NewGuid().ToString("N");
-            using (var outputStream = new FileStream(@"C:\temp\" + guid + ".xlsx", FileMode.Create))
-            {
-                using (var inputStream = new FileStream(@"C:\temp\bug2.xlsx", FileMode.Open))
-                {
-                    using (var package = new ExcelPackage(outputStream, inputStream, "Test", EPPlusTest.TempFolderHelper.Create()))
-                    {
-                        var ws = package.Workbook.Worksheets.Add("Test empty");
-                        ws.Cells["A1"].Value = "Test";
-                        package.Encryption.Password = "Test2";
-                        package.Save();
-                        //package.SaveAs(new FileInfo(@"c:\temp\test2.xlsx"));
-                    }
-                }
-            }
-        }
-
-        [TestMethod, Ignore]
-        public void Issue15173_1()
-        {
-            using (var pck = new ExcelPackage(new FileInfo(@"c:\temp\EPPlusIssues\Excel01.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                var sw = new Stopwatch();
-                //pck.Workbook.FormulaParser.Configure(x => x.AttachLogger(LoggerFactory.CreateTextFileLogger(new FileInfo(@"c:\Temp\log1.txt"))));
-                sw.Start();
-                var ws = pck.Workbook.Worksheets.First();
-                pck.Workbook.Calculate();
-                Assert.AreEqual("20L2300", ws.Cells["F4"].Value);
-                Assert.AreEqual("20K2E01", ws.Cells["F5"].Value);
-                var f7Val = pck.Workbook.Worksheets["MODELLO-TIPO PANNELLO"].Cells["F7"].Value;
-                Assert.AreEqual(13.445419, Math.Round((double)f7Val, 6));
-                sw.Stop();
-                Console.WriteLine(sw.Elapsed.TotalSeconds); // approx. 10 seconds
-
-            }
-        }
-
-        [TestMethod, Ignore]
-        public void Issue15173_2()
-        {
-            using (var pck = new ExcelPackage(new FileInfo(@"c:\temp\EPPlusIssues\Excel02.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                var sw = new Stopwatch();
-                pck.Workbook.FormulaParser.Configure(x => x.AttachLogger(LoggerFactory.CreateTextFileLogger(new FileInfo(@"c:\Temp\log1.txt"))));
-                sw.Start();
-                var ws = pck.Workbook.Worksheets.First();
-                //ws.Calculate();
-                pck.Workbook.Calculate();
-                Assert.AreEqual("20L2300", ws.Cells["F4"].Value);
-                Assert.AreEqual("20K2E01", ws.Cells["F5"].Value);
-                sw.Stop();
-                Console.WriteLine(sw.Elapsed.TotalSeconds); // approx. 10 seconds
-
-            }
-        }
-        [Ignore]
-        [TestMethod]
-        public void Issue15154()
-        {
-            Directory.EnumerateFiles(@"c:\temp\bug\ConstructorInvokationNotThreadSafe\").AsParallel().ForAll(file =>
-            {
-                //lock (_lock)
-                //{
-                using (var package = new ExcelPackage(new FileStream(file, FileMode.Open), EPPlusTest.TempFolderHelper.Create()))
-                {
-                    package.Workbook.Worksheets[1].Cells[1, 1].Value = file;
-                    package.SaveAs(new FileInfo(@"c:\temp\bug\ConstructorInvokationNotThreadSafe\new\" + new FileInfo(file).Name));
-                }
-                //}
-            });
-
-        }
-        [Ignore]
         [TestMethod]
         public void Issue15188()
         {
@@ -561,120 +263,6 @@ namespace EPPlusTest
                 Assert.AreEqual(DateTime.Today.ToString("MM/dd/yyyy"), a);
             }
         }
-        [TestMethod, Ignore]
-        public void Issue15194()
-        {
-            using (var package = new OfficeOpenXml.ExcelPackage(new FileInfo(@"c:\temp\bug\i15194-Save.xlsx"), new FileInfo(@"c:\temp\bug\I15194.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                ExcelWorkbook workBook = package.Workbook;
-                var worksheet = workBook.Worksheets[1];
-
-                worksheet.Cells["E3:F3"].Merge = false;
-
-                worksheet.DeleteRow(2, 6);
-
-                package.Save();
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue15195()
-        {
-            using (var package = new OfficeOpenXml.ExcelPackage(new FileInfo(@"c:\temp\bug\i15195_Save.xlsx"), new FileInfo(@"c:\temp\bug\i15195.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                ExcelWorkbook workBook = package.Workbook;
-                var worksheet = workBook.Worksheets[1];
-
-                worksheet.InsertColumn(8, 2);
-
-                package.Save();
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue14788()
-        {
-            using (var package = new OfficeOpenXml.ExcelPackage(new FileInfo(@"c:\temp\bug\i15195_Save.xlsx"), new FileInfo(@"c:\temp\bug\GetWorkSheetXmlBad.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                ExcelWorkbook workBook = package.Workbook;
-                var worksheet = workBook.Worksheets[1];
-
-                worksheet.InsertColumn(8, 2);
-
-                package.Save();
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue15167()
-        {
-            FileInfo fileInfo = new FileInfo(@"c:\temp\bug\Draw\input.xlsx");
-
-            ExcelPackage excelPackage = new ExcelPackage(fileInfo, EPPlusTest.TempFolderHelper.Create());
-            {
-                string sheetName = "Board pack";
-
-                ExcelWorksheet ws = excelPackage.Workbook.Worksheets[sheetName];
-                excelPackage.Workbook.Worksheets.Delete(ws);
-
-                ws = excelPackage.Workbook.Worksheets.Add(sheetName);
-
-                excelPackage.SaveAs(new FileInfo(@"c:\temp\bug\output.xlsx"));
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue15198()
-        {
-            using (var package = new OfficeOpenXml.ExcelPackage(new FileInfo(@"c:\temp\bug\Output.xlsx"), new FileInfo(@"c:\temp\bug\demo.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                ExcelWorkbook workBook = package.Workbook;
-                var worksheet = workBook.Worksheets[1];
-
-                worksheet.DeleteRow(12);
-
-                package.Save();
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue13492()
-        {
-            using (var package = new OfficeOpenXml.ExcelPackage(new FileInfo(@"c:\temp\bug\Bug13492.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                ExcelWorkbook workBook = package.Workbook;
-                var worksheet = workBook.Worksheets[1];
-
-                var rt = worksheet.Cells["K31"].RichText.Text;
-
-                package.Save();
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue14966()
-        {
-            using (var package = new ExcelPackage(new FileInfo(@"c:\temp\bug\ssis\FileFromReportingServer2012.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-                package.SaveAs(new FileInfo(@"c:\temp\bug\ssis\Corrupted.xlsx"));
-        }
-        [TestMethod, Ignore]
-        public void Issue15200()
-        {
-            File.Copy(@"C:\temp\bug\EPPlusRangeCopyTest\EPPlusRangeCopyTest\input.xlsx", @"C:\temp\bug\EPPlusRangeCopyTest\EPPlusRangeCopyTest\output.xlsx", true);
-
-            using (var p = new ExcelPackage(new FileInfo(@"C:\temp\bug\EPPlusRangeCopyTest\EPPlusRangeCopyTest\output.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                var sheet = p.Workbook.Worksheets.First();
-
-                var sourceRange = sheet.Cells[1, 1, 1, 2];
-                var resultRange = sheet.Cells[3, 1, 3, 2];
-                sourceRange.Copy(resultRange);
-
-                sourceRange = sheet.Cells[1, 1, 1, 7];
-                resultRange = sheet.Cells[5, 1, 5, 7];
-                sourceRange.Copy(resultRange);  // This throws System.ArgumentException: Can't merge and already merged range
-
-                sourceRange = sheet.Cells[1, 1, 1, 7];
-                resultRange = sheet.Cells[7, 3, 7, 7];
-                sourceRange.Copy(resultRange);  // This throws System.ArgumentException: Can't merge and already merged range
-
-                p.Save();
-            }
-        }
         [TestMethod]
         public void Issue15212()
         {
@@ -687,40 +275,7 @@ namespace EPPlusTest
                 var t = ws.Cells["A1"].Text;
             }
         }
-        [TestMethod, Ignore]
-        public void Issue15213()
-        {
-            using (var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\ExcelClearDemo\exceltestfile.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                foreach (var ws in p.Workbook.Worksheets)
-                {
-                    ws.Cells[1023, 1, ws.Dimension.End.Row - 2, ws.Dimension.End.Column].Clear();
-                    Assert.AreNotEqual(ws.Dimension, null);
-                }
-                foreach (var cell in p.Workbook.Worksheets[2].Cells)
-                {
-                    Console.WriteLine(cell);
-                }
-                p.SaveAs(new FileInfo(@"c:\temp\bug\ExcelClearDemo\exceltestfile-save.xlsx"));
-            }
-        }
-
-        [TestMethod, Ignore]
-        public void Issuer15217()
-        {
-
-            using (var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\FormatRowCol.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                var ws = p.Workbook.Worksheets.Add("fmt");
-                ws.Row(1).Style.Fill.PatternType = ExcelFillStyle.Solid;
-                ws.Row(1).Style.Fill.BackgroundColor.SetColor(Color.LightGray);
-                ws.Cells["A1:B2"].Value = 1;
-                ws.Column(1).Style.Numberformat.Format = "yyyy-mm-dd hh:mm";
-                ws.Column(2).Style.Numberformat.Format = "#,##0";
-                p.Save();
-            }
-        }
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Issuer15228()
         {
             using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
@@ -733,24 +288,6 @@ namespace EPPlusTest
 
                 var col8 = ws.Column(8);
                 Assert.AreEqual(true, col8.Hidden);
-            }
-        }
-
-        [TestMethod, Ignore]
-        public void Issue15234()
-        {
-            using (var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\merge2\input.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                var sheet = p.Workbook.Worksheets.First();
-
-                var sourceRange = sheet.Cells["1:4"];
-
-                sheet.InsertRow(5, 4);
-
-                var resultRange = sheet.Cells["5:8"];
-                sourceRange.Copy(resultRange);
-
-                p.Save();
             }
         }
         [TestMethod]
@@ -913,86 +450,27 @@ namespace EPPlusTest
 
         }
 
-        [TestMethod, Ignore]
-        public void issue15249()
-        {
-            using (var exfile = new ExcelPackage(new FileInfo(@"c:\temp\bug\Boldtextcopy.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                exfile.Workbook.Worksheets.Copy("sheet1", "copiedSheet");
-                exfile.SaveAs(new FileInfo(@"c:\temp\bug\Boldtextcopy2.xlsx"));
-            }
-        }
-        [TestMethod, Ignore]
-        public void issue15300()
-        {
-            using (var exfile = new ExcelPackage(new FileInfo(@"c:\temp\bug\headfootpic.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                exfile.Workbook.Worksheets.Copy("sheet1", "copiedSheet");
-                exfile.SaveAs(new FileInfo(@"c:\temp\bug\headfootpic_save.xlsx"));
-            }
-
-        }
-        [TestMethod, Ignore]
-        public void issue15295()
-        {
-            using (var exfile = new ExcelPackage(new FileInfo(@"C:\temp\bug\pivot issue\input.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                exfile.SaveAs(new FileInfo(@"C:\temp\bug\pivot issue\pivotcoldup.xlsx"));
-            }
-
-        }
-        [TestMethod, Ignore]
-        public void issue15282()
-        {
-            using (var exfile = new ExcelPackage(new FileInfo(@"C:\temp\bug\pivottable-table.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                exfile.SaveAs(new FileInfo(@"C:\temp\bug\pivot issue\pivottab-tab-save.xlsx"));
-            }
-
-        }
-
-        [TestMethod, Ignore]
-        public void Issues14699()
-        {
-            FileInfo newFile = new FileInfo(string.Format("c:\\temp\\bug\\EPPlus_Issue14699.xlsx", System.IO.Directory.GetCurrentDirectory()));
-            OfficeOpenXml.ExcelPackage pkg = new ExcelPackage(newFile, EPPlusTest.TempFolderHelper.Create());
-            ExcelWorksheet wksheet = pkg.Workbook.Worksheets.Add("Issue14699");
-            // Initialize a small range
-            for (int row = 1; row < 11; row++)
-            {
-                for (int col = 1; col < 11; col++)
-                {
-                    wksheet.Cells[row, col].Value = string.Format("{0}{1}", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[col - 1], row);
-                }
-            }
-            wksheet.View.FreezePanes(3, 3);
-            pkg.Save();
-
-        }
-        [TestMethod, Ignore]
-        public void Issue15382()
-        {
-            using (var exfile = new ExcelPackage(new FileInfo(@"c:\temp\bug\Text Run Issue.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                exfile.SaveAs(new FileInfo(@"C:\temp\bug\inlinText.xlsx"));
-            }
-        }
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Issue15380()
         {
-            using (var exfile = new ExcelPackage(new FileInfo(@"c:\temp\bug\dotinname.xlsx"), EPPlusTest.TempFolderHelper.Create()))
+            var path = Path.Combine(Path.GetTempPath(), "dotinname.xlsx");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            using (var exfile = new ExcelPackage(new FileInfo(path), EPPlusTest.TempFolderHelper.Create()))
+            {
+                var ws = exfile.Workbook.Worksheets.Add("sheet1.3");
+                ws.Cells["A1"].Value = 1;
+                ws.Names.Add("Test.Name", ws.Cells["A1"]);
+                exfile.Save();
+            }
+
+            using (var exfile = new ExcelPackage(new FileInfo(path), EPPlusTest.TempFolderHelper.Create()))
             {
                 var v = exfile.Workbook.Worksheets["sheet1.3"].Names["Test.Name"].Value;
-                Assert.AreEqual(v, 1);
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue15378()
-        {
-            using (var p = new ExcelPackage(new FileInfo(@"c:\temp\bubble.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                var c = p.Workbook.Worksheets[1].Drawings[0] as ExcelBubbleChart;
-                var cs = c.Series[0] as ExcelBubbleChartSerie;
+                Assert.AreEqual(1d, v);
             }
         }
         [TestMethod]
@@ -1085,49 +563,7 @@ namespace EPPlusTest
                 p.SaveAs(new FileInfo(@"c:\temp\activeCell.xlsx"));
             }
         }
-        [TestMethod, Ignore]
-        public void Issue15429()
-        {
-            FileInfo file = new FileInfo(@"c:\temp\original.xlsx");
-            using (ExcelPackage excelPackage = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
-            {
-                var worksheet = excelPackage.Workbook.Worksheets.Add("Sheet 1");
-                var equalsRule = worksheet.ConditionalFormatting.AddEqual(new ExcelAddress(2, 3, 6, 3));
-                equalsRule.Formula = "0";
-                equalsRule.Style.Fill.BackgroundColor.Color = Color.Blue;
-                worksheet.ConditionalFormatting.AddDatabar(new ExcelAddress(4, 4, 4, 4), Color.Red);
-                excelPackage.Save();
-            }
-            using (ExcelPackage excelPackage = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
-            {
-                var worksheet = excelPackage.Workbook.Worksheets["Sheet 1"];
-                int i = 0;
-                foreach (var conditionalFormat in worksheet.ConditionalFormatting)
-                {
-                    conditionalFormat.Address = new ExcelAddress(5 + i++, 5, 6, 6);
-                }
-                excelPackage.SaveAs(new FileInfo(@"c:\temp\error.xlsx"));
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue15436()
-        {
-            FileInfo file = new FileInfo(@"c:\temp\incorrect value.xlsx");
-            using (ExcelPackage excelPackage = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
-            {
-                Assert.AreEqual(excelPackage.Workbook.Worksheets[1].Cells["A1"].Value, 19120072);
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue13128()
-        {
-            FileInfo file = new FileInfo(@"c:\temp\students.xlsx");
-            using (ExcelPackage excelPackage = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
-            {
-                Assert.AreNotEqual(((ExcelChart)excelPackage.Workbook.Worksheets[1].Drawings[0]).Series[0].XSeries, null);
-            }
-        }
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Issue15252()
         {
             using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
@@ -1156,15 +592,6 @@ namespace EPPlusTest
                 }
             }
         }
-        [TestMethod, Ignore]
-        public void Issue15469()
-        {
-            ExcelPackage excelPackage = new ExcelPackage(new FileInfo(@"c:\temp\bug\EPPlus-Bug.xlsx"), true, EPPlusTest.TempFolderHelper.Create());
-            using (FileStream fs = new FileStream(@"c:\temp\bug\EPPlus-Bug-new.xlsx", FileMode.Create))
-            {
-                excelPackage.SaveAs(fs);
-            }
-        }
         [TestMethod]
         public void Issue15438()
         {
@@ -1174,32 +601,6 @@ namespace EPPlusTest
                 var c = ws.Cells["A1"].Style.Font.Color;
                 c.Indexed = 3;
                 Assert.AreEqual(c.LookupColor(c), "#FF00FF00");
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue15097()
-        {
-            using (var pkg = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
-            {
-                var templateFile = ReadTemplateFile(@"c:\temp\bug\test_vorlage3.xlsx");
-                using (var ms = new System.IO.MemoryStream(templateFile))
-                {
-                    using (var tempPkg = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
-                    {
-                        tempPkg.Workbook.Worksheets.Copy(tempPkg.Workbook.Worksheets.First().Name, "Demo");
-                    }
-                }
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue15485()
-        {
-            using (var pkg = new ExcelPackage(new FileInfo(@"c:\temp\bug\PivotChartSeriesIssue.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                var ws = pkg.Workbook.Worksheets[1];
-                ws.InsertRow(1, 1);
-                ws.InsertColumn(1, 1);
-                pkg.Save();
             }
         }
         public static byte[] ReadTemplateFile(string templateName)
@@ -1323,21 +724,7 @@ namespace EPPlusTest
                     file.Delete();
             }
         }
-        [TestMethod, Ignore]
-        public void MergeIssue()
-        {
-            var worksheetPath = Path.Combine(Path.GetTempPath(), @"EPPlus worksheets");
-            FileInfo fi = new FileInfo(Path.Combine(worksheetPath, "Example.xlsx"));
-            fi.Delete();
-            using (ExcelPackage pckg = new ExcelPackage(fi, EPPlusTest.TempFolderHelper.Create()))
-            {
-                var ws = pckg.Workbook.Worksheets.Add("Example");
-                ws.Cells[1, 1, 1, 3].Merge = true;
-                ws.Cells[1, 1, 1, 3].Merge = true;
-                pckg.Save();
-            }
-        }
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Issuer15563()   //And 15562
         {
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
@@ -1353,72 +740,7 @@ namespace EPPlusTest
                 package.SaveAs(new FileInfo(@"c:\temp\bug\stylebug.xlsx"));
             }
         }
-        [TestMethod, Ignore]
-        public void Issuer15560()
-        {
-            //Type not set to error when converting shared formula.
-            using (var package = new ExcelPackage(new FileInfo(@"c:\temp\bug\sharedFormulas.xlsm"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                package.SaveAs(new FileInfo(@"c:\temp\bug\sharedformulabug.xlsm"));
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issuer15558()
-        {
-            //TODO: ??? works
-            using (var package = new ExcelPackage(new FileInfo(@"c:\temp\bug\test_file_20161118.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                package.SaveAs(new FileInfo(@"c:\temp\bug\saveproblem.xlsm"));
-            }
-        }
-        /// <summary>
-        /// Issue 15561
-        /// </summary>
-        [TestMethod, Ignore]
-        public void Chart_From_Cell_Union_Selector_Bug_Test()
-        {
-            var existingFile = new FileInfo(@"c:\temp\Chart_From_Cell_Union_Selector_Bug_Test.xlsx");
-            if (existingFile.Exists)
-                existingFile.Delete();
-
-            using (var pck = new ExcelPackage(existingFile, EPPlusTest.TempFolderHelper.Create()))
-            {
-                var myWorkSheet = pck.Workbook.Worksheets.Add("Content");
-                var ExcelWorksheet = pck.Workbook.Worksheets.Add("Chart");
-
-                //Some data
-                myWorkSheet.Cells["A1"].Value = "A";
-                myWorkSheet.Cells["A2"].Value = 100; myWorkSheet.Cells["A3"].Value = 400; myWorkSheet.Cells["A4"].Value = 200; myWorkSheet.Cells["A5"].Value = 300; myWorkSheet.Cells["A6"].Value = 600; myWorkSheet.Cells["A7"].Value = 500;
-                myWorkSheet.Cells["B1"].Value = "B";
-                myWorkSheet.Cells["B2"].Value = 300; myWorkSheet.Cells["B3"].Value = 200; myWorkSheet.Cells["B4"].Value = 1000; myWorkSheet.Cells["B5"].Value = 600; myWorkSheet.Cells["B6"].Value = 500; myWorkSheet.Cells["B7"].Value = 200;
-
-                //Pie chart shows with EXTRA B2 entry due to problem with ExcelRange Enumerator
-                ExcelRange values = myWorkSheet.Cells["B2,B4,B6"];  //when the iterator is evaluated it will return the first cell twice: "B2,B2,B4,B6"
-                ExcelRange xvalues = myWorkSheet.Cells["A2,A4,A6"]; //when the iterator is evaluated it will return the first cell twice: "A2,A2,A4,A6"
-                var chartBug = ExcelWorksheet.Drawings.AddChart("Chart BAD", eChartType.Pie);
-                chartBug.Series.Add(values, xvalues);
-                chartBug.Title.Text = "Using ExcelRange";
-
-                //Pie chart shows correctly when using string addresses and avoiding ExcelRange
-                var chartGood = ExcelWorksheet.Drawings.AddChart("Chart GOOD", eChartType.Pie);
-                chartGood.SetPosition(10, 0, 0, 0);
-                chartGood.Series.Add("Content!B2,Content!B4,Content!B6", "Content!A2,Content!A4,Content!A6");
-                chartGood.Title.Text = "Using String References";
-
-                pck.Save();
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue15566()
-        {
-            string TemplateFileName = @"c:\temp\bug\TestWithPivotTablePointingToExcelTableForData.xlsx";
-            string ExportFileName = @"c:\temp\bug\TestWithPivotTablePointingToExcelTableForData_Export.xlsx";
-            using (ExcelPackage excelpackage = new ExcelPackage(new FileInfo(TemplateFileName), true, EPPlusTest.TempFolderHelper.Create()))
-            {
-                excelpackage.SaveAs(new FileInfo(ExportFileName));
-            }
-        }
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Issue15564()
         {
             using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
@@ -1434,7 +756,7 @@ namespace EPPlusTest
                 p.SaveAs(new FileInfo(@"c:\temp\bug\fb.xlsx"));
             }
         }
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Issue15551()    //Works fine?
         {
             using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
@@ -1448,58 +770,9 @@ namespace EPPlusTest
                 p.SaveAs(new FileInfo(@"c:\temp\bug\StyleBug.xlsx"));
             }
         }
-        [TestMethod, Ignore]
-        public void BugCommentNullAfterRemove()
-        {
-
-            string xls = @"c:\temp\bug\in.xlsx";
-
-            ExcelPackage theExcel = new ExcelPackage(new FileInfo(xls), true, EPPlusTest.TempFolderHelper.Create());
-
-            ExcelRangeBase cell;
-            ExcelComment cmnt;
-            ExcelWorksheet ws = theExcel.Workbook.Worksheets[1];
-
-            foreach (string addr in "B4 B11".Split(' '))
-            {
-                cell = ws.Cells[addr];
-                cmnt = cell.Comment;
-
-                Assert.IsNotNull(cmnt, "Comment in " + addr + " expected not null ");
-                ws.Comments.Remove(cmnt);
-            }
-
-        }
-
-        [TestMethod, Ignore]
-        public void BugCommentExceptionOnRemove()
-        {
-
-            string xls = @"c:\temp\bug\in.xlsx";
-
-            ExcelPackage theExcel = new ExcelPackage(new FileInfo(xls), true, EPPlusTest.TempFolderHelper.Create());
-
-            ExcelRangeBase cell;
-            ExcelComment cmnt;
-            ExcelWorksheet ws = theExcel.Workbook.Worksheets[1];
-
-            foreach (string addr in "B4 B16".Split(' '))
-            {
-                cell = ws.Cells[addr];
-                cmnt = cell.Comment;
-
-                try
-                {
-                    ws.Comments.Remove(cmnt);
-                }
-                catch (Exception ex)
-                {
-                    Assert.Fail("Exception while removing comment at " + addr + ": " + ex.Message);
-                }
-            }
-
-        }
-
+        /// <summary>
+        /// Issue 15561
+        /// </summary>
         [TestMethod]
         public void Issue15548_SumIfsShouldHandleGaps()
         {
@@ -1550,28 +823,6 @@ namespace EPPlusTest
                 Assert.AreEqual(1, result, string.Format("Expected 1, got {0}", result));
             }
         }
-        [TestMethod, Ignore]
-        public void Issue_15585()
-        {
-            var excelFile = new FileInfo(@"c:\temp\bug\formula_value.xlsx");
-            using (var package = new ExcelPackage(excelFile, EPPlusTest.TempFolderHelper.Create()))
-            {
-                // Output from the logger will be written to the following file
-                var logfile = new FileInfo(@"C:\temp\EpplusLogFile.txt");
-                // Attach the logger before the calculation is performed.
-                package.Workbook.FormulaParserManager.AttachLogger(logfile);
-                // Calculate - can also be executed on sheet- or range level.
-                package.Workbook.Calculate();
-
-                Console.WriteLine(String.Format("Country: \t\t\t{0}", package.Workbook.Worksheets[1].Cells["B1"].Value));
-                Console.WriteLine(String.Format("Phone Code - Direct Reference:\t{0}", package.Workbook.Worksheets[1].Cells["B2"].Value.ToString()));
-                Console.WriteLine(String.Format("Phone Code - Name Ranges:\t{0}", package.Workbook.Worksheets[1].Cells["B3"].Value.ToString()));
-                Console.WriteLine(String.Format("Phone Code - Table reference:\t{0}", package.Workbook.Worksheets[1].Cells["B4"].Value.ToString()));
-
-                // The following method removes any logger attached to the workbook.
-                package.Workbook.FormulaParserManager.DetachLogger();
-            }
-        }
         [TestMethod]
         public void Issue_15641()
         {
@@ -1584,17 +835,6 @@ namespace EPPlusTest
             sheet.Cells[1, 1].Copy(sheet.Cells[3, 1]); //A3
 
             Assert.AreEqual(true, sheet.Cells[3, 1].IsArrayFormula);
-        }
-        [TestMethod, Ignore]
-        public void Issue_5()
-        {
-            var excelFile = new FileInfo(@"c:\temp\bug\test.xlsm");
-            using (var package = new ExcelPackage(excelFile, EPPlusTest.TempFolderHelper.Create()))
-            {
-                var ws = package.Workbook.Worksheets.Add("NewWorksheet");
-                ws.CodeModule.Code = "Private Sub Worksheet_SelectionChange(ByVal Target As Range)\r\n\r\nEnd Sub";
-                package.SaveAs(new FileInfo(@"c:\temp\bug\vbafailSaved.xlsm"));
-            }
         }
         [TestMethod, Ignore]
         public void Issue_8()
@@ -1612,75 +852,6 @@ namespace EPPlusTest
             }
 
 
-        }
-        [TestMethod, Ignore]
-        public void Issuer27()
-        {
-            FileInfo file = new FileInfo(@"C:\Temp\Test.xlsx");
-            var pck = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create());
-            ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Worksheet");
-            if (ws != null)
-            {
-                ws.Cells["A1"].Value = "Cell value 1";
-                ws.Cells["B1"].Value = "Cell value 2";
-                ws.Cells["C1"].Value = "Cell value 3";
-                ws.Cells["D1"].Value = "Cell value 4";
-                ws.Cells["E1"].Value = "Cell value 5";
-            }
-            //ws.Cells.Style.VerticalAlignment = ExcelVerticalAlignment::Top; // Columns 4 and greater hidden
-            ws.Cells.AutoFitColumns(0);
-            ws.Cells.Style.VerticalAlignment = ExcelVerticalAlignment.Top; // 4.1.1.0 - exception, 4.0.4.0 - columns 4 and 5 hidden
-            ws.Column(4).Hidden = true;
-            ws.Column(5).Hidden = true; // span exception
-            pck.Save();
-        }
-        [TestMethod, Ignore]
-        public void Issuer26()
-        {
-            FileInfo file = new FileInfo(@"C:\Temp\repeatrowcol.xlsx");
-            var pck = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create());
-            ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Worksheet");
-            ws.PrinterSettings.RepeatRows = new ExcelAddress("1:1");
-            ws.PrinterSettings.RepeatColumns = new ExcelAddress("A:A");
-            pck.Save();
-        }
-        [TestMethod, Ignore]
-        public void Issue32()
-        {
-            var outputDir = new DirectoryInfo(@"c:\temp\sampleapp");
-            var existFile = new FileInfo(outputDir.FullName + @"\sample1.xlsx");
-            string newFileName = outputDir.FullName + @"\sample1_copied.xlsx";
-
-            System.IO.File.Copy(existFile.FullName, newFileName, true);
-            var newFile = new FileInfo(newFileName);
-
-            using (var package = new ExcelPackage(newFile, EPPlusTest.TempFolderHelper.Create()))
-            {
-                // Add a new worksheet to the empty workbook
-
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Inventory_copied", package.Workbook.Worksheets[1]);
-
-                //ExcelNamedRange sourceRange = package.Workbook.Names["Body"];
-                ExcelNamedRange sourceRange = package.Workbook.Names["row"];
-                ExcelNamedRange sourceRange2 = package.Workbook.Names["roww"];
-                ExcelNamedRange sourceRange3 = package.Workbook.Names["rowww"];
-                ExcelWorksheet worksheetFrom = sourceRange.Worksheet;
-
-                ExcelWorksheet worksheetTo = package.Workbook.Worksheets["Inventory_copied"];
-
-                ExcelRange cells = worksheetTo.Cells;
-                ExcelRange rangeTo = cells[1, 1, 1, 16384];
-                sourceRange.Copy(rangeTo);
-                ExcelRange rangeTo2 = cells[2, 1, 2, 16384];
-                sourceRange2.Copy(rangeTo2);
-                ExcelRange rangeTo3 = cells[4, 1, 4, 16384];
-                sourceRange3.Copy(rangeTo3);
-
-                package.Save();
-
-                //}
-
-            }
         }
         [TestMethod]
         public void Issue63() // See https://github.com/JanKallman/EPPlus/issues/63
@@ -1712,15 +883,6 @@ namespace EPPlusTest
                 File.Delete(newFile.FullName);
             }
         }
-        [TestMethod, Ignore]
-        public void Issue60()
-        {
-            var ms = new MemoryStream(File.ReadAllBytes(@"c:\temp\sampleapp\sample10\Template.xlsx"));
-            using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
-            {
-                p.Load(ms, "");
-            }
-        }
         [TestMethod]
         public void Issue61()
         {
@@ -1736,69 +898,12 @@ namespace EPPlusTest
 
         }
 
-        [TestMethod, Ignore]
-        public void Issue58()
-        {
-            var fileInfo = new FileInfo(@"C:\Temp\issue58.xlsx");
-            var package = new ExcelPackage(fileInfo, EPPlusTest.TempFolderHelper.Create());
-            if (package.Workbook.Worksheets.Count > 0)
-                package.Workbook.Worksheets.Delete("Test");
-
-            var worksheet = package.Workbook.Worksheets.Add("Test");
-            worksheet.Cells[1, 1].Value = "Name";
-            worksheet.Cells[1, 2].Value = "Address";
-            worksheet.Cells[1, 3].Value = "City";
-            worksheet.Cells[2, 1].Value = "Esben Rud";
-            worksheet.Cells[2, 2].Value = "Enghavevej";
-            worksheet.Cells[2, 3].Value = "Odense";
-            var r1 = worksheet.ProtectedRanges.Add("Range1", new ExcelAddress(1, 1, 2, 1));
-            Console.WriteLine("Range1: " + r1.Name + " " + r1.Address.ToString());
-            var r2 = worksheet.ProtectedRanges.Add("Range2", new ExcelAddress(1, 2, 2, 2));
-            Console.WriteLine("Range2: " + r2.Name + " " + r2.Address.ToString());
-            Console.WriteLine("*Range1: " + r1.Name + " " + r1.Address.ToString());
-            Console.WriteLine("*Range2: " + r2.Name + " " + r2.Address.ToString());
-            package.Save();
-            package.Dispose();
-        }
         [TestMethod]
         public void Issue57()
         {
             ExcelPackage pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
             ExcelWorksheet ws = pck.Workbook.Worksheets.Add("test");
             ws.Cells["A1"].LoadFromArrays(Enumerable.Empty<object[]>());
-        }
-        [TestMethod, Ignore]
-        public void Issue55()
-        {
-            ExcelPackage pck = new ExcelPackage(new FileInfo(@"C:\Temp\bug\monocell.xlsx"), EPPlusTest.TempFolderHelper.Create());
-            ExcelWorksheet ws = pck.Workbook.Worksheets[1];
-            Console.WriteLine(ws.Cells["A1"].Text);
-        }
-        [TestMethod, Ignore]
-        public void Issue51()
-        {
-            var filename = new FileInfo(@"c:\temp\bug\bug51.xlsx");
-            using (ExcelPackage pck = new ExcelPackage(filename, EPPlusTest.TempFolderHelper.Create()))
-            {
-                var data = pck.Workbook.Worksheets.Add("data");
-                data.Cells["A1"].Value = "Product";
-                data.Cells["B1"].Value = "Quantity";
-                data.Cells["A2"].Value = "Nails";
-                data.Cells["B2"].Value = 37;
-                data.Cells["A3"].Value = "Hammer";
-                data.Cells["B3"].Value = 5;
-                data.Cells["A4"].Value = "Saw";
-                data.Cells["B4"].Value = 12;
-
-                var dataRange = data.Cells["A1:B4"];
-
-                var pivot = pck.Workbook.Worksheets.Add("pivot");
-                var pivotTable = pivot.PivotTables.Add(pivot.Cells["A1"], dataRange, "a&b");
-                var tbl = data.Tables.Add(dataRange, "a&c");
-                tbl.Name = "_a&c";
-                pivotTable.Name = "a&b";
-                pck.Save();
-            }
         }
         #region Issue 44
         private static string PIVOT_WS_NAME = "Pivot";
@@ -1870,111 +975,7 @@ namespace EPPlusTest
                 }
             }
         }
-        [TestMethod, Ignore]
-        public void Issue68()
-        {
-            using (var pck = new ExcelPackage(new FileInfo(@"c:\temp\bug68.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                var ws = pck.Workbook.Worksheets["Sheet1"];
-                pck.Workbook.Worksheets.Delete(ws);
-                ws = pck.Workbook.Worksheets.Add("Sheet1");
-                pck.SaveAs(new FileInfo(@"c:\temp\bug68-2.xlsx"));
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue70()
-        {
-            var documentPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"c:\temp\workbook with comment.xlsx");
-            var outputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"c:\temp\WorkbookWithCommentOutput.xlsx");
-            var fileInfo = new FileInfo(documentPath);
-            Assert.IsTrue(fileInfo.Exists);
-            using (var workbook = new ExcelPackage(fileInfo, EPPlusTest.TempFolderHelper.Create()))
-            {
-                var ws = workbook.Workbook.Worksheets.First();
-                ws.DeleteRow(3); // NRE thrown here
-                workbook.SaveAs(new FileInfo(outputPath));
-            }
-        }
-
-        [TestMethod, Ignore]
-        public void Issue100()
-        {
-            Stream templateFile = new FileStream(@"c:\temp\bug\epplus_drawing_id_issue.xlsx", FileMode.Open, FileAccess.Read, FileShare.Read);
-            FileStream outputFile = new FileStream(@"c:\temp\bug\epplus_drawing_id_issue_new.xlsx", FileMode.Create, FileAccess.ReadWrite, FileShare.None);
-            using (ExcelPackage package = new ExcelPackage(templateFile, EPPlusTest.TempFolderHelper.Create()))
-            {
-                ExcelWorkbook wb = package.Workbook;
-                ExcelWorksheet sh = wb.Worksheets[1];
-                System.Drawing.Image img_ = System.Drawing.Image.FromFile(@"C:\temp\img\background.gif");
-                ExcelPicture pic = sh.Drawings.AddPicture("logo", img_);
-                pic.SetPosition(1, 1);
-
-                package.SaveAs(outputFile);
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue99()
-        {
-            var template = @"c:\temp\bug\iss99\Template.xlsx";
-            var result = @"c:\temp\bug\iss99\Result.xlsx";
-            using (var inStream = File.Open(template, FileMode.Open))
-            {
-                using (var outStream = File.Open(result, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-                {
-                    using (ExcelPackage xl = new ExcelPackage(outStream, inStream, EPPlusTest.TempFolderHelper.Create()))
-                    {
-                        xl.Save();
-                    }
-                }
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue94()
-        {
-            using (var package = new ExcelPackage(new FileInfo(@"c:\temp\bug\iss94\MergedCellsTemplate.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                var ws = package.Workbook.Worksheets.First();
-                var copy = package.Workbook.Worksheets.Add("copy", ws);
-                package.Workbook.Worksheets.Delete(ws);
-                package.SaveAs(new FileInfo(@"c:\temp\bug\iss94\MergedCellsTemplateSaved.xlsx"));
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue107()
-        {
-            using (ExcelPackage epIN = new ExcelPackage(new FileInfo(@"C:\temp\bug\issue107\in.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            using (ExcelPackage epOUT = new ExcelPackage(new FileInfo(@"C:\temp\bug\pivotbug107.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                foreach (ExcelWorksheet sheet in epIN.Workbook.Worksheets)
-                {
-                    ExcelWorksheet newSheet = epOUT.Workbook.Worksheets.Add(sheet.Name, sheet);
-                }
-                epIN.Compatibility.IsWorksheets1Based = true;
-                epIN.Workbook.Worksheets.Add(epIN.Workbook.Worksheets[1].Name + "-2", epIN.Workbook.Worksheets[1]);
-                epIN.Workbook.Worksheets.Add(epIN.Workbook.Worksheets[2].Name + "-2", epIN.Workbook.Worksheets[2]);
-                epOUT.Save();
-                epIN.SaveAs(new FileInfo(@"C:\temp\bug\pivotbug107-SameWB.xlsx"));
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue127()
-        {
-            using (var p = new ExcelPackage(new FileInfo(@"C:\temp\bug\PivotTableTestCase.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                Assert.AreEqual(p.Workbook.Worksheets.Count, 2);
-                p.SaveAs(new FileInfo(@"C:\temp\bug\PivotTableTestCaseSaved.xlsx"));
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue167()
-        {
-            using (var p = new ExcelPackage(new FileInfo(@"C:\temp\bug\test-Errorworkbook.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                Assert.AreEqual(p.Workbook.Worksheets.Count, 1);
-                p.SaveAs(new FileInfo(@"C:\temp\bug\test-ErrorworkbookSaved.xlsx"));
-            }
-        }
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Issue155()
         {
             using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
@@ -1988,26 +989,8 @@ namespace EPPlusTest
                 File.WriteAllBytes(path, data);
             }
         }
-        [TestMethod, Ignore]
-        public void Issue173()
-        {
-            using (ExcelPackage xlPackage = new ExcelPackage(new FileInfo($@"C:\temp\bug\issue173.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                ExcelWorksheet ws = xlPackage.Workbook.Worksheets.First();
-                var r = ws.Cells["A4"].Text;
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue176()
-        {
-            using (var pck = new ExcelPackage(new FileInfo($@"C:\temp\bug\issue176.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                Assert.AreEqual(Math.Round(pck.Workbook.Worksheets[1].Cells["A1"].Style.Fill.BackgroundColor.Tint, 5), -0.04999M);
-                pck.SaveAs(new FileInfo($@"C:\temp\bug\issue176-saved.xlsx"));
-            }
-        }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Issue178()
         {
             using (ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
@@ -2020,38 +1003,6 @@ namespace EPPlusTest
 
                 var range = sheet.Cells["A1"].LoadFromText(txt, format, TableStyles.None, true);
                 Assert.AreEqual(sheet.Cells["C2"].Value, null);
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue181()
-        {
-            using (var pck = new ExcelPackage(new FileInfo($@"C:\temp\bug\issue181.xlsx"), EPPlusTest.TempFolderHelper.Create()))
-            {
-                ExcelWorksheet ws = pck.Workbook.Worksheets.First();
-                var a = pck.Workbook.Properties.Author;
-                pck.SaveAs(new FileInfo($@"C:\temp\bug\issue181-saved.xlsx"));
-            }
-        }
-        [TestMethod, Ignore]
-        public void Issue10()
-        {
-            var fi = new FileInfo($@"C:\temp\bug\issue10.xlsx");
-            if (fi.Exists)
-            {
-                fi.Delete();
-            }
-            using (var pck = new ExcelPackage(fi, EPPlusTest.TempFolderHelper.Create()))
-            {
-                var ws = pck.Workbook.Worksheets.Add("Pictures");
-                int row = 1;
-                foreach (var f in Directory.EnumerateFiles(@"c:\temp\addin_temp\Addin\img\open_icon_library-full\icons\ico\16x16\actions\"))
-                {
-                    var b = new Bitmap(f);
-                    var pic = ws.Drawings.AddPicture($"Image{(row + 1) / 2}", b);
-                    pic.SetPosition(row, 0, 0, 0);
-                    row += 2;
-                }
-                pck.Save();
             }
         }
         /// <summary>

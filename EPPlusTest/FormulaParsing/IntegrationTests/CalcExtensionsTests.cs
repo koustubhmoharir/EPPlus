@@ -9,13 +9,6 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests
     public class CalcExtensionsTests
     {
         [TestMethod]
-        public void ShouldCalculateChainTest()
-        {
-            var package = new ExcelPackage(new FileInfo("c:\\temp\\chaintest.xlsx"), EPPlusTest.TempFolderHelper.Create());
-            package.Workbook.Calculate();
-        }
-
-        [TestMethod]
         public void CalculateTest()
         {
             //var pck = new ExcelPackage();
