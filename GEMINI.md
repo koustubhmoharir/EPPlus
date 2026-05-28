@@ -1,18 +1,18 @@
 # EPPlus Porting Project: dotnetport to .NET 9
 
 ## Context
-This project aims to port EPPlus from the `dotnetport` branch to .NET 9, matching or exceeding the capabilities of the `stable` branch.
+This project aims to port EPPlus from the `dotnetport` branch to .NET 9, matching or exceeding the capabilities of the `stable-net472` branch.
 
-- **Current Branch (`dotnetport`):** Located at `/srv/devshare/projects/EPPlus`. Targets .NET Core/9. Contains partial work and some divergence.
-- **Stable Branch:** Located at `/srv/devshare/projects/EPPlus-stable`. Targets .NET Framework, tested against Mono on Linux.
-- **Goal:** Enable `dotnetport` to target .NET 9 and ensure parity with `stable`.
+- **dotnetport Branch:** Located at `/srv/devshare/projects/EPPlus`. Targets .NET 9. Contains partial work and some divergence.
+- **stable-net472 Branch:** Located at `/srv/devshare/projects/EPPlus-stable`. Targets .NET Framework. Needs a Windows environment to build and test.
+- **Goal:** Enable `dotnetport` to target .NET 9 and ensure parity with `stable-net472`.
 
 ## Strategy: Incremental Porting & Verification
-1.  **Branch Comparison:** Perform a comprehensive diff between `dotnetport` and `stable`.
+1.  **Branch Comparison:** Perform a comprehensive diff between `dotnetport` and `stable-net472`.
 2.  **Documentation:** List all differing methods in `Differences.md` with textual descriptions.
 3.  **Progress Tracking:** Maintain `PortingProgress.md` to monitor status.
 4.  **Test-Driven Verification:**
-    - For each difference, create test cases on the `stable` branch (Mono).
+    - For each difference, create test cases on the `stable-net472` branch (Mono).
     - Verify coverage using targeted reports.
     - Cherry-pick tests to `dotnetport` (.NET 9).
     - Analyze failures:
@@ -23,5 +23,5 @@ This project aims to port EPPlus from the `dotnetport` branch to .NET 9, matchin
 
 ## Workflow Rules
 - Always update `PortingProgress.md` and `Differences.md` as work progresses.
-- Use `stable` as the source of truth for baseline behavior.
+- Use `stable-net472` as the source of truth for baseline behavior.
 - Validate all changes with tests and coverage.

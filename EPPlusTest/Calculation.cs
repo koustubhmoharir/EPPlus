@@ -87,13 +87,13 @@ namespace EPPlusTest
             ws.SetFormula(1, 5, "Row(a3)");
             ws.Calculate();
         }
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Calulation4()
         {
             var dir = TestBase.GetProjectRootDirectory();
             var pck = new ExcelPackage(new FileInfo(Path.Combine(dir, "Workbooks", "FormulaTest.xlsx")), EPPlusTest.TempFolderHelper.Create());
             pck.Workbook.Calculate();
-            Assert.AreEqual(490D, pck.Workbook.Worksheets[1].Cells["D5"].Value);
+            Assert.AreEqual(490D, pck.Workbook.Worksheets.First().Cells["D5"].Value);
         }
         [TestMethod, Ignore]
         public void CalulationValidationExcel()
