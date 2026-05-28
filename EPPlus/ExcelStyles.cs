@@ -619,10 +619,11 @@ namespace OfficeOpenXml
                 }
             }
             //Clone namedstyle
-            int styleXfId = CloneStyle(styles, xfIdCopy, true);
+            bool templateIsCellStyle = Template != null && Template.PositionID >= 0;
+            int styleXfId = CloneStyle(styles, xfIdCopy, true, false, templateIsCellStyle);
             //Close cells style
             CellStyleXfs[styleXfId].XfId = CellStyleXfs.Count-1;
-            int xfid = CloneStyle(styles, xfIdCopy, true, true); //Always add a new style (We create a new named style here)
+            int xfid = CloneStyle(styles, xfIdCopy, true, true, templateIsCellStyle); //Always add a new style (We create a new named style here)
             CellXfs[xfid].XfId = styleXfId;
             style.Style = new ExcelStyle(this, NamedStylePropertyChange, positionID, name, styleXfId);
             style.StyleXfId = styleXfId;
@@ -933,18 +934,26 @@ namespace OfficeOpenXml
 #endregion
         internal int CloneStyle(ExcelStyles style, int styleID)
         {
-            return CloneStyle(style, styleID, false, false);
+            return CloneStyle(style, styleID, false, false, false);
         }
         internal int CloneStyle(ExcelStyles style, int styleID, bool isNamedStyle)
         {
-            return CloneStyle(style, styleID, isNamedStyle, false);
+            return CloneStyle(style, styleID, isNamedStyle, false, false);
         }
         internal int CloneStyle(ExcelStyles style, int styleID, bool isNamedStyle, bool allwaysAddCellXfs)
+        {
+            return CloneStyle(style, styleID, isNamedStyle, allwaysAddCellXfs, false);
+        }
+        internal int CloneStyle(ExcelStyles style, int styleID, bool isNamedStyle, bool allwaysAddCellXfs, bool sourceIsCellXfs)
         {
             ExcelXfs xfs;
             lock (style)
             {
-                if (isNamedStyle)
+                if (sourceIsCellXfs)
+                {
+                    xfs = style.CellXfs[styleID];
+                }
+                else if (isNamedStyle)
                 {
                     xfs = style.CellStyleXfs[styleID];
                 }
