@@ -84,8 +84,6 @@ namespace EPPlusTest
             //{
             //    Directory.CreateDirectory(_worksheetPath);
             //}
-            var di=new DirectoryInfo(_worksheetPath);            
-            _worksheetPath = di.FullName + "\\";
 
             _pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
         }

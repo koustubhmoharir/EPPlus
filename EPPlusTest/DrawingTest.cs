@@ -99,17 +99,7 @@ namespace EPPlusTest
             pic.SetSize(568*2, 66*2);
             var ws2 = _pck.Workbook.Worksheets.Add("Picture2");
             var fi = new FileInfo(Path.Combine(_clipartPath, "BitmapImage.gif"));
-            if (fi.Exists)
-            {
-                pic = ws2.Drawings.AddPicture("Pic7", fi);
-            }
-            else
-            {
-#if (!Core)
-                TestContext.WriteLine("AG00021_.GIF does not exists. Skipping Pic7.");
-#endif
-            }
-
+            pic = ws2.Drawings.AddPicture("Pic7", fi);
             var wsCopy = _pck.Workbook.Worksheets.Add("Picture3", ws2);
             //_pck.Workbook.Worksheets.Delete(ws2);
          }
@@ -791,7 +781,7 @@ namespace EPPlusTest
         //[Ignore]
         public void ReadDocument()
         {
-            var fi=new FileInfo(_worksheetPath + "drawing.xlsx");
+            var fi=new FileInfo(_worksheetPath + "Drawing.xlsx");
             if (!fi.Exists)
             {
                 Assert.Inconclusive("Drawing.xlsx is not created. Skippng");
@@ -804,9 +794,7 @@ namespace EPPlusTest
                 {
                     if (d is ExcelChart)
                     {
-#if (!Core)
-                        TestContext.WriteLine(((ExcelChart)d).ChartType.ToString());
-#endif
+                        var c = ((ExcelChart)d).ChartType.ToString();
                     }
                 }
             }
