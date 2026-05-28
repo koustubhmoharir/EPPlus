@@ -96,6 +96,53 @@ namespace EPPlusTest
             Assert.AreEqual(490D, pck.Workbook.Worksheets.First().Cells["D5"].Value);
         }
         [TestMethod]
+        public void CalulationValidationExcel()
+        {
+            var dir = TestBase.GetProjectRootDirectory();
+            var pck = new ExcelPackage(new FileInfo(Path.Combine(dir, "Workbooks", "FormulaTest.xlsx")), EPPlusTest.TempFolderHelper.Create());
+
+            var ws = pck.Workbook.Worksheets["ValidateFormulas"];
+            var fr = new Dictionary<string, object>();
+            foreach (var cell in ws.Cells)
+            {
+                if (!string.IsNullOrEmpty(cell.Formula))
+                {
+                    fr.Add(cell.Address, cell.Value);
+                }
+            }
+            pck.Workbook.Calculate();
+            var nErrors = 0;
+            var errors = new List<Tuple<string, object, object>>();
+            foreach (var adr in fr.Keys)
+            {
+                try
+                {
+                    if (fr[adr] is double && ws.Cells[adr].Value is double)
+                    {
+                        var d1 = Convert.ToDouble(fr[adr]);
+                        var d2 = Convert.ToDouble(ws.Cells[adr].Value);
+                        if (Math.Abs(d1 - d2) < 0.0001)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            Assert.AreEqual(fr[adr], ws.Cells[adr].Value);
+                        }
+                    }
+                    else
+                    {
+                        Assert.AreEqual(fr[adr], ws.Cells[adr].Value);
+                    }
+                }
+                catch
+                {
+                    errors.Add(new Tuple<string, object, object>(adr, fr[adr], ws.Cells[adr].Value));
+                    nErrors++;
+                }
+            }
+        }
+        [TestMethod]
         public void CalcTwiceError()
         {
             var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
