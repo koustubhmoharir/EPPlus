@@ -50,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EPPlus\EPPlus.MultiTarget.csproj" />
+    <ProjectReference Include="..\EPPlus\EPPlus.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

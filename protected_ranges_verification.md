@@ -74,5 +74,5 @@ All changes, including the comprehensive test suite, have been cherry-picked, re
 
 - **Test Suite Source:** [ExcelProtectedRangeTest.cs (stable)](file:///srv/devshare/projects/EPPlus-stable/EPPlusTest/ExcelProtectedRangeTest.cs)
 - **Test Suite Target:** [ExcelProtectedRangeTest.cs (dotnetport)](file:///srv/devshare/projects/EPPlus/EPPlusTest/ExcelProtectedRangeTest.cs)
-- **Stable Registration:** [EPPlusTest.csproj (stable)](file:///srv/devshare/projects/EPPlus-stable/EPPlusTest/EPPlusTest.csproj)
-- **DotNetPort Registration:** [EPPlusTest.csproj (dotnetport)](file:///srv/devshare/projects/EPPlus/EPPlusTest/EPPlusTest.csproj)
+- **Stable Registration:** [EPPlusTest.Core.csproj (stable)](file:///srv/devshare/projects/EPPlus-stable/EPPlusTest/EPPlusTest.Core.csproj)
+- **DotNetPort Registration:** [EPPlusTest.Core.csproj (dotnetport)](file:///srv/devshare/projects/EPPlus/EPPlusTest/EPPlusTest.Core.csproj)

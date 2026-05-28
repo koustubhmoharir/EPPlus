@@ -4,7 +4,7 @@ Scope: only `EPPlusTest/SheetKraftExportUsageTests.cs`.
 
 ## Run 1
 
-Executed under .NET Framework with `vstest.console.exe` after cherry-picking `67b0cdaaa864762b4ef7ad0be19638f565d7d764` and adding the test file to `EPPlusTest.csproj`.
+Executed under .NET Framework with `vstest.console.exe` after cherry-picking `67b0cdaaa864762b4ef7ad0be19638f565d7d764` and adding the test file to `EPPlusTest.Core.csproj`.
 
 | Test | Status | Analysis | Action |
 | --- | --- | --- | --- |
