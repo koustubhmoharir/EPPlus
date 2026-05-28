@@ -29,7 +29,7 @@ namespace EPPlusTest
 #if Core
             return Directory.GetParent(GetBaseDirectory()).Parent.Parent.Parent.FullName;
 #else
-            return GetBaseDirectory();
+            return Directory.GetParent(GetBaseDirectory()).Parent.FullName;
 #endif
         }
 
@@ -78,12 +78,6 @@ namespace EPPlusTest
                     }
                 }
             }
-            
-            //_worksheetPath = Path.Combine(Path.GetTempPath(), @"EPPlus worksheets");
-            //if (!Directory.Exists(_worksheetPath))
-            //{
-            //    Directory.CreateDirectory(_worksheetPath);
-            //}
 
             _pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
         }
