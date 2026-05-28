@@ -888,7 +888,7 @@ namespace EPPlusTest
         [TestMethod]
         public void AllDrawingsInsideMarkupCompatibility()
         {
-            string workbooksDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\workbooks");
+            string workbooksDir = Path.Combine(TestBase.GetBaseDirectory(), @"..\..\workbooks");
             // This is codeplex issue 15028: Making an unrelated change to an Excel file that contains drawings that ALL exist
             // inside MarkupCompatibility/Choice nodes causes the drawings.xml file to be incorrectly garbage collected
             // when an unrelated change is made.

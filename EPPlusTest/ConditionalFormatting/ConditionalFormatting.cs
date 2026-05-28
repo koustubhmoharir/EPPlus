@@ -202,7 +202,7 @@ namespace EPPlusTest
     [TestMethod]
     public void TwoAndThreeColorConditionalFormattingFromFileDoesNotGetOverwrittenWithDefaultValues()
     {
-        var file = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\Workbooks\MultiColorConditionalFormatting.xlsx"));
+        var file = new FileInfo(Path.Combine(TestBase.GetBaseDirectory(), @"..\..\Workbooks\MultiColorConditionalFormatting.xlsx"));
         Assert.IsTrue(file.Exists);
         using (var package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
         {
