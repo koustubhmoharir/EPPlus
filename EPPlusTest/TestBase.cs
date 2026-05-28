@@ -11,7 +11,8 @@ namespace EPPlusTest
     {
         protected ExcelPackage _pck;
         protected string _clipartPath="";
-        protected string _worksheetPath="";
+        protected string _worksheetPath= Path.Combine(Path.GetTempPath(), "EPPlus", "Testoutput");
+        protected string _testInputPath = Path.Combine(Path.GetTempPath(), "EPPlus", "workbooks");
         public TestContext TestContext { get; set; }
 
         public static string GetBaseDirectory()
@@ -35,17 +36,32 @@ namespace EPPlusTest
         [TestInitialize]
         public void InitBase()
         {
-
-            _clipartPath = Path.Combine(Path.GetTempPath(), @"EPPlus clipart");
+            _clipartPath = Path.Combine(Path.GetTempPath(), "EPPlus", "clipart");
             if (!Directory.Exists(_clipartPath))
             {
                 Directory.CreateDirectory(_clipartPath);
+            }
+            if (!Directory.Exists(_worksheetPath))
+            {
+                Directory.CreateDirectory(_worksheetPath);
+            }
+            if (!Directory.Exists(_testInputPath))
+            {
+                Directory.CreateDirectory(_testInputPath);
+            }
+            _worksheetPath += Path.DirectorySeparatorChar;
+            _testInputPath += Path.DirectorySeparatorChar;
+
+            if(Environment.GetEnvironmentVariable("EPPlusTestInputPath")!=null)
+            {
+                _testInputPath = Environment.GetEnvironmentVariable("EPPlusTestInputPath");
             }
             var asm = Assembly.GetExecutingAssembly();
             var validExtensions = new[]
                 {
                     ".gif", ".wmf"
                 };
+
             foreach (var name in asm.GetManifestResourceNames())
             {
                 foreach (var ext in validExtensions)
@@ -62,23 +78,35 @@ namespace EPPlusTest
                     }
                 }
             }
-            _worksheetPath = Path.Combine(Path.GetTempPath(), @"EPPlus worksheets");
-            if (!Directory.Exists(_worksheetPath))
-            {
-                Directory.CreateDirectory(_worksheetPath);
-            }
-            var di=new DirectoryInfo(_worksheetPath);            
-            _worksheetPath = di.FullName + "\\";
 
             _pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
         }
 
-        protected void OpenPackage(string name)
+        protected ExcelPackage OpenPackage(string name, bool delete=false)
         {
             var fi = new FileInfo(_worksheetPath + name);
+            if(delete && fi.Exists)
+            {
+                fi.Delete();
+            }
             _pck = new ExcelPackage(fi, EPPlusTest.TempFolderHelper.Create());
+            return _pck;
         }
-        
+        protected ExcelPackage OpenTemplatePackage(string name)
+        {
+            var t = new FileInfo(_testInputPath + name);
+            if (t.Exists)
+            {
+                var fi = new FileInfo(_worksheetPath + name);
+                _pck = new ExcelPackage(fi, t, EPPlusTest.TempFolderHelper.Create());
+            }
+            else
+            {
+                Assert.Inconclusive($"Template {name} does not exist in path {_testInputPath}");
+            }
+            return _pck;
+        }
+
         protected void SaveWorksheet(string name)
         {
             if (_pck.Workbook.Worksheets.Count == 0) return;
