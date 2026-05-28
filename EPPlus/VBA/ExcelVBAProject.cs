@@ -156,15 +156,13 @@ namespace OfficeOpenXml.VBA
         #region Read Project
         private void GetProject()
         {
-
-            var stream = Part.GetStream();
-            byte[] vba;
-            vba = new byte[stream.Length];
-            stream.Read(vba, 0, (int)stream.Length);
-            Document = new CompoundDocument(vba);
+            using (var stream = Part.GetStream())
+            {
+                Document = new CompoundDocument(stream, _wb._package.tempFolder);
+            }
 
             ReadDirStream();
-            ProjectStreamText = Encoding.GetEncoding(CodePage).GetString(Document.Storage.DataStreams["PROJECT"]);
+            ProjectStreamText = ReadStreamString(Document.Storage.DataStreams["PROJECT"], Encoding.GetEncoding(CodePage));
             ReadModules();
             ReadProjectProperties();
         }
@@ -173,7 +171,7 @@ namespace OfficeOpenXml.VBA
             foreach (var modul in Modules)
             {
                 var stream = Document.Storage.SubStorage["VBA"].DataStreams[modul.streamName];
-                var byCode = VBACompression.DecompressPart(stream, (int)modul.ModuleOffset);
+                var byCode = VBACompression.DecompressPart(ReadStreamBytes(stream), (int)modul.ModuleOffset);
                 string code = Encoding.GetEncoding(CodePage).GetString(byCode);
                 int pos=0;
                 while(pos+9<code.Length && code.Substring(pos,9)=="Attribute")
@@ -402,9 +400,29 @@ namespace OfficeOpenXml.VBA
             }
             return ret;
         }
+        private static byte[] ReadStreamBytes(Stream stream)
+        {
+            if (!stream.CanSeek)
+            {
+                throw new InvalidOperationException("stream must support seeking");
+            }
+            var position = stream.Position;
+            stream.Seek(0, SeekOrigin.Begin);
+
+            using (var ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);
+                stream.Seek(position, SeekOrigin.Begin);
+                return ms.ToArray();
+            }
+        }
+        private static string ReadStreamString(Stream stream, Encoding encoding)
+        {
+            return encoding.GetString(ReadStreamBytes(stream));
+        }
         private void ReadDirStream()
         {
-            byte[] dir = VBACompression.DecompressPart(Document.Storage.SubStorage["VBA"].DataStreams["dir"]);
+            byte[] dir = VBACompression.DecompressPart(ReadStreamBytes(Document.Storage.SubStorage["VBA"].DataStreams["dir"]));
             MemoryStream ms = new MemoryStream(dir);
             BinaryReader br = new BinaryReader(ms);
             ExcelVbaReference currentRef = null;
@@ -558,16 +576,16 @@ namespace OfficeOpenXml.VBA
         {
             if (Validate())
             {
-                CompoundDocument doc = new CompoundDocument();
+                CompoundDocument doc = new CompoundDocument(_pck.TempFolder);
                 doc.Storage = new CompoundDocument.StoragePart();
                 var store = new CompoundDocument.StoragePart();
                 doc.Storage.SubStorage.Add("VBA", store);
 
-                store.DataStreams.Add("_VBA_PROJECT", CreateVBAProjectStream());
-                store.DataStreams.Add("dir", CreateDirStream());
+                store.DataStreams.Add("_VBA_PROJECT", new MemoryStream(CreateVBAProjectStream()));
+                store.DataStreams.Add("dir", new MemoryStream(CreateDirStream()));
                 foreach (var module in Modules)
                 {
-                    store.DataStreams.Add(module.Name, VBACompression.CompressPart(Encoding.GetEncoding(CodePage).GetBytes(module.Attributes.GetAttributeText() + module.Code)));
+                    store.DataStreams.Add(module.Name, new MemoryStream(VBACompression.CompressPart(Encoding.GetEncoding(CodePage).GetBytes(module.Attributes.GetAttributeText() + module.Code))));
                 }
 
                 //Copy streams from the template, if used.
@@ -589,8 +607,8 @@ namespace OfficeOpenXml.VBA
                     }
                 }
 
-                doc.Storage.DataStreams.Add("PROJECT", CreateProjectStream());
-                doc.Storage.DataStreams.Add("PROJECTwm", CreateProjectwmStream());
+                doc.Storage.DataStreams.Add("PROJECT", new MemoryStream(CreateProjectStream()));
+                doc.Storage.DataStreams.Add("PROJECTwm", new MemoryStream(CreateProjectwmStream()));
 
                 if (Part == null)
                 {
@@ -602,7 +620,7 @@ namespace OfficeOpenXml.VBA
                 {
                     doc.Save(fs);
                     Stream st = Part.GetStream(FileMode.Create);
-                    ExcelPackage.CopyStream(fs, ref st);
+                    ExcelPackage.CopyStream(fs, st);
                 }
                 //Save the digital signture
                 Signature.Save(this);

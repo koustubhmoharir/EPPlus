@@ -42,7 +42,7 @@ using System.Security;
 namespace OfficeOpenXml.Utils.CompundDocument
 {
     internal class CompoundDocument
-    {        
+    {
         internal class StoragePart
         {
             public StoragePart()
@@ -50,20 +50,33 @@ namespace OfficeOpenXml.Utils.CompundDocument
 
             }
             internal Dictionary<string, StoragePart> SubStorage = new Dictionary<string, StoragePart>();
-            internal Dictionary<string, byte[]> DataStreams = new Dictionary<string, byte[]>();
+            internal Dictionary<string, Stream> DataStreams = new Dictionary<string, Stream>();
         }
         internal StoragePart Storage = null;
+        private readonly string _tempFolder;
         internal CompoundDocument()
+            : this((string)null)
         {
+        }
+        internal CompoundDocument(string tempFolder = null)
+        {
+            _tempFolder = tempFolder;
             Storage = new StoragePart();
         }
         internal CompoundDocument(MemoryStream ms)
         {
+            _tempFolder = null;
             Read(ms);
         }
-        internal CompoundDocument(FileInfo fi)
+        internal CompoundDocument(Stream stream, string tempFolder = null)
         {
-            Read(fi);
+            _tempFolder = tempFolder;
+            Read(stream, tempFolder);
+        }
+        internal CompoundDocument(FileInfo fi, string tempFolder = null)
+        {
+            _tempFolder = tempFolder;
+            Read(fi, tempFolder);
         }
 
         internal static bool IsCompoundDocument(FileInfo fi)
@@ -74,23 +87,34 @@ namespace OfficeOpenXml.Utils.CompundDocument
         {
             return CompoundDocumentFile.IsCompoundDocument(ms);
         }
+        internal static bool IsCompoundDocument(Stream stream)
+        {
+            return CompoundDocumentFile.IsCompoundDocument(stream);
+        }
 
         internal CompoundDocument(byte[] doc)
         {
+            _tempFolder = null;
             Read(doc);
         }
-        internal void Read(FileInfo fi)
+        internal void Read(FileInfo fi, string tempFolder = null)
         {
-            var b = File.ReadAllBytes(fi.FullName);
-            Read(b);
+            using (var stream = fi.OpenRead())
+            {
+                Read(stream, tempFolder ?? _tempFolder);
+            }
         }
-        internal void Read(byte[] doc) 
+        internal void Read(byte[] doc)
         {
             Read(new MemoryStream(doc));
         }
         internal void Read(MemoryStream ms)
         {
-            using (var doc = new CompoundDocumentFile(ms))
+            Read((Stream)ms);
+        }
+        internal void Read(Stream stream, string tempFolder = null)
+        {
+            using (var doc = new CompoundDocumentFile(stream, tempFolder ?? _tempFolder))
             {
                 Storage = new StoragePart();
                 GetStorageAndStreams(Storage, doc.RootItem);
@@ -115,18 +139,15 @@ namespace OfficeOpenXml.Utils.CompundDocument
         }
         internal void Save(MemoryStream ms)
         {
-            var doc = new CompoundDocumentFile();
-            WriteStorageAndStreams(Storage, doc.RootItem);
-            doc.Write(ms);
+            Save((Stream)ms);
         }
 
         internal void Save(Stream stream)
         {
-            using (var ms = new MemoryStream())
+            using (var doc = new CompoundDocumentFile(_tempFolder))
             {
-                Save(ms);
-                ms.Seek(0, SeekOrigin.Begin);
-                ms.CopyTo(stream);
+                WriteStorageAndStreams(Storage, doc.RootItem);
+                doc.Write(stream);
             }
         }
 
@@ -140,7 +161,9 @@ namespace OfficeOpenXml.Utils.CompundDocument
             }
             foreach (var item in storage.DataStreams)
             {
-                var c = new CompoundDocumentItem() { Name = item.Key, ObjectType = 2, Stream = item.Value, StreamSize = (item.Value == null ? 0 : item.Value.Length), Parent = parent };
+                var stream = item.Value;
+                var streamSize = stream == null ? 0 : stream.Length;
+                var c = new CompoundDocumentItem() { Name = item.Key, ObjectType = 2, Stream = stream, StreamSize = streamSize, Parent = parent };
                 parent.Children.Add(c);
             }
         }

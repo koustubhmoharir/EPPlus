@@ -30,8 +30,7 @@ namespace EPPlusTest
                 Algorithm = EncryptionAlgorithm.AES256
             };
 
-#if Core
-            var handler = new EncryptedPackageHandler();
+            var handler = new EncryptedPackageHandler(EPPlusTest.TempFolderHelper.Create());
             using (MemoryStream encryptedStream = handler.EncryptPackage(packageData, encryption))
             {
                 Assert.IsNotNull(encryptedStream);
@@ -52,33 +51,6 @@ namespace EPPlusTest
                     }
                 }
             }
-#else
-            var handler = new EncryptedPackageHandler(null);
-            var encryptedStream = new MemoryStream();
-            using (var packageStream = new MemoryStream(packageData))
-            {
-                handler.EncryptPackage(packageStream, encryption, encryptedStream);
-            }
-
-            byte[] encryptedData = encryptedStream.ToArray();
-            Assert.IsNotNull(encryptedData);
-            Assert.IsTrue(encryptedData.Length > 0);
-
-            var decryptedStream = new MemoryStream();
-            using (var encryptedMemStream = new MemoryStream(encryptedData))
-            {
-                handler.DecryptPackage(encryptedMemStream, encryption, decryptedStream);
-            }
-
-            decryptedStream.Position = 0;
-            using (var decryptedPck = new ExcelPackage(decryptedStream, EPPlusTest.TempFolderHelper.Create()))
-            {
-                Assert.AreEqual(1, decryptedPck.Workbook.Worksheets.Count);
-                var ws = decryptedPck.Workbook.Worksheets["TestSheet"];
-                Assert.AreEqual("Hello World", ws.Cells["A1"].Value);
-                Assert.AreEqual(12345.0, Convert.ToDouble(ws.Cells["A2"].Value));
-            }
-#endif
         }
 
         [TestMethod]
@@ -101,8 +73,7 @@ namespace EPPlusTest
                 Algorithm = EncryptionAlgorithm.AES128
             };
 
-#if Core
-            var handler = new EncryptedPackageHandler();
+            var handler = new EncryptedPackageHandler(EPPlusTest.TempFolderHelper.Create());
             using (MemoryStream encryptedStream = handler.EncryptPackage(packageData, encryption))
             {
                 Assert.IsNotNull(encryptedStream);
@@ -122,32 +93,6 @@ namespace EPPlusTest
                     }
                 }
             }
-#else
-            var handler = new EncryptedPackageHandler(null);
-            var encryptedStream = new MemoryStream();
-            using (var packageStream = new MemoryStream(packageData))
-            {
-                handler.EncryptPackage(packageStream, encryption, encryptedStream);
-            }
-
-            byte[] encryptedData = encryptedStream.ToArray();
-            Assert.IsNotNull(encryptedData);
-            Assert.IsTrue(encryptedData.Length > 0);
-
-            var decryptedStream = new MemoryStream();
-            using (var encryptedMemStream = new MemoryStream(encryptedData))
-            {
-                handler.DecryptPackage(encryptedMemStream, encryption, decryptedStream);
-            }
-
-            decryptedStream.Position = 0;
-            using (var decryptedPck = new ExcelPackage(decryptedStream, EPPlusTest.TempFolderHelper.Create()))
-            {
-                Assert.AreEqual(1, decryptedPck.Workbook.Worksheets.Count);
-                var ws = decryptedPck.Workbook.Worksheets["TestSheet"];
-                Assert.AreEqual("Standard Encryption Test", ws.Cells["A1"].Value);
-            }
-#endif
         }
     }
 }

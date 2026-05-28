@@ -2,9 +2,6 @@
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
-#if Core
-using OfficeOpenXml.Compatibility;
-#endif
 
 namespace EPPlusTest
 {
@@ -21,27 +18,17 @@ namespace EPPlusTest
         {
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
-#if Core
-                Assert.IsNotNull(package.Stream);
-#else
-                Assert.IsNull(package.Stream);
-#endif
                 Assert.IsNotNull(package.Workbook);
                 Assert.AreEqual(0, package.Workbook.Worksheets.Count);
 
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells[1, 1].Value = "Default Constructor Test";
-                
-#if Core
-                var bytes = package.GetAsByteArray();
-#else
                 byte[] bytes;
                 using (var ms = new MemoryStream())
                 {
                     package.SaveAs(ms);
                     bytes = ms.ToArray();
                 }
-#endif
                 Assert.IsNotNull(bytes);
                 Assert.IsTrue(bytes.Length > 0);
             }

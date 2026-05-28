@@ -131,7 +131,7 @@ namespace OfficeOpenXml.Utils.CompundDocument
             set;
         }
 
-        public byte[] Stream
+        public Stream Stream
         {
             get;
             set;

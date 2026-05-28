@@ -42,9 +42,40 @@ namespace OfficeOpenXml.Utils.CompundDocument
     /// </summary>
     internal class CompoundDocumentFile : IDisposable
     {
-        public CompoundDocumentFile()
+        private readonly string tempFolder;
+
+        public CompoundDocumentFile() : this((string)null)
         {
-            RootItem = new CompoundDocumentItem() { Name = "<Root>", Children=new List<CompoundDocumentItem>(), ObjectType=5 };
+        }
+        public CompoundDocumentFile(string tempFolder)
+        {
+            this.tempFolder = tempFolder;
+            Initialize();
+        }
+        internal CompoundDocumentFile(FileInfo fi, string tempFolder = null)
+        {
+            this.tempFolder = tempFolder;
+            Initialize();
+            using (var stream = fi.OpenRead())
+            {
+                Read(stream);
+            }
+        }
+        public CompoundDocumentFile(byte[] file) : this(new MemoryStream(file))
+        {
+        }
+        public CompoundDocumentFile(MemoryStream ms) : this((Stream)ms, null)
+        {
+        }
+        public CompoundDocumentFile(Stream stream, string tempFolder = null)
+        {
+            this.tempFolder = tempFolder;
+            Initialize();
+            Read(stream);
+        }
+        private void Initialize()
+        {
+            RootItem = new CompoundDocumentItem() { Name = "<Root>", Children = new List<CompoundDocumentItem>(), ObjectType = 5 };
             minorVersion = 0x3E;
             majorVersion = 3;
             sectorShif = 9;
@@ -53,18 +84,6 @@ namespace OfficeOpenXml.Utils.CompundDocument
             _sectorSize = 1 << sectorShif;
             _miniSectorSize = 1 << minSectorShift;
             _sectorSizeInt = _sectorSize / 4;
-        }
-        internal CompoundDocumentFile(FileInfo fi) : this(File.ReadAllBytes(fi.FullName))
-        {
-            
-        }
-        public CompoundDocumentFile(byte[] file) : this(new MemoryStream(file))
-        {
-        }
-        public CompoundDocumentFile(MemoryStream ms)
-        {
-            ms.Seek(0, SeekOrigin.Begin);   //Fixes issue #60
-            Read(new BinaryReader(ms));
         }
         private struct DocWriteInfo
         {
@@ -114,15 +133,17 @@ namespace OfficeOpenXml.Utils.CompundDocument
         {
             try
             {
-                var fs = fi.OpenRead();
-                var b = new byte[8];
-                fs.Read(b, 0, 8);
-                return IsCompoundDocument(b);
+                using (var fs = fi.OpenRead())
+                {
+                    var b = new byte[8];
+                    fs.Read(b, 0, 8);
+                    return IsCompoundDocument(b);
+                }
             }
             catch
             {
                 return false;
-            }            
+            }
         }
         public static bool IsCompoundDocument(MemoryStream ms)
         {
@@ -131,6 +152,15 @@ namespace OfficeOpenXml.Utils.CompundDocument
             var b=new byte[8];
             ms.Read(b, 0, 8);
             ms.Position = pos;
+            return IsCompoundDocument(b);
+        }
+        public static bool IsCompoundDocument(Stream stream)
+        {
+            var pos = stream.Position;
+            stream.Position = 0;
+            var b = new byte[8];
+            stream.Read(b, 0, 8);
+            stream.Position = pos;
             return IsCompoundDocument(b);
         }
         public static bool IsCompoundDocument(byte[] b)
@@ -145,7 +175,56 @@ namespace OfficeOpenXml.Utils.CompundDocument
             }
             return true;
         }
+        private string GetTempFile()
+        {
+            if (tempFolder != null && !Directory.Exists(tempFolder))
+            {
+                Directory.CreateDirectory(tempFolder);
+            }
+            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
+        }
+        private Stream CreateWorkingStream()
+        {
+            return tempFolder == null
+                ? (Stream)new MemoryStream()
+                : ExcelPackage.CreateTempStream(GetTempFile());
+        }
+        private static void CopyStream(Stream inputStream, Stream outputStream)
+        {
+            var position = inputStream.CanSeek ? inputStream.Position : 0;
+            if (inputStream.CanSeek)
+            {
+                inputStream.Seek(0, SeekOrigin.Begin);
+            }
+
+            var buffer = new byte[4096];
+            int read;
+            while ((read = inputStream.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                outputStream.Write(buffer, 0, read);
+            }
+
+            if (inputStream.CanSeek)
+            {
+                inputStream.Seek(position, SeekOrigin.Begin);
+            }
+        }
     #region Read
+    private void Read(Stream stream)
+        {
+            var position = stream.CanSeek ? stream.Position : 0;
+            if (stream.CanSeek)
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+            }
+
+            Read(new BinaryReader(stream));
+
+            if (stream.CanSeek)
+            {
+                stream.Seek(position, SeekOrigin.Begin);
+            }
+        }
     internal void Read(BinaryReader br)
         {
             br.ReadBytes(8);    //Read header
@@ -238,40 +317,33 @@ namespace OfficeOpenXml.Utils.CompundDocument
             dir[0].Stream = GetStream(dir[0].StartingSectorLocation, dir[0].StreamSize, dwi.FAT, _sectors);
             GetMiniSectors(dir[0].Stream);
         }
-        private void GetMiniSectors(byte[] miniFATStream)
+        private void GetMiniSectors(Stream miniFATStream)
         {
-            var br = new BinaryReader(new MemoryStream(miniFATStream));
+            var position = miniFATStream.Position;
+            miniFATStream.Seek(0, SeekOrigin.Begin);
+            var br = new BinaryReader(miniFATStream);
             _miniSectors = new List<byte[]>();
             while (br.BaseStream.Position < br.BaseStream.Length)
             {
                 _miniSectors.Add(br.ReadBytes(_miniSectorSize));
             }
+            miniFATStream.Seek(position, SeekOrigin.Begin);
         }
-        private byte[] GetStream(int startingSectorLocation, long streamSize, List<int> FAT, List<byte[]> sectors)
+        private Stream GetStream(int startingSectorLocation, long streamSize, List<int> FAT, List<byte[]> sectors)
         {
-            var ms = new MemoryStream();
-            var bw = new BinaryWriter(ms);
+            var stream = CreateWorkingStream();
 
             var size = 0;
             var nextSector = startingSectorLocation;
             while(size<streamSize)
             {
-                if (streamSize > size + sectors[nextSector].Length)
-                {
-                    bw.Write(sectors[nextSector]);
-                    size += sectors[nextSector].Length;
-                }
-                else
-                {                        
-                    var part= new byte[streamSize-size];
-                    Array.Copy(sectors[nextSector], part, (int)streamSize - size);
-                    bw.Write(part);
-                    size += part.Length;
-                }
+                var bytesToCopy = (int)Math.Min(sectors[nextSector].Length, streamSize - size);
+                stream.Write(sectors[nextSector], 0, bytesToCopy);
+                size += bytesToCopy;
                 nextSector = FAT[nextSector];
             }
-            bw.Flush();
-            return ms.ToArray();
+            stream.Seek(0, SeekOrigin.Begin);
+            return stream;
         }
         private List<int> ReadMiniFAT(List<byte[]> sectors, DocWriteInfo dwi)
         {
@@ -386,9 +458,13 @@ namespace OfficeOpenXml.Utils.CompundDocument
         }
     #endregion
     #region Write
-    public void Write(MemoryStream ms)
+    public void Write(Stream stream)
     {
-            var bw = new BinaryWriter(ms);
+            if (stream.CanSeek)
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+            }
+            var bw = new BinaryWriter(stream);
 
             //InitValues
             minorVersion = 62;
@@ -664,17 +740,17 @@ namespace OfficeOpenXml.Utils.CompundDocument
                     //Write overflowing FAT sectors
                     var b = new byte[miniFAT.Length - _sectorSize];
                     Array.Copy(miniFAT, _sectorSize, b, 0, b.Length);
-                    WriteStream(bw, b);
+                    WriteStream(bw, new MemoryStream(b));
                 }
                 _numberofMiniFATSectors = (miniFAT.Length + 1) / _sectorSize;
             }
         }
 
-        private int WriteStream(BinaryWriter bw, byte[] stream)
+        private int WriteStream(BinaryWriter bw, Stream stream)
         {
             bw.Seek(0, SeekOrigin.End);
             var start = (int)bw.BaseStream.Position / _sectorSize-1;
-            bw.Write(stream);
+            CopyStream(stream, bw.BaseStream);
             WriteStreamFullSector(bw, _sectorSize);
             WriteFAT(bw, start, stream.Length);
             return start;
@@ -842,7 +918,7 @@ namespace OfficeOpenXml.Utils.CompundDocument
         private byte[] SetMiniStream(List<CompoundDocumentItem> dirs)
         {
             //Create the miniStream
-            var ms = new MemoryStream();
+            var ms = CreateWorkingStream();
             var bwMiniFATStream = new BinaryWriter(ms);
             var bwMiniFAT = new BinaryWriter(new MemoryStream());
             int pos = 0;
@@ -850,7 +926,7 @@ namespace OfficeOpenXml.Utils.CompundDocument
             {
                 if (entity.ObjectType != 5 && entity.StreamSize>0 && entity.StreamSize <= _miniStreamCutoffSize)
                 {
-                    bwMiniFATStream.Write(entity.Stream);
+                    CopyStream(entity.Stream, bwMiniFATStream.BaseStream);
                     WriteStreamFullSector(bwMiniFATStream, miniFATSectorSize);
                     int size = _miniSectorSize;
                     entity.StartingSectorLocation = pos;
@@ -864,7 +940,8 @@ namespace OfficeOpenXml.Utils.CompundDocument
                 }
             }
             dirs[0].StreamSize = ms.Length;
-            dirs[0].Stream = ms.ToArray();
+            ms.Seek(0, SeekOrigin.Begin);
+            dirs[0].Stream = ms;
 
             WriteStreamFullSector(bwMiniFAT, _sectorSize);
             return ((MemoryStream)bwMiniFAT.BaseStream).ToArray();
@@ -921,10 +998,10 @@ namespace OfficeOpenXml.Utils.CompundDocument
             }
         }
 
-        private int WriteStream(BinaryWriter bw, List<int> fat, byte[] stream, int FATSectorSize)
+        private int WriteStream(BinaryWriter bw, List<int> fat, Stream stream, int FATSectorSize)
         {
             var rest = FATSectorSize - (stream.Length % FATSectorSize);
-            bw.Write(stream);
+            CopyStream(stream, bw.BaseStream);
             if(rest>0 && rest < FATSectorSize) bw.Write(new byte[rest]);
             var ret = fat.Count;
             AddFAT(fat, stream.Length, FATSectorSize, 0);

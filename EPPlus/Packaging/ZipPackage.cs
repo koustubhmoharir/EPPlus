@@ -72,6 +72,7 @@ namespace OfficeOpenXml.Packaging
             }
         }
         private string tempFolder;
+        internal string TempFolder { get { return tempFolder; } }
         public string GetTempFile()
         {
             if (tempFolder != null && !Directory.Exists(tempFolder))
