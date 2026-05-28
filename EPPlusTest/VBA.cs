@@ -202,13 +202,7 @@ namespace EPPlusTest
         {
             // This is a test for Issue 15026: VBA decompression encounters index out of range
             // on the decompression buffer.
-            var workbookDir = Path.Combine(
-#if Core
-                AppContext.BaseDirectory
-#else
-                AppDomain.CurrentDomain.BaseDirectory
-#endif
-                , @"..\..\workbooks");
+            var workbookDir = Path.Combine(TestBase.GetBaseDirectory(), @"..\..\workbooks");
             var path = Path.Combine(workbookDir, "VBADecompressBug.xlsm");
             var f = new FileInfo(path);
             if (f.Exists)

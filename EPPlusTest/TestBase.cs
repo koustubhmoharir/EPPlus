@@ -14,7 +14,25 @@ namespace EPPlusTest
         protected string _worksheetPath= Path.Combine(Path.GetTempPath(), "EPPlus", "Testoutput");
         protected string _testInputPath = Path.Combine(Path.GetTempPath(), "EPPlus", "workbooks");
         public TestContext TestContext { get; set; }
-        
+
+        public static string GetBaseDirectory()
+        {
+#if Core
+            return AppContext.BaseDirectory;
+#else
+            return AppDomain.CurrentDomain.BaseDirectory;
+#endif
+        }
+
+        public static string GetProjectRootDirectory()
+        {
+#if Core
+            return Directory.GetParent(GetBaseDirectory()).Parent.Parent.Parent.FullName;
+#else
+            return GetBaseDirectory();
+#endif
+        }
+
         [TestInitialize]
         public void InitBase()
         {
