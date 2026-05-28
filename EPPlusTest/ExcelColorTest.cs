@@ -1,7 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
-using System.Drawing;
+using OfficeOpenXml.Sparkline;
+using Color = OfficeOpenXml.Style.ExcelColorValue;
 using System;
 
 namespace EPPlusTest
@@ -61,6 +62,38 @@ namespace EPPlusTest
 
                 color.SetColor(128, 255, 0, 255);
                 Assert.AreEqual("80FF00FF", color.Rgb);
+
+                color.SetColor(new ExcelColorValue(0x80, 0x11, 0x22, 0x33));
+                Assert.AreEqual("80112233", color.Rgb);
+
+                color.SetColor("80112233");
+                Assert.AreEqual("80112233", color.Rgb);
+            }
+        }
+
+        [TestMethod]
+        public void ExcelColorValueToArgbHex()
+        {
+            var color = new ExcelColorValue(0x12, 0x34, 0x56, 0x78);
+
+            Assert.AreEqual("12345678", color.ToArgbHex());
+            Assert.AreEqual("12345678", color.ToString());
+            Assert.AreEqual(color, new ExcelColorValue(0x12, 0x34, 0x56, 0x78));
+            Assert.AreNotEqual(color, new ExcelColorValue(0x12, 0x34, 0x56, 0x79));
+        }
+
+        [TestMethod]
+        public void SparklineColorSupportsNativeValue()
+        {
+            using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
+            {
+                var ws = p.Workbook.Worksheets.Add("SparklineColorTest");
+                ws.Cells["A1"].Value = 1;
+                ws.Cells["A2"].Value = 2;
+                var sparkline = ws.SparklineGroups.Add(eSparklineType.Column, ws.Cells["B1:B2"], ws.Cells["A1:A2"]);
+
+                sparkline.ColorHigh.SetColor(new ExcelColorValue(0xFF, 0xAA, 0xBB, 0xCC));
+                Assert.AreEqual("FFAABBCC", sparkline.ColorHigh.Rgb);
             }
         }
     }

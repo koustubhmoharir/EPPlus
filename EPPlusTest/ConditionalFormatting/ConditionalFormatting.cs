@@ -7,7 +7,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.ConditionalFormatting;
 using System.IO;
 using OfficeOpenXml.ConditionalFormatting.Contracts;
-using System.Drawing;
+using Color = OfficeOpenXml.Style.ExcelColorValue;
 
 namespace EPPlusTest
 {
@@ -205,13 +205,13 @@ namespace EPPlusTest
       var threeColor = ws.ConditionalFormatting.AddThreeColorScale(ws.Cells["B1:B5"]);
 
       // Verify two color scale default colors
-      Assert.AreEqual(Color.FromArgb(0xFF, 0xF8, 0x69, 0x6B), twoColor.LowValue.Color);
-      Assert.AreEqual(Color.FromArgb(0xFF, 0x63, 0xBE, 0x7B), twoColor.HighValue.Color);
+      Assert.AreEqual<OfficeOpenXml.Style.ExcelColorValue>(Color.FromArgb(0xFF, 0xF8, 0x69, 0x6B), twoColor.LowValue.Color);
+      Assert.AreEqual<OfficeOpenXml.Style.ExcelColorValue>(Color.FromArgb(0xFF, 0x63, 0xBE, 0x7B), twoColor.HighValue.Color);
 
       // Verify three color scale default colors
-      Assert.AreEqual(Color.FromArgb(0xFF, 0xF8, 0x69, 0x6B), threeColor.LowValue.Color);
-      Assert.AreEqual(Color.FromArgb(0xFF, 0xFF, 0xEB, 0x84), threeColor.MiddleValue.Color);
-      Assert.AreEqual(Color.FromArgb(0xFF, 0x63, 0xBE, 0x7B), threeColor.HighValue.Color);
+      Assert.AreEqual<OfficeOpenXml.Style.ExcelColorValue>(Color.FromArgb(0xFF, 0xF8, 0x69, 0x6B), threeColor.LowValue.Color);
+      Assert.AreEqual<OfficeOpenXml.Style.ExcelColorValue>(Color.FromArgb(0xFF, 0xFF, 0xEB, 0x84), threeColor.MiddleValue.Color);
+      Assert.AreEqual<OfficeOpenXml.Style.ExcelColorValue>(Color.FromArgb(0xFF, 0x63, 0xBE, 0x7B), threeColor.HighValue.Color);
     }
 
     [TestMethod]

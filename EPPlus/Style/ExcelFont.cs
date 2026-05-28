@@ -32,7 +32,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
 
 namespace OfficeOpenXml.Style
 {
@@ -210,18 +209,18 @@ namespace OfficeOpenXml.Style
             }
         }
         /// <summary>
-        /// Set the font from a Font object
+        /// Set the font from an EPPlus-native font descriptor.
         /// </summary>
-        /// <param name="Font"></param>
-        public void SetFromFont(Font Font)
+        /// <param name="font">The font descriptor.</param>
+        public void SetFromFont(OfficeOpenXml.Drawing.Text.ExcelFontDescriptor font)
         {
-            Name = Font.Name;
+            Name = font.Name;
             //Family=fnt.FontFamily.;
-            Size = (int)Font.Size;
-            Strike = Font.Strikeout;
-            Bold = Font.Bold;
-            UnderLine = Font.Underline;
-            Italic = Font.Italic;
+            Size = (int)font.Size;
+            Strike = font.Strikeout;
+            Bold = font.Bold;
+            UnderLine = font.Underline;
+            Italic = font.Italic;
         }
 
         internal override string Id

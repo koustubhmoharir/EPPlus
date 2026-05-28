@@ -33,7 +33,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using OfficeOpenXml.Style.XmlAccess;
-using System.Drawing;
+using System.Globalization;
 
 namespace OfficeOpenXml.Style
 {
@@ -106,13 +106,17 @@ namespace OfficeOpenXml.Style
                 _ChangedEvent(this, new StyleChangeEventArgs(_cls, eStyleProperty.IndexedColor, value, _positionID, _address));
             }
         }
-        /// <summary>
-        /// Set the color of the object
-        /// </summary>
-        /// <param name="color">The color</param>
-        public void SetColor(Color color)
+        public void SetColor(ExcelColorValue color)
         {
-            Rgb = color.ToArgb().ToString("X");       
+            Rgb = color.ToArgbHex();
+        }
+        /// <summary>
+        /// Set the color of the object.
+        /// </summary>
+        /// <param name="argbHex">ARGB hex string.</param>
+        public void SetColor(string argbHex)
+        {
+            Rgb = NormalizeArgbHex(argbHex);
         }
         /// <summary>
         /// Set the color of the object
@@ -123,12 +127,51 @@ namespace OfficeOpenXml.Style
         /// <param name="blue">Blue component value</param>
         public void SetColor(int alpha, int red, int green, int blue)
         {
-            if(alpha < 0 || red < 0 || green < 0 ||blue < 0 ||
-               alpha > 255 || red > 255 || green > 255 || blue > 255)
+            if (alpha < byte.MinValue || red < byte.MinValue || green < byte.MinValue || blue < byte.MinValue ||
+                alpha > byte.MaxValue || red > byte.MaxValue || green > byte.MaxValue || blue > byte.MaxValue)
             {
                 throw (new ArgumentException("Argument range must be from 0 to 255"));
             }
-            Rgb = alpha.ToString("X2") + red.ToString("X2") + green.ToString("X2") + blue.ToString("X2");
+            SetColor((byte)alpha, (byte)red, (byte)green, (byte)blue);
+        }
+        /// <summary>
+        /// Set the color of the object
+        /// </summary>
+        /// <param name="alpha">Alpha component value</param>
+        /// <param name="red">Red component value</param>
+        /// <param name="green">Green component value</param>
+        /// <param name="blue">Blue component value</param>
+        public void SetColor(byte alpha, byte red, byte green, byte blue)
+        {
+            SetColor(new ExcelColorValue(alpha, red, green, blue));
+        }
+        private static string NormalizeArgbHex(string argbHex)
+        {
+            if (string.IsNullOrWhiteSpace(argbHex))
+            {
+                throw new ArgumentException("ARGB hex string must not be null or empty.", nameof(argbHex));
+            }
+
+            var hex = argbHex.Trim();
+            if (hex.StartsWith("#", StringComparison.Ordinal))
+            {
+                hex = hex.Substring(1);
+            }
+
+            if (hex.Length == 6)
+            {
+                hex = "FF" + hex;
+            }
+            else if (hex.Length != 8)
+            {
+                throw new ArgumentException("ARGB hex string must be 6 or 8 hex characters.", nameof(argbHex));
+            }
+
+            return string.Concat(
+                byte.Parse(hex.Substring(0, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture).ToString("X2", CultureInfo.InvariantCulture),
+                byte.Parse(hex.Substring(2, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture).ToString("X2", CultureInfo.InvariantCulture),
+                byte.Parse(hex.Substring(4, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture).ToString("X2", CultureInfo.InvariantCulture),
+                byte.Parse(hex.Substring(6, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture).ToString("X2", CultureInfo.InvariantCulture));
         }
         internal override string Id
         {

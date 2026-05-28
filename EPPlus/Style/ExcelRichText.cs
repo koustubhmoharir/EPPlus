@@ -35,7 +35,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using System.Drawing;
 using System.Globalization;
 
 namespace OfficeOpenXml.Style
@@ -290,24 +289,31 @@ namespace OfficeOpenXml.Style
         /// <summary>
         /// Text color
         /// </summary>
-        public Color Color
+        public ExcelColorValue? Color
         {
             get
             {
                 string col = GetXmlNodeString(COLOR_PATH);
                 if (col == "")
                 {
-                    return Color.Empty;
+                    return null;
                 }
                 else
                 {
-                    return Color.FromArgb(int.Parse(col, System.Globalization.NumberStyles.AllowHexSpecifier));
+                    return ExcelColorValue.Parse(col);
                 }
             }
             set
             {
                 _collection.ConvertRichtext();
-                SetXmlNodeString(COLOR_PATH, value.ToArgb().ToString("X")/*.Substring(2, 6)*/);
+                if (value.HasValue)
+                {
+                    SetXmlNodeString(COLOR_PATH, value.Value.ToArgbHex());
+                }
+                else
+                {
+                    DeleteNode(COLOR_PATH);
+                }
                 if (_callback != null) _callback();
             }
         }

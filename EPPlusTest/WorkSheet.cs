@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using System.IO;
 using OfficeOpenXml.Drawing;
-using System.Drawing;
+using Color = OfficeOpenXml.Style.ExcelColorValue;
 using OfficeOpenXml.Drawing.Chart;
 using OfficeOpenXml.Drawing.Vml;
 using OfficeOpenXml.Style;
@@ -2072,28 +2072,28 @@ namespace EPPlusTest
         public void SetBackground()
         {
             var ws = _pck.Workbook.Worksheets.Add("backimg");
+            var imageBytes = GetEmbeddedResourceBytes("EPPlusTest.Resources.Test1.jpg");
 
             // Assert default state
-            Assert.IsNull(ws.BackgroundImage.Image);
+            Assert.IsNull(ws.BackgroundImage.ImageBytes);
 
             // Set image
-            ws.BackgroundImage.Image = Properties.Resources.Test1;
-            Assert.IsNotNull(ws.BackgroundImage.Image);
-            Assert.IsTrue(ws.BackgroundImage.Image.Width > 0);
+            ws.BackgroundImage.SetImage(imageBytes, "image/jpeg");
+            CollectionAssert.AreEqual(imageBytes, ws.BackgroundImage.ImageBytes);
 
             // Verify delete logic
-            ws.BackgroundImage.Image = null;
-            Assert.IsNull(ws.BackgroundImage.Image);
+            ws.BackgroundImage.SetImage(null);
+            Assert.IsNull(ws.BackgroundImage.ImageBytes);
 
             // Re-set image
-            ws.BackgroundImage.Image = Properties.Resources.Test1;
-            Assert.IsNotNull(ws.BackgroundImage.Image);
+            ws.BackgroundImage.SetImage(imageBytes, "image/jpeg");
+            CollectionAssert.AreEqual(imageBytes, ws.BackgroundImage.ImageBytes);
 
             ws = _pck.Workbook.Worksheets.Add("backimg2");
             try
             {
                 ws.BackgroundImage.SetFromFile(new FileInfo(Path.Combine(_clipartPath, "Vector Drawing.wmf")));
-                Assert.IsNotNull(ws.BackgroundImage.Image);
+                Assert.IsNotNull(ws.BackgroundImage.ImageBytes);
             }
             catch (ArgumentException ex) when (ex.Message.Contains("No codec available"))
             {
@@ -2111,7 +2111,8 @@ namespace EPPlusTest
 
             var ws = _pck.Workbook.Worksheets.Add("HeaderImage");
             ws.HeaderFooter.OddHeader.CenteredText = "Before ";
-            var img = ws.HeaderFooter.OddHeader.InsertPicture(Properties.Resources.Test1, PictureAlignment.Centered);
+            byte[] imageBytes = File.ReadAllBytes(Path.Combine(_clipartPath, "Test1.jpg"));
+            var img = ws.HeaderFooter.OddHeader.InsertPicture(imageBytes, "image/jpeg", PictureAlignment.Centered);
             img.Title = "Renamed Image";
             //img.GrayScale = true;
             //img.BiLevel = true;
@@ -2154,7 +2155,7 @@ namespace EPPlusTest
 
             var secondNamedStyle = _pck.Workbook.Styles.CreateNamedStyle("first", firstNamedStyle.Style).Style;
             secondNamedStyle.Font.Bold = true;
-            secondNamedStyle.Font.SetFromFont(new Font("Arial Black", 8));
+            secondNamedStyle.Font.SetFromFont(new OfficeOpenXml.Drawing.Text.ExcelFontDescriptor("Arial Black", 8, false, false, false, false));
             secondNamedStyle.Border.Bottom.Style = ExcelBorderStyle.Medium;
             secondNamedStyle.Border.Left.Style = ExcelBorderStyle.Medium;
 

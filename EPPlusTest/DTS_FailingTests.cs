@@ -9,7 +9,7 @@ using System.Text;
 namespace EPPlusTest
 {
     [TestClass]
-    public class DTS_FailingTests
+    public class DTS_FailingTests : TestBase
     {
 
         [Ignore] // Hangs during AddPicture call on Mono. Likely an issue with libgdiplus or resource loading in Mono.
@@ -20,7 +20,7 @@ namespace EPPlusTest
             using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("original");
-                ws.Drawings.AddPicture("Pic1", Properties.Resources.Test1);
+                ws.Drawings.AddPicture("Pic1", GetEmbeddedResourceBytes("EPPlusTest.Resources.Test1.jpg"));
                 pck.Workbook.Worksheets.Copy("original", "copy");
                 pck.SaveAs(ms);
             }
@@ -41,11 +41,12 @@ namespace EPPlusTest
             using (var pck = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("original");
-                ws.Drawings.AddPicture("Pic1", Properties.Resources.Test1);
+                ws.Drawings.AddPicture("Pic1", GetEmbeddedResourceBytes("EPPlusTest.Resources.Test1.jpg"));
                 pck.Workbook.Worksheets.Copy("original", "copy");
                 pck.Workbook.Worksheets.Delete(ws);
                 pck.Save();
             }
         }
+
     }
 }

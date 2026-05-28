@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using System.Drawing;
 
 namespace OfficeOpenXml.Style.Dxf
 {
@@ -90,10 +89,7 @@ namespace OfficeOpenXml.Style.Dxf
             string rgb=helper.GetXmlNodeString(path + "/@rgb");
             if(rgb!="")
             {
-                ret.Color = Color.FromArgb( int.Parse(rgb.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier),
-                                            int.Parse(rgb.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier),
-                                            int.Parse(rgb.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier),
-                                            int.Parse(rgb.Substring(6, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
+                ret.Color = OfficeOpenXml.Style.ExcelColorValue.Parse(rgb);
             }
             ret.Auto = helper.GetXmlNodeBoolNullable(path + "/@auto");
             ret.Tint = helper.GetXmlNodeDoubleNull(path + "/@tint");

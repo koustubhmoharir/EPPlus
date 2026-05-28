@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -21,6 +20,6 @@ namespace OfficeOpenXml.Style
         string Rgb { get; }
         string Theme { get; }
         decimal Tint { get; set; }
-        void SetColor(Color color);
+        void SetColor(ExcelColorValue color);
     }
 }

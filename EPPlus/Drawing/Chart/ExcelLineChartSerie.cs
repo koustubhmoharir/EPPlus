@@ -34,7 +34,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Xml;
-using System.Drawing;
+using OfficeOpenXml.Style;
 
 namespace OfficeOpenXml.Drawing.Chart
 {
@@ -118,23 +118,23 @@ namespace OfficeOpenXml.Drawing.Chart
         /// <value>
         /// The color of the line.
         /// </value>
-        public Color LineColor
+        public ExcelColorValue LineColor
         {
             get
             {
                 string color = GetXmlNodeString(LINECOLOR_PATH);
                 if (color == "")
                 {
-                    return Color.Black;
+                    return new ExcelColorValue(255, 0, 0, 0);
                 }
                 else
                 {
-                    return Color.FromArgb(Convert.ToInt32(color, 16));
+                    return ExcelColorValue.Parse(color);
                 }
             }
             set
             {
-                SetXmlNodeString(LINECOLOR_PATH, value.ToArgb().ToString("X").Substring(2), true);
+                SetXmlNodeString(LINECOLOR_PATH, value.ToArgbHex().Substring(2), true);
             }
         }
         string MARKERSIZE_PATH = "c:marker/c:size/@val";
@@ -208,23 +208,23 @@ namespace OfficeOpenXml.Drawing.Chart
         /// <value>
         /// The color of the Marker line.
         /// </value>
-        public Color MarkerLineColor
+        public ExcelColorValue MarkerLineColor
         {
             get
             {
                 string color = GetXmlNodeString(MARKERLINECOLOR_PATH);
                 if (color == "")
                 {
-                    return Color.Black;
+                    return new ExcelColorValue(255, 0, 0, 0);
                 }
                 else
                 {
-                    return Color.FromArgb(Convert.ToInt32(color, 16));
+                    return ExcelColorValue.Parse(color);
                 }
             }
             set
             {
-                SetXmlNodeString(MARKERLINECOLOR_PATH, value.ToArgb().ToString("X").Substring(2), true);
+                SetXmlNodeString(MARKERLINECOLOR_PATH, value.ToArgbHex().Substring(2), true);
             }
         }
 

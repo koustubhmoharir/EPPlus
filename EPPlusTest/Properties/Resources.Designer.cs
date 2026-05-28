@@ -10,7 +10,6 @@
 
 namespace EPPlusTest.Properties {
     using System;
-    using System.Drawing;
     using System.IO;
     using System.Reflection;
 
@@ -70,9 +69,9 @@ namespace EPPlusTest.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up the Test1 image as raw bytes.
         /// </summary>
-        internal static System.Drawing.Bitmap Test1 {
+        internal static byte[] Test1 {
             get {
 #if (Core)                
                 string path = AppContext.BaseDirectory;
@@ -85,11 +84,11 @@ namespace EPPlusTest.Properties {
                     }
                     path = parent.FullName;
                 }
-                object obj = Image.FromFile(Path.Combine(path, "Resources", "Test1.jpg"));
+                object obj = File.ReadAllBytes(Path.Combine(path, "Resources", "Test1.jpg"));
 #else
                 object obj = ResourceManager.GetObject("Test1", resourceCulture);
 #endif
-                return ((System.Drawing.Bitmap)(obj));
+                return ((byte[])(obj));
             }
         }
     }

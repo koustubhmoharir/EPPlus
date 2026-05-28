@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
+using Color = OfficeOpenXml.Style.ExcelColorValue;
 using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

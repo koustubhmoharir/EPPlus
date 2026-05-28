@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 using System.Xml;
 
 namespace OfficeOpenXml.Style.Dxf
@@ -18,10 +17,10 @@ namespace OfficeOpenXml.Style.Dxf
         public int? Index { get; set; }
         public bool? Auto { get; set; }
         public double? Tint { get; set; }
-        public Color? Color { get; set; }
+        public OfficeOpenXml.Style.ExcelColorValue? Color { get; set; }
         protected internal override string Id
         {
-            get { return GetAsString(Theme) + "|" + GetAsString(Index) + "|" + GetAsString(Auto) + "|" + GetAsString(Tint) + "|" + GetAsString(Color==null ? "" : ((Color)Color.Value).ToArgb().ToString("x")); }
+            get { return GetAsString(Theme) + "|" + GetAsString(Index) + "|" + GetAsString(Auto) + "|" + GetAsString(Tint) + "|" + GetAsString(Color == null ? "" : Color.Value.ToArgbHex().ToLowerInvariant()); }
         }
         protected internal override ExcelDxfColor Clone()
         {

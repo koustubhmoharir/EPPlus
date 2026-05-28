@@ -32,7 +32,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 using System.Xml;
 using OfficeOpenXml.ConditionalFormatting.Contracts;
 using System.Globalization;
@@ -218,20 +217,20 @@ namespace OfficeOpenXml.ConditionalFormatting
 
 
         private const string _colorPath = "d:dataBar/d:color/@rgb";
-        public Color Color
+        public OfficeOpenXml.Style.ExcelColorValue Color
         {
             get
             {
                 var rgb=GetXmlNodeString(_colorPath);
                 if(!string.IsNullOrEmpty(rgb))
                 {
-                    return Color.FromArgb(int.Parse(rgb, NumberStyles.HexNumber));
+                    return OfficeOpenXml.Style.ExcelColorValue.Parse(rgb);
                 }
-                return Color.White;
+                return new OfficeOpenXml.Style.ExcelColorValue(255, 255, 255, 255);
             }
             set
             {
-                SetXmlNodeString(_colorPath, value.ToArgb().ToString("X"));
+                SetXmlNodeString(_colorPath, value.ToArgbHex());
             }
         }
     }

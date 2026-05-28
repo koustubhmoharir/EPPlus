@@ -34,7 +34,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Xml;
-using System.Drawing;
+using OfficeOpenXml.Style;
 
 namespace OfficeOpenXml.Drawing.Chart
 {
@@ -140,29 +140,29 @@ namespace OfficeOpenXml.Drawing.Chart
         /// <value>
         /// The color of the line.
         /// </value>
-        public Color LineColor
+        public ExcelColorValue LineColor
         {
             get
             {
                 string color = GetXmlNodeString(LINECOLOR_PATH);
                 if (color == "")
                 {
-                    return Color.Black;
+                    return new ExcelColorValue(255, 0, 0, 0);
                 }
                 else
                 {
-                    Color c = Color.FromArgb(Convert.ToInt32(color, 16));
+                    ExcelColorValue c = ExcelColorValue.Parse(color);
                     int a = getAlphaChannel(LINECOLOR_PATH);
                     if (a != 255)
                     {
-                        c = Color.FromArgb(a, c);
+                        c = new ExcelColorValue((byte)a, c.R, c.G, c.B);
                     }
                     return c;
                 }
             }
             set
             {
-                SetXmlNodeString(LINECOLOR_PATH, value.ToArgb().ToString("X8").Substring(2), true);
+                SetXmlNodeString(LINECOLOR_PATH, value.ToArgbHex().Substring(2), true);
                 setAlphaChannel(value, LINECOLOR_PATH);
             }
         }
@@ -208,29 +208,29 @@ namespace OfficeOpenXml.Drawing.Chart
         /// <value>
         /// The color of the Marker.
         /// </value>
-        public Color MarkerColor
+        public ExcelColorValue MarkerColor
         {
             get
             {
                 string color = GetXmlNodeString(MARKERCOLOR_PATH);
                 if (color == "")
                 {
-                    return Color.Black;
+                    return new ExcelColorValue(255, 0, 0, 0);
                 }
                 else
                 {
-                    Color c = Color.FromArgb(Convert.ToInt32(color, 16));
+                    ExcelColorValue c = ExcelColorValue.Parse(color);
                     int a = getAlphaChannel(MARKERCOLOR_PATH);
                     if (a != 255)
                     {
-                        c = Color.FromArgb(a, c);
+                        c = new ExcelColorValue((byte)a, c.R, c.G, c.B);
                     }
                     return c;
                 }
             }
             set
             {
-                SetXmlNodeString(MARKERCOLOR_PATH, value.ToArgb().ToString("X8").Substring(2), true); //.Substring(2) => cut alpha value
+                SetXmlNodeString(MARKERCOLOR_PATH, value.ToArgbHex().Substring(2), true); //.Substring(2) => cut alpha value
                 setAlphaChannel(value, MARKERCOLOR_PATH);
             }
         }
@@ -272,29 +272,29 @@ namespace OfficeOpenXml.Drawing.Chart
         /// <value>
         /// The color of the Marker line.
         /// </value>
-        public Color MarkerLineColor
+        public ExcelColorValue MarkerLineColor
         {
             get
             {
                 string color = GetXmlNodeString(MARKERLINECOLOR_PATH);
                 if (color == "")
                 {
-                    return Color.Black;
+                    return new ExcelColorValue(255, 0, 0, 0);
                 }
                 else
                 {
-                    Color c = Color.FromArgb(Convert.ToInt32(color, 16));
+                    ExcelColorValue c = ExcelColorValue.Parse(color);
                     int a = getAlphaChannel(MARKERLINECOLOR_PATH);
                     if (a != 255)
                     {
-                        c = Color.FromArgb(a, c);
+                        c = new ExcelColorValue((byte)a, c.R, c.G, c.B);
                     }
                     return c;
                 }
             }
             set
             {
-                SetXmlNodeString(MARKERLINECOLOR_PATH, value.ToArgb().ToString("X8").Substring(2), true);
+                SetXmlNodeString(MARKERLINECOLOR_PATH, value.ToArgbHex().Substring(2), true);
                 setAlphaChannel(value, MARKERLINECOLOR_PATH);
             }
         }
@@ -310,7 +310,7 @@ namespace OfficeOpenXml.Drawing.Chart
         /// eg: a:prstClr (preset), a:hslClr (hsl), a:schemeClr (schema), a:sysClr (system), a:scrgbClr (rgb percent) or a:srgbClr (rgb hex)
         ///     .../a:prstClr/a:alpha/@val
         /// </remarks>
-        private void setAlphaChannel(Color c, string xPath)
+        private void setAlphaChannel(ExcelColorValue c, string xPath)
         {
             //check 4 Alpha-values
             if (c.A != 255)

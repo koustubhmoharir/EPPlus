@@ -7,7 +7,7 @@ using OfficeOpenXml.Utils;
 using OfficeOpenXml;
 using OfficeOpenXml.Utils.CompundDocument;
 using OfficeOpenXml.Style;
-using System.Drawing;
+using Color = OfficeOpenXml.Style.ExcelColorValue;
 using System.Linq;
 
 namespace EPPlusTest

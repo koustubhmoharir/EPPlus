@@ -10,7 +10,6 @@ using OfficeOpenXml.Style;
 using OfficeOpenXml.Drawing;
 using OfficeOpenXml.ConditionalFormatting;
 using System.Threading;
-using System.Drawing;
 namespace EPPlusTest
 {
     [TestClass]

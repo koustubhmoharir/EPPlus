@@ -3,6 +3,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
 using System.IO;
+using Color = OfficeOpenXml.Style.ExcelColorValue;
 
 namespace EPPlusTest
 {
@@ -18,7 +19,7 @@ namespace EPPlusTest
                 var ns1 = p1.Workbook.Styles.CreateNamedStyle("CustomStyle1");
                 ns1.Style.Font.Bold = true;
                 ns1.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                ns1.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Red);
+                ns1.Style.Fill.BackgroundColor.SetColor(Color.Red);
 
                 using (var p2 = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
                 {

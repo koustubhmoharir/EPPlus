@@ -184,6 +184,7 @@ namespace OfficeOpenXml
             internal Uri Uri{get;set;}
             internal int RefCount { get; set; }
             internal Packaging.ZipPackagePart Part { get; set; }
+            internal ExcelImageData ImageData { get; set; }
         }
         internal Dictionary<string, ImageInfo> _images = new Dictionary<string, ImageInfo>();
 		#region Properties
@@ -460,53 +461,51 @@ namespace OfficeOpenXml
         }
         internal ImageInfo AddImage(byte[] image, Uri uri, string contentType)
         {
-#if (Core)
-            var hashProvider = SHA1.Create();
-#else
-            var hashProvider = new SHA1CryptoServiceProvider();
-#endif
-            var hash = BitConverter.ToString(hashProvider.ComputeHash(image)).Replace("-","");
+            if (uri == null)
+            {
+                uri = GetNewUri(Package, "/xl/media/image{0}.jpg");
+            }
+
+            var imageData = ExcelImageData.Create(image, uri, contentType);
+            var hash = imageData.Hash;
             lock (_images)
             {
                 if (_images.ContainsKey(hash))
                 {
                     _images[hash].RefCount++;
+                    if (_images[hash].ImageData == null)
+                    {
+                        _images[hash].ImageData = imageData;
+                    }
                 }
                 else
                 {
                     Packaging.ZipPackagePart imagePart;
-                    if (uri == null)
-                    {
-                        uri = GetNewUri(Package, "/xl/media/image{0}.jpg");
-                        imagePart = Package.CreatePart(uri, "image/jpeg", CompressionLevel.None);
-                    }
-                    else
-                    {
-                        imagePart = Package.CreatePart(uri, contentType, CompressionLevel.None);
-                    }
+                    imagePart = Package.CreatePart(uri, imageData.ContentType, CompressionLevel.None);
                     var stream = imagePart.GetStream(FileMode.Create, FileAccess.Write);
                     stream.Write(image, 0, image.GetLength(0));
+                    stream.Flush();
 
-                    _images.Add(hash, new ImageInfo() { Uri = uri, RefCount = 1, Hash = hash, Part = imagePart });
+                    _images.Add(hash, new ImageInfo() { Uri = uri, RefCount = 1, Hash = hash, Part = imagePart, ImageData = imageData });
                 }
             }
             return _images[hash];
         }
         internal ImageInfo LoadImage(byte[] image, Uri uri, Packaging.ZipPackagePart imagePart)
         {
-#if (Core)
-            var hashProvider = SHA1.Create();
-#else
-            var hashProvider = new SHA1CryptoServiceProvider();
-#endif
-            var hash = BitConverter.ToString(hashProvider.ComputeHash(image)).Replace("-", "");
+            var imageData = ExcelImageData.Create(image, uri, imagePart.ContentType);
+            var hash = imageData.Hash;
             if (_images.ContainsKey(hash))
             {
                 _images[hash].RefCount++;
+                if (_images[hash].ImageData == null)
+                {
+                    _images[hash].ImageData = imageData;
+                }
             }
             else
             {
-                _images.Add(hash, new ImageInfo() { Uri = uri, RefCount = 1, Hash = hash, Part = imagePart });
+                _images.Add(hash, new ImageInfo() { Uri = uri, RefCount = 1, Hash = hash, Part = imagePart, ImageData = imageData });
             }
             return _images[hash];
         }
@@ -543,6 +542,26 @@ namespace OfficeOpenXml
             {
                 return null;
             }
+        }
+        internal ImageInfo GetImageInfo(Uri uri)
+        {
+            if (uri == null)
+            {
+                return null;
+            }
+
+            lock (_images)
+            {
+                foreach (var imageInfo in _images.Values)
+                {
+                    if (imageInfo.Uri == uri)
+                    {
+                        return imageInfo;
+                    }
+                }
+            }
+
+            return null;
         }
         internal static int _id = 1;
         private Uri GetNewUri(Packaging.ZipPackage package, string sUri)

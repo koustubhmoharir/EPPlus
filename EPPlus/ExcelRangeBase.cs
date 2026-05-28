@@ -54,6 +54,7 @@ using System.Security;
 using OfficeOpenXml.ConditionalFormatting;
 using OfficeOpenXml.ConditionalFormatting.Contracts;
 using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
+using OfficeOpenXml.Drawing.Text;
 using w = System.Windows;
 using OfficeOpenXml.Utils;
 using OfficeOpenXml.Compatibility;
@@ -778,18 +779,18 @@ namespace OfficeOpenXml
 
 		/// <summary>
 		/// Set the column width from the content of the range.
-		/// Note: Cells containing formulas are ignored if no calculation is made.
-		///       Wrapped and merged cells are also ignored.
-		/// </summary>
-        /// <remarks>This method will not work if you run in an environment that does not support GDI</remarks>
+        /// Note: Cells containing formulas are ignored if no calculation is made.
+        ///       Wrapped and merged cells are also ignored.
+        /// </summary>
+        /// <remarks>This method uses the configured text measurer.</remarks>
 		/// <param name="MinimumWidth">Minimum column width</param>
 		public void AutoFitColumns(double MinimumWidth)
 		{
 		    AutoFitColumns(MinimumWidth, double.MaxValue);
 		}
 
-	    /// <summary>
-	    /// Set the column width from the content of the range.
+		/// <summary>
+		/// Set the column width from the content of the range.
         /// Note: Cells containing formulas are ignored if no calculation is made.
         ///       Wrapped and merged cells are also ignored.
         ///      Hidden columns are left hidden.
@@ -806,30 +807,36 @@ namespace OfficeOpenXml
 			{
 				SetToSelectedRange();
 			}
-            var fontCache = new Dictionary<int, Font>();
+            var fontCache = new Dictionary<int, ExcelFontDescriptor>();
+            var textMeasurer = ExcelTextMeasurerProvider.Current;
+            if (textMeasurer == null)
+            {
+                throw new InvalidOperationException("No text measurer is configured.");
+            }
 
 	        bool doAdjust = _worksheet._package.DoAdjustDrawings;
 			_worksheet._package.DoAdjustDrawings = false;
 			var drawWidths = _worksheet.Drawings.GetDrawingWidths();
+            try
+            {
+			    var fromCol = _fromCol > _worksheet.Dimension._fromCol ? _fromCol : _worksheet.Dimension._fromCol;
+			    var toCol = _toCol < _worksheet.Dimension._toCol ? _toCol : _worksheet.Dimension._toCol;
 
-			var fromCol = _fromCol > _worksheet.Dimension._fromCol ? _fromCol : _worksheet.Dimension._fromCol;
-			var toCol = _toCol < _worksheet.Dimension._toCol ? _toCol : _worksheet.Dimension._toCol;
+                if (fromCol > toCol) return; //Issue 15383
 
-            if (fromCol > toCol) return; //Issue 15383
-
-            if (Addresses == null)
-			{
-				SetMinWidth(MinimumWidth, fromCol, toCol);
-			}
-			else
-			{
-				foreach (var addr in Addresses)
-				{
-					fromCol = addr._fromCol > _worksheet.Dimension._fromCol ? addr._fromCol : _worksheet.Dimension._fromCol;
-					toCol = addr._toCol < _worksheet.Dimension._toCol ? addr._toCol : _worksheet.Dimension._toCol;
-                    SetMinWidth(MinimumWidth, fromCol, toCol);
-                }
-			}
+			    if (Addresses == null)
+			    {
+				    SetMinWidth(MinimumWidth, fromCol, toCol);
+			    }
+			    else
+			    {
+				    foreach (var addr in Addresses)
+				    {
+					    fromCol = addr._fromCol > _worksheet.Dimension._fromCol ? addr._fromCol : _worksheet.Dimension._fromCol;
+					    toCol = addr._toCol < _worksheet.Dimension._toCol ? addr._toCol : _worksheet.Dimension._toCol;
+                        SetMinWidth(MinimumWidth, fromCol, toCol);
+                    }
+			    }
 
 			//Get any autofilter to widen these columns
 			var afAddr = new List<ExcelAddressBase>();
@@ -855,37 +862,16 @@ namespace OfficeOpenXml
 
 			var styles = _worksheet.Workbook.Styles;
 			var nf = styles.Fonts[styles.CellXfs[0].FontId];
-			var fs = FontStyle.Regular;
-			if (nf.Bold) fs |= FontStyle.Bold;
-			if (nf.UnderLine) fs |= FontStyle.Underline;
-			if (nf.Italic) fs |= FontStyle.Italic;
-			if (nf.Strike) fs |= FontStyle.Strikeout;
-			var nfont = new Font(nf.Name, nf.Size, fs);
-            
             var normalSize = Convert.ToSingle(ExcelWorkbook.GetWidthPixels(nf.Name, nf.Size));
 
-            Bitmap b;
-            Graphics g=null;
-            try
-            {
-                //Check for missing GDI+, then use WPF istead.
-                b = new Bitmap(1, 1);
-                g = Graphics.FromImage(b);
-                g.PageUnit = GraphicsUnit.Pixel;
-            }
-            catch
-            {
-                return;
-            }
-
-            foreach (var cell in this)
-			{
+                foreach (var cell in this)
+			    {
                 if (_worksheet.Column(cell.Start.Column).Hidden)    //Issue 15338
                     continue;
 
                 if (cell.Merge == true || cell.Style.WrapText) continue;
 				var fntID = styles.CellXfs[cell.StyleID].FontId;
-				Font f;
+				ExcelFontDescriptor f;
 				if (fontCache.ContainsKey(fntID))
 				{
 					f = fontCache[fntID];
@@ -893,20 +879,14 @@ namespace OfficeOpenXml
 				else
 				{
 					var fnt = styles.Fonts[fntID];
-					fs = FontStyle.Regular;
-					if (fnt.Bold) fs |= FontStyle.Bold;
-					if (fnt.UnderLine) fs |= FontStyle.Underline;
-					if (fnt.Italic) fs |= FontStyle.Italic;
-					if (fnt.Strike) fs |= FontStyle.Strikeout;
-                    f = new Font(fnt.Name, fnt.Size, fs);
-                    //f = new wm.Typeface(new System.Windows.Media.FontFamily(fnt.Name), fnt.Italic ? System.Windows.FontStyles.Italic : System.Windows.FontStyles.Normal, fnt.Bold ? System.Windows.FontWeights.Bold : System.Windows.FontWeights.Normal, System.Windows.FontStretches.Normal);
+                    f = new ExcelFontDescriptor(fnt.Name, fnt.Size, fnt.Bold, fnt.Italic, fnt.UnderLine, fnt.Strike);
 
                     fontCache.Add(fntID, f);
 				}
                 var ind = styles.CellXfs[cell.StyleID].Indent;
                 var textForWidth = cell.TextForWidth;
                 var t = textForWidth + (ind > 0 && !string.IsNullOrEmpty(textForWidth) ? new string('_',ind) : "");
-                var size = g.MeasureString(t, f, 10000, StringFormat.GenericDefault);
+                var size = textMeasurer.Measure(t, f);
 
                 //var ft = new wm.FormattedText(t, CultureInfo.CurrentCulture, w.FlowDirection.LeftToRight,
                 //    f,
@@ -946,9 +926,13 @@ namespace OfficeOpenXml
 				{
 					_worksheet.Column(cell._fromCol).Width = width > MaximumWidth ? MaximumWidth : width;
 				}
-			}
-			_worksheet.Drawings.AdjustWidth(drawWidths);
-			_worksheet._package.DoAdjustDrawings = doAdjust;
+			    }
+            }
+            finally
+            {
+			    _worksheet.Drawings.AdjustWidth(drawWidths);
+			    _worksheet._package.DoAdjustDrawings = doAdjust;
+            }
 		}
 
         private void SetMinWidth(double minimumWidth, int fromCol, int toCol)
@@ -958,7 +942,10 @@ namespace OfficeOpenXml
             foreach (ExcelCoreValue val in iterator)
             {
                 var col = (ExcelColumn)val._value;
-                col.Width = minimumWidth;
+                if (!col.Hidden)
+                {
+                    col.Width = minimumWidth;
+                }
                 if (_worksheet.DefaultColWidth > minimumWidth && col.ColumnMin > prevCol)
                 {
                     var newCol = _worksheet.Column(prevCol);

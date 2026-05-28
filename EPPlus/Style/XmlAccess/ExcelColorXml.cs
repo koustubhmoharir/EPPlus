@@ -34,6 +34,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Globalization;
+using OfficeOpenXml.Style;
 namespace OfficeOpenXml.Style.XmlAccess
 {
     /// <summary>
@@ -170,10 +171,47 @@ namespace OfficeOpenXml.Style.XmlAccess
             _rgb = "";
             _auto = false;
         }
-        public void SetColor(System.Drawing.Color color)
+        public void SetColor(ExcelColorValue color)
         {
             Clear();
-            _rgb = color.ToArgb().ToString("X");
+            _rgb = color.ToArgbHex();
+        }
+
+        public void SetColor(string argbHex)
+        {
+            Clear();
+            _rgb = ExcelColorValue.Parse(argbHex).ToArgbHex();
+        }
+
+        public void SetColor(byte alpha, byte red, byte green, byte blue)
+        {
+            Clear();
+            _rgb = new ExcelColorValue(alpha, red, green, blue).ToArgbHex();
+        }
+
+        private static string NormalizeArgbHex(string argbHex)
+        {
+            if (string.IsNullOrWhiteSpace(argbHex))
+            {
+                throw new ArgumentException("ARGB hex string must not be null or empty.", nameof(argbHex));
+            }
+
+            var hex = argbHex.Trim();
+            if (hex.StartsWith("#", StringComparison.Ordinal))
+            {
+                hex = hex.Substring(1);
+            }
+
+            if (hex.Length == 6)
+            {
+                hex = "FF" + hex;
+            }
+            else if (hex.Length != 8)
+            {
+                throw new ArgumentException("ARGB hex string must be 6 or 8 hex characters.", nameof(argbHex));
+            }
+
+            return ExcelColorValue.Parse(hex).ToArgbHex();
         }
 
         internal ExcelColorXml Copy()

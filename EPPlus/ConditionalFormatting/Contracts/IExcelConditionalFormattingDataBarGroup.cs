@@ -34,8 +34,6 @@ using System.Linq;
 using System.Text;
 
 using OfficeOpenXml.ConditionalFormatting;
-using System.Drawing;
-
 namespace OfficeOpenXml.ConditionalFormatting.Contracts
 {
 	/// <summary>
@@ -61,7 +59,7 @@ namespace OfficeOpenXml.ConditionalFormatting.Contracts
         /// <summary>
         /// The color of the databar
         /// </summary>
-        Color Color { get; set;}
+        OfficeOpenXml.Style.ExcelColorValue Color { get; set;}
         #endregion Public Properties
 	}
 }

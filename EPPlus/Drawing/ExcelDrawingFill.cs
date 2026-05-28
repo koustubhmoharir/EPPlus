@@ -33,7 +33,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using System.Drawing;
+using OfficeOpenXml.Style;
 
 namespace OfficeOpenXml.Drawing
 {
@@ -147,18 +147,18 @@ namespace OfficeOpenXml.Drawing
         /// <summary>
         /// Fill color for solid fills
         /// </summary>
-        public Color Color
+        public ExcelColorValue Color
         {
             get
             {
                 string col = GetXmlNodeString(_fillPath + ColorPath);
                 if (col == "")
                 {
-                    return Color.FromArgb(79, 129, 189);
+                    return new ExcelColorValue(255, 79, 129, 189);
                 }
                 else
                 {
-                    return Color.FromArgb(int.Parse(col,System.Globalization.NumberStyles.AllowHexSpecifier));
+                    return ExcelColorValue.Parse(col);
                 }
             }
             set
@@ -173,7 +173,7 @@ namespace OfficeOpenXml.Drawing
                 }
                 CreateNode(_fillPath, false);
                 //fix ArgumentOutOfRangeException for Fill colors for solid fills with an alpha-value from zero (100% transparency)
-                SetXmlNodeString(_fillPath + ColorPath, value.ToArgb().ToString("X8").Substring(2));
+                SetXmlNodeString(_fillPath + ColorPath, value.ToArgbHex().Substring(2));
             }
         }
         const string alphaPath = "/a:solidFill/a:srgbClr/a:alpha/@val";
@@ -191,7 +191,7 @@ namespace OfficeOpenXml.Drawing
                 if (_fillTypeNode == null)
                 {
                     _style = eFillStyle.SolidFill;
-                    Color = Color.FromArgb(79, 129, 189);   //Set a Default color
+                    Color = new ExcelColorValue(255, 79, 129, 189);   //Set a Default color
                 }
                 else if (_style != eFillStyle.SolidFill)
                 {

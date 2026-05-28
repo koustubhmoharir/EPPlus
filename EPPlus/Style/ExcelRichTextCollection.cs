@@ -130,9 +130,9 @@ namespace OfficeOpenXml.Style
                 ExcelRichText prevItem = _list[index < _list.Count ? index : _list.Count - 1];
                 rt.FontName = prevItem.FontName;
                 rt.Size = prevItem.Size;
-                if (prevItem.Color.IsEmpty)
+                if (!prevItem.Color.HasValue)
                 {
-                    rt.Color = Color.Black;
+                    rt.Color = new ExcelColorValue(255, 0, 0, 0);
                 }
                 else
                 {
@@ -188,7 +188,7 @@ namespace OfficeOpenXml.Style
                 int hex;
                 if (fnt.Color.Rgb != "" && int.TryParse(fnt.Color.Rgb, NumberStyles.HexNumber, null, out hex))
                 {
-                    this[0].Color = Color.FromArgb(hex);
+                    this[0].Color = ExcelColorValue.Parse(hex.ToString("X8"));
                 }
             }
         }

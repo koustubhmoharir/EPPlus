@@ -29,7 +29,6 @@
  * Eyal Seagull		    Conditional Formatting    2012-04-03
  *******************************************************************************/
 using OfficeOpenXml.ConditionalFormatting.Contracts;
-using System.Drawing;
 
 namespace OfficeOpenXml.ConditionalFormatting
 {
@@ -308,6 +307,6 @@ namespace OfficeOpenXml.ConditionalFormatting
     /// </summary>
     /// <param name="color"></param>
     /// <returns></returns>
-    IExcelConditionalFormattingDataBarGroup AddDatabar(Color color);
+    IExcelConditionalFormattingDataBarGroup AddDatabar(OfficeOpenXml.Style.ExcelColorValue color);
     }
 }

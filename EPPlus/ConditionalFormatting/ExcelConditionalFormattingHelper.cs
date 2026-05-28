@@ -34,7 +34,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using OfficeOpenXml.Utils;
-using System.Drawing;
 using System.Globalization;
 using System.Xml;
 
@@ -70,21 +69,21 @@ namespace OfficeOpenXml.ConditionalFormatting
     }
 
     /// <summary>
-    /// Convert a color code to Color Object
+    /// Convert a color code to an EPPlus color value.
     /// </summary>
     /// <param name="colorCode">Color Code (Ex. "#FFB43C53" or "FFB43C53")</param>
     /// <returns></returns>
-    public static Color ConvertFromColorCode(
+    public static OfficeOpenXml.Style.ExcelColorValue ConvertFromColorCode(
       string colorCode)
     {
       try
       {
-        return Color.FromArgb(Int32.Parse(colorCode.Replace("#", ""), NumberStyles.HexNumber));
+        return OfficeOpenXml.Style.ExcelColorValue.Parse(colorCode);
       }
       catch
       {
         // Assume white is the default color (instead of giving an error)
-        return Color.White;
+        return new OfficeOpenXml.Style.ExcelColorValue(255, 255, 255, 255);
       }
     }
 

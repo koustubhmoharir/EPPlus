@@ -31,7 +31,6 @@
  *******************************************************************************/
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.Text;
 using System.Xml;
@@ -269,16 +268,21 @@ namespace OfficeOpenXml.Style.XmlAccess
                 _verticalAlign=value;
             }
         }
-        public void SetFromFont(System.Drawing.Font Font)
+        /// <summary>
+        /// Set the font from an EPPlus-native font descriptor.
+        /// </summary>
+        /// <param name="font">The font descriptor.</param>
+        public void SetFromFont(OfficeOpenXml.Drawing.Text.ExcelFontDescriptor font)
         {
-            Name=Font.Name;
+            Name=font.Name;
             //Family=fnt.FontFamily.;
-            Size=(int)Font.Size;
-            Strike=Font.Strikeout;
-            Bold = Font.Bold;
-            UnderLine=Font.Underline;
-            Italic=Font.Italic;
+            Size=(int)font.Size;
+            Strike=font.Strikeout;
+            Bold = font.Bold;
+            UnderLine=font.Underline;
+            Italic=font.Italic;
         }
+
         public static float GetFontHeight(string name, float size)
         {
             name = name.StartsWith("@") ? name.Substring(1) : name;

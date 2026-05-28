@@ -33,7 +33,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Security;
@@ -47,6 +46,7 @@ using OfficeOpenXml.Drawing.Chart;
 using OfficeOpenXml.Drawing.Vml;
 using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using OfficeOpenXml.Packaging.Ionic.Zip;
+using OfficeOpenXml.Style;
 using OfficeOpenXml.Style.XmlAccess;
 using OfficeOpenXml.Table;
 using OfficeOpenXml.Table.PivotTable;
@@ -750,23 +750,30 @@ namespace OfficeOpenXml
         /// <summary>
         /// Color of the sheet tab
         /// </summary>
-        public Color TabColor
+        public ExcelColorValue? TabColor
         {
             get
             {
                 string col = GetXmlNodeString(tabColorPath);
                 if (col == "")
                 {
-                    return Color.Empty;
+                    return null;
                 }
                 else
                 {
-                    return Color.FromArgb(int.Parse(col, System.Globalization.NumberStyles.AllowHexSpecifier));
+                    return ExcelColorValue.Parse(col);
                 }
             }
             set
             {
-                SetXmlNodeString(tabColorPath, value.ToArgb().ToString("X"));
+                if (value.HasValue)
+                {
+                    SetXmlNodeString(tabColorPath, value.Value.ToArgbHex());
+                }
+                else
+                {
+                    DeleteNode(tabColorPath);
+                }
             }
         }
         const string codeModuleNamePath = "d:sheetPr/@codeName";

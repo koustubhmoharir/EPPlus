@@ -34,7 +34,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Globalization;
-using System.Drawing;
+using System.IO;
 
 
 namespace OfficeOpenXml.Drawing.Vml
@@ -131,9 +131,9 @@ namespace OfficeOpenXml.Drawing.Vml
             }
         }
         /// <summary>
-        /// The image
+        /// The image bytes
         /// </summary>
-        public Image Image
+        public byte[] ImageBytes
         {
             get
             {
@@ -141,7 +141,11 @@ namespace OfficeOpenXml.Drawing.Vml
                 if (pck.PartExists(ImageUri))
                 {
                     var part = pck.GetPart(ImageUri);
-                    return Image.FromStream(part.GetStream());
+                    using (var ms = new MemoryStream())
+                    {
+                        part.GetStream().CopyTo(ms);
+                        return ms.ToArray();
+                    }
                 }
                 else
                 {

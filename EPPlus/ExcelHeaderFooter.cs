@@ -33,13 +33,11 @@
 using System;
 using System.Xml;
 using System.Text.RegularExpressions;
-using System.Drawing;
 using System.Collections.Generic;
 using OfficeOpenXml.Drawing.Vml;
 using System.IO;
 using OfficeOpenXml.Drawing;
 using OfficeOpenXml.Utils;
-using OfficeOpenXml.Compatibility;
 
 namespace OfficeOpenXml
 {    
@@ -120,24 +118,36 @@ namespace OfficeOpenXml
         /// <summary>
         /// Inserts a picture at the end of the text in the header or footer
         /// </summary>
-        /// <param name="Picture">The image object containing the Picture</param>
-        /// <param name="Alignment">Alignment. The image object will be inserted at the end of the Text.</param>
-        public ExcelVmlDrawingPicture InsertPicture(Image Picture, PictureAlignment Alignment)
+        /// <param name="Picture">The image bytes containing the picture.</param>
+        /// <param name="ContentType">The image content type, for example <c>image/jpeg</c>.</param>
+        /// <param name="Alignment">Alignment. The image will be inserted at the end of the text.</param>
+        public ExcelVmlDrawingPicture InsertPicture(byte[] Picture, string ContentType, PictureAlignment Alignment)
         {
+            if (Picture == null) throw new ArgumentNullException(nameof(Picture));
+
             string id = ValidateImage(Alignment);
+            string contentType = string.IsNullOrWhiteSpace(ContentType) ? "image/jpeg" : ContentType;
+            var uriPic = XmlHelper.GetNewUri(_ws._package.Package, "/xl/media/image{0}" + GetImageExtension(contentType));
+            var image = ExcelImageData.Create(Picture, null, contentType);
+            var ii = _ws.Workbook._package.AddImage(Picture, uriPic, image.ContentType);
 
-            //Add the image
-#if (Core)
-            var img=ImageCompat.GetImageAsByteArray(Picture);
-#else
-            ImageConverter ic = new ImageConverter();
-            byte[] img = (byte[])ic.ConvertTo(Picture, typeof(byte[]));
-#endif
+            return AddImage(image, id, ii);
+        }
+        /// <summary>
+        /// Inserts a picture at the end of the text in the header or footer
+        /// </summary>
+        /// <param name="PictureStream">The image stream containing the picture.</param>
+        /// <param name="ContentType">The image content type, for example <c>image/jpeg</c>.</param>
+        /// <param name="Alignment">Alignment. The image will be inserted at the end of the Text.</param>
+        public ExcelVmlDrawingPicture InsertPicture(Stream PictureStream, string ContentType, PictureAlignment Alignment)
+        {
+            if (PictureStream == null) throw new ArgumentNullException(nameof(PictureStream));
 
-
-            var ii = _ws.Workbook._package.AddImage(img);
-
-            return AddImage(Picture, id, ii);
+            using (var ms = new MemoryStream())
+            {
+                PictureStream.CopyTo(ms);
+                return InsertPicture(ms.ToArray(), ContentType, Alignment);
+            }
         }
         /// <summary>
         /// Inserts a picture at the end of the text in the header or footer
@@ -148,14 +158,14 @@ namespace OfficeOpenXml
         {
             string id = ValidateImage(Alignment);
 
-            Image Picture;
+            byte[] fileBytes;
             try
             {
                 if (!PictureFile.Exists)
                 {
                     throw (new FileNotFoundException(string.Format("{0} is missing", PictureFile.FullName)));
                 }
-                Picture = Image.FromFile(PictureFile.FullName);
+                fileBytes = File.ReadAllBytes(PictureFile.FullName);
             }
             catch (Exception ex)
             {
@@ -164,24 +174,41 @@ namespace OfficeOpenXml
 
             string contentType = ExcelPicture.GetContentType(PictureFile.Extension);
             var uriPic = XmlHelper.GetNewUri(_ws._package.Package, "/xl/media/" + PictureFile.Name.Substring(0, PictureFile.Name.Length-PictureFile.Extension.Length) + "{0}" + PictureFile.Extension);
-#if (Core)
-            var imgBytes=ImageCompat.GetImageAsByteArray(Picture);
-#else
-            var ic = new ImageConverter();
-            byte[] imgBytes = (byte[])ic.ConvertTo(Picture, typeof(byte[]));
-#endif
 
-            var ii = _ws.Workbook._package.AddImage(imgBytes, uriPic, contentType);
+            var image = ExcelImageData.Create(fileBytes, uriPic, contentType);
+            if (image.PixelWidth <= 0 || image.PixelHeight <= 0)
+            {
+                throw new InvalidDataException("File is not a supported image-file or is corrupt");
+            }
 
-            return AddImage(Picture, id, ii);
+            var ii = _ws.Workbook._package.AddImage(fileBytes, uriPic, image.ContentType);
+
+            return AddImage(image, id, ii);
         }
 
-        private ExcelVmlDrawingPicture AddImage(Image Picture, string id, ExcelPackage.ImageInfo ii)
+        private ExcelVmlDrawingPicture AddImage(ExcelImageData image, string id, ExcelPackage.ImageInfo ii)
         {
-            double width = Picture.Width * 72 / Picture.HorizontalResolution,      //Pixel --> Points
-                   height = Picture.Height * 72 / Picture.VerticalResolution;      //Pixel --> Points
-            //Add VML-drawing            
+            double width = image.PixelWidth * 72 / image.HorizontalDpi,
+                   height = image.PixelHeight * 72 / image.VerticalDpi;
+            //Add VML-drawing
             return _ws.HeaderFooter.Pictures.Add(id, ii.Uri, "", width, height);
+        }
+        private static string GetImageExtension(string contentType)
+        {
+            switch ((contentType ?? string.Empty).ToLowerInvariant())
+            {
+                case "image/png":
+                    return ".png";
+                case "image/gif":
+                    return ".gif";
+                case "image/bmp":
+                    return ".bmp";
+                case "image/tiff":
+                case "image/x-tiff":
+                    return ".tif";
+                default:
+                    return ".jpg";
+            }
         }
         private string ValidateImage(PictureAlignment Alignment)
         {

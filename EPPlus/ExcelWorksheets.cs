@@ -724,7 +724,10 @@ namespace OfficeOpenXml
                         if(!workSheet.Workbook._package.Package.PartExists(uri))
                         {
                             var picPart = workSheet.Workbook._package.Package.CreatePart(uri, pic.ContentType, CompressionLevel.None);
-                            pic.Image.Save(picPart.GetStream(FileMode.Create, FileAccess.Write), ExcelPicture.GetImageFormat(pic.ContentType));
+                            var source = pic.Part.GetStream();
+                            var target = picPart.GetStream(FileMode.Create, FileAccess.Write);
+                            source.CopyTo(target);
+                            target.Flush();
                         }
                         
                         var rel = part.CreateRelationship(UriHelper.GetRelativeUri(workSheet.WorksheetUri, uri), Packaging.TargetMode.Internal, ExcelPackage.schemaRelationships + "/image");

@@ -34,7 +34,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Globalization;
-using System.Drawing;
+using OfficeOpenXml.Style;
 
 namespace OfficeOpenXml.Drawing.Vml
 {
@@ -164,14 +164,14 @@ namespace OfficeOpenXml.Drawing.Vml
         /// <summary>
         /// Background color
         /// </summary>
-        public Color BackgroundColor
+        public ExcelColorValue BackgroundColor
         {
             get
             {
                 string col = GetXmlNodeString(BACKGROUNDCOLOR_PATH);
                 if (col == "")
                 {
-                    return Color.FromArgb(0xff, 0xff, 0xe1);
+                    return new ExcelColorValue(255, 255, 255, 225);
                 }
                 else
                 {
@@ -179,17 +179,17 @@ namespace OfficeOpenXml.Drawing.Vml
                     int res;
                     if (int.TryParse(col,System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out res))
                     {
-                        return Color.FromArgb(res);
+                        return ExcelColorValue.Parse(res.ToString("X8"));
                     }
                     else
                     {
-                        return Color.Empty;
+                        return new ExcelColorValue(0, 0, 0, 0);
                     }
                 }
             }
             set
             {
-                string color = "#" + value.ToArgb().ToString("X").Substring(2, 6);
+                string color = "#" + value.ToArgbHex().Substring(2, 6);
                 SetXmlNodeString(BACKGROUNDCOLOR_PATH, color);
                 //SetXmlNode(BACKGROUNDCOLOR2_PATH, color);
             }
@@ -245,14 +245,14 @@ namespace OfficeOpenXml.Drawing.Vml
         /// <summary>
         /// Line color 
         /// </summary>
-        public Color LineColor
+        public ExcelColorValue LineColor
         {
             get
             {
                 string col = GetXmlNodeString(LINECOLOR_PATH);
                 if (col == "")
                 {
-                    return Color.Black;
+                    return new ExcelColorValue(255, 0, 0, 0);
                 }
                 else
                 {
@@ -260,17 +260,17 @@ namespace OfficeOpenXml.Drawing.Vml
                     int res;
                     if (int.TryParse(col, System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out res))
                     {
-                        return Color.FromArgb(res);
+                        return ExcelColorValue.Parse(res.ToString("X8"));
                     }
                     else
                     {
-                        return Color.Empty;
+                        return new ExcelColorValue(0, 0, 0, 0);
                     }
                 }                
             }
             set
             {
-                string color = "#" + value.ToArgb().ToString("X").Substring(2, 6);
+                string color = "#" + value.ToArgbHex().Substring(2, 6);
                 SetXmlNodeString(LINECOLOR_PATH, color);
             }
         }

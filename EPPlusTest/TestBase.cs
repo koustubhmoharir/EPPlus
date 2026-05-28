@@ -117,5 +117,23 @@ namespace EPPlusTest
             }
             _pck.SaveAs(fi);
         }
+
+        protected static byte[] GetEmbeddedResourceBytes(string resourceName)
+        {
+            var asm = Assembly.GetExecutingAssembly();
+            using (var stream = asm.GetManifestResourceStream(resourceName))
+            {
+                if (stream == null)
+                {
+                    throw new InvalidOperationException("Missing test resource: " + resourceName);
+                }
+
+                using (var ms = new MemoryStream())
+                {
+                    stream.CopyTo(ms);
+                    return ms.ToArray();
+                }
+            }
+        }
     }
 }

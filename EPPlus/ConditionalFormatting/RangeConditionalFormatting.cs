@@ -518,7 +518,7 @@ namespace OfficeOpenXml.ConditionalFormatting
     /// </summary>
     /// <param name="Color">The color of the databar</param>
     /// <returns></returns>
-    public IExcelConditionalFormattingDataBarGroup AddDatabar(System.Drawing.Color Color)
+    public IExcelConditionalFormattingDataBarGroup AddDatabar(OfficeOpenXml.Style.ExcelColorValue Color)
     {
         var rule = (IExcelConditionalFormattingDataBarGroup)(_worksheet.ConditionalFormatting.AddRule(
           eExcelConditionalFormattingRuleType.DataBar,

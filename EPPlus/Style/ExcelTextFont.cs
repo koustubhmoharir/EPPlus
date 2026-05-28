@@ -35,7 +35,6 @@ using System.Globalization;
 using System.Text;
 using System.Xml;
 using OfficeOpenXml.Drawing;
-using System.Drawing;
 
 namespace OfficeOpenXml.Style
 {
@@ -156,24 +155,31 @@ namespace OfficeOpenXml.Style
             }
         }
         string _underLineColorPath = "a:uFill/a:solidFill/a:srgbClr/@val";
-        public Color UnderLineColor
+        public ExcelColorValue? UnderLineColor
         {
             get
             {
                 string col = GetXmlNodeString(_underLineColorPath);
                 if (col == "")
                 {
-                    return Color.Empty;
+                    return null;
                 }
                 else
                 {
-                    return Color.FromArgb(int.Parse(col, System.Globalization.NumberStyles.AllowHexSpecifier));
+                    return ExcelColorValue.Parse(col);
                 }
             }
             set
             {
                 CreateTopNode();
-                SetXmlNodeString(_underLineColorPath, value.ToArgb().ToString("X").Substring(2, 6));
+                if (value.HasValue)
+                {
+                    SetXmlNodeString(_underLineColorPath, value.Value.ToArgbHex().Substring(2, 6));
+                }
+                else
+                {
+                    DeleteNode(_underLineColorPath);
+                }
             }
         }
         string _italicPath = "@i";
@@ -216,24 +222,31 @@ namespace OfficeOpenXml.Style
             }
         }
         string _colorPath = "a:solidFill/a:srgbClr/@val";
-        public Color Color
+        public ExcelColorValue? Color
         {
             get
             {
                 string col = GetXmlNodeString(_colorPath);
                 if (col == "")
                 {
-                    return Color.Empty;
+                    return null;
                 }
                 else
                 {
-                    return Color.FromArgb(int.Parse(col, System.Globalization.NumberStyles.AllowHexSpecifier));
+                    return ExcelColorValue.Parse(col);
                 }
             }
             set
             {
                 CreateTopNode();
-                SetXmlNodeString(_colorPath, value.ToArgb().ToString("X").Substring(2, 6));
+                if (value.HasValue)
+                {
+                    SetXmlNodeString(_colorPath, value.Value.ToArgbHex().Substring(2, 6));
+                }
+                else
+                {
+                    DeleteNode(_colorPath);
+                }
             }
         }
         #region "Translate methods"
@@ -289,19 +302,16 @@ namespace OfficeOpenXml.Style
             }
         }
         #endregion
-        /// <summary>
-        /// Set the font style from a font object
-        /// </summary>
-        /// <param name="Font"></param>
-        public void SetFromFont(Font Font)
+        public void SetFromFont(OfficeOpenXml.Drawing.Text.ExcelFontDescriptor font)
         {
-            LatinFont = Font.Name;
-            ComplexFont = Font.Name;
-            Size = Font.Size;
-            if (Font.Bold) Bold = Font.Bold;
-            if (Font.Italic) Italic = Font.Italic;
-            if (Font.Underline) UnderLine = eUnderLineType.Single;
-            if (Font.Strikeout) Strike = eStrikeType.Single;
+            LatinFont = font.Name;
+            ComplexFont = font.Name;
+            Size = font.Size;
+            if (font.Bold) Bold = font.Bold;
+            if (font.Italic) Italic = font.Italic;
+            if (font.Underline) UnderLine = eUnderLineType.Single;
+            if (font.Strikeout) Strike = eStrikeType.Single;
         }
+
     }
 }

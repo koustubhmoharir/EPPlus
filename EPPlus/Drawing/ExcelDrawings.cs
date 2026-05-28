@@ -35,7 +35,6 @@ using System.Text;
 using System.Xml;
 using System.Collections;
 using System.IO;
-using System.Drawing;
 using System.Linq;
 using OfficeOpenXml.Drawing.Chart;
 using OfficeOpenXml.Table.PivotTable;
@@ -303,41 +302,6 @@ namespace OfficeOpenXml.Drawing
             /// Add a picure to the worksheet
             /// </summary>
             /// <param name="Name"></param>
-            /// <param name="image">An image. Allways saved in then JPeg format</param>
-            /// <returns></returns>
-            public ExcelPicture AddPicture(string Name, Image image)
-            {
-               return AddPicture(Name, image, null);
-            }
-            /// <summary>
-            /// Add a picure to the worksheet
-            /// </summary>
-            /// <param name="Name"></param>
-            /// <param name="image">An image. Allways saved in then JPeg format</param>
-            /// <param name="Hyperlink">Picture Hyperlink</param>
-            /// <returns></returns>
-            public ExcelPicture AddPicture(string Name, Image image, Uri Hyperlink)
-            {
-                if (image != null)
-                {
-                    if (_drawingNames.ContainsKey(Name))
-                    {
-                        throw new Exception("Name already exists in the drawings collection");
-                    }
-                    XmlElement drawNode = CreateDrawingXml();
-                    drawNode.SetAttribute("editAs", "oneCell");
-                    ExcelPicture pic = new ExcelPicture(this, drawNode, image, Hyperlink);
-                    pic.Name = Name;
-                    _drawings.Add(pic);
-                    _drawingNames.Add(Name, new List<int> { _drawings.Count - 1 });
-                    return pic;
-                }
-                throw (new Exception("AddPicture: Image can't be null"));
-            }
-            /// <summary>
-            /// Add a picure to the worksheet
-            /// </summary>
-            /// <param name="Name"></param>
             /// <param name="ImageFile">The image file</param>
             /// <returns></returns>
             public ExcelPicture AddPicture(string Name, FileInfo ImageFile)
@@ -372,6 +336,75 @@ namespace OfficeOpenXml.Drawing
                   return pic;
                }
                throw (new Exception("AddPicture: ImageFile can't be null"));
+            }
+            /// <summary>
+            /// Add a picture to the worksheet from raw image bytes.
+            /// </summary>
+            /// <param name="Name"></param>
+            /// <param name="ImageBytes">The image bytes.</param>
+            /// <param name="ContentType">The image content type. If omitted, EPPlus attempts to infer it from the bytes.</param>
+            /// <param name="Hyperlink">Picture Hyperlink</param>
+            /// <returns></returns>
+            public ExcelPicture AddPicture(string Name, byte[] ImageBytes, string ContentType = null, Uri Hyperlink = null)
+            {
+                if (Worksheet is ExcelChartsheet && _drawings.Count > 0)
+                {
+                    throw new InvalidOperationException("Chart worksheets can't have more than one drawing");
+                }
+                if (ImageBytes == null)
+                {
+                    throw new Exception("AddPicture: ImageBytes can't be null");
+                }
+                if (_drawingNames.ContainsKey(Name))
+                {
+                    throw new Exception("Name already exists in the drawings collection");
+                }
+
+                XmlElement drawNode = CreateDrawingXml();
+                drawNode.SetAttribute("editAs", "oneCell");
+                ExcelPicture pic = new ExcelPicture(this, drawNode, ImageBytes, ContentType, Hyperlink);
+                pic.Name = Name;
+                _drawings.Add(pic);
+                _drawingNames.Add(Name, new List<int> { _drawings.Count - 1 });
+                return pic;
+            }
+            /// <summary>
+            /// Add a picture to the worksheet from a stream.
+            /// </summary>
+            /// <param name="Name"></param>
+            /// <param name="ImageStream">The image stream.</param>
+            /// <param name="ContentType">The image content type. If omitted, EPPlus attempts to infer it from the bytes.</param>
+            /// <param name="Hyperlink">Picture Hyperlink</param>
+            /// <returns></returns>
+            public ExcelPicture AddPicture(string Name, Stream ImageStream, string ContentType = null, Uri Hyperlink = null)
+            {
+                if (Worksheet is ExcelChartsheet && _drawings.Count > 0)
+                {
+                    throw new InvalidOperationException("Chart worksheets can't have more than one drawing");
+                }
+                if (ImageStream == null)
+                {
+                    throw new Exception("AddPicture: ImageStream can't be null");
+                }
+                if (_drawingNames.ContainsKey(Name))
+                {
+                    throw new Exception("Name already exists in the drawings collection");
+                }
+
+                byte[] imageBytes;
+                using (var ms = new MemoryStream())
+                {
+                    ImageStream.CopyTo(ms);
+                    imageBytes = ms.ToArray();
+                }
+
+                XmlElement drawNode = CreateDrawingXml();
+                drawNode.SetAttribute("editAs", "oneCell");
+                ExcelPicture pic = new ExcelPicture(this, drawNode, imageBytes, ContentType, Hyperlink);
+                pic.Name = Name;
+                _drawings.Add(pic);
+                _drawingNames.Add(Name, new List<int> { _drawings.Count - 1 });
+                return pic;
             }
 
         /// <summary>

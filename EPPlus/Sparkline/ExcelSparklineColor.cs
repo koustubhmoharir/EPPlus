@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 using System.Xml;
 using System.Globalization;
 
@@ -66,13 +65,44 @@ namespace OfficeOpenXml.Sparkline
             }
         }
 
-        /// <summary>
-        /// Sets a color
-        /// </summary>
-        /// <param name="color">The color</param>
-        public void SetColor(Color color)
+        public void SetColor(ExcelColorValue color)
         {
-            Rgb = color.ToArgb().ToString("X");
+            Rgb = color.ToArgbHex();
+        }
+
+        public void SetColor(string argbHex)
+        {
+            Rgb = NormalizeArgbHex(argbHex);
+        }
+
+        public void SetColor(byte alpha, byte red, byte green, byte blue)
+        {
+            SetColor(new ExcelColorValue(alpha, red, green, blue));
+        }
+
+        private static string NormalizeArgbHex(string argbHex)
+        {
+            if (string.IsNullOrWhiteSpace(argbHex))
+            {
+                throw new ArgumentException("ARGB hex string must not be null or empty.", nameof(argbHex));
+            }
+
+            var hex = argbHex.Trim();
+            if (hex.StartsWith("#", StringComparison.Ordinal))
+            {
+                hex = hex.Substring(1);
+            }
+
+            if (hex.Length == 6)
+            {
+                hex = "FF" + hex;
+            }
+            else if (hex.Length != 8)
+            {
+                throw new ArgumentException("ARGB hex string must be 6 or 8 hex characters.", nameof(argbHex));
+            }
+
+            return hex.ToUpperInvariant();
         }
     }
 }

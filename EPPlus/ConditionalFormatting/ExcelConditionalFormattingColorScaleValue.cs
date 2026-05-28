@@ -32,7 +32,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 using System.Xml;
 using OfficeOpenXml.Utils;
 using System.Text.RegularExpressions;
@@ -77,7 +76,7 @@ namespace OfficeOpenXml.ConditionalFormatting
 		internal ExcelConditionalFormattingColorScaleValue(
 			eExcelConditionalFormattingValueObjectPosition position,
 			eExcelConditionalFormattingValueObjectType type,
-			Color color,
+			OfficeOpenXml.Style.ExcelColorValue color,
 			double value,
 			string formula,
 			eExcelConditionalFormattingRuleType ruleType,
@@ -176,7 +175,7 @@ namespace OfficeOpenXml.ConditionalFormatting
 		internal ExcelConditionalFormattingColorScaleValue(
 			eExcelConditionalFormattingValueObjectPosition position,
 			eExcelConditionalFormattingValueObjectType type,
-			Color color,
+			OfficeOpenXml.Style.ExcelColorValue color,
 			double value,
 			string formula,
 			eExcelConditionalFormattingRuleType ruleType,
@@ -213,7 +212,7 @@ namespace OfficeOpenXml.ConditionalFormatting
 		internal ExcelConditionalFormattingColorScaleValue(
 			eExcelConditionalFormattingValueObjectPosition position,
 			eExcelConditionalFormattingValueObjectType type,
-			Color color,
+			OfficeOpenXml.Style.ExcelColorValue color,
 			eExcelConditionalFormattingRuleType ruleType,
       ExcelAddress address,
       int priority,
@@ -405,7 +404,7 @@ namespace OfficeOpenXml.ConditionalFormatting
 		/// <summary>
 		/// 
 		/// </summary>
-		public Color Color
+		public OfficeOpenXml.Style.ExcelColorValue Color
 		{
 			get
 			{
@@ -428,7 +427,7 @@ namespace OfficeOpenXml.ConditionalFormatting
 				CreateNodeByOrdem(
 					eExcelConditionalFormattingValueObjectNodeType.Color,
 					ExcelConditionalFormattingConstants.Paths.RgbAttribute,
-					value.ToArgb().ToString("x"));
+					value.ToArgbHex().ToLowerInvariant());
 			}
 		}
 

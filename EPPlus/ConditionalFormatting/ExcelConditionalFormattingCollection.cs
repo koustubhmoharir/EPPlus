@@ -37,7 +37,6 @@ using OfficeOpenXml.Utils;
 using System.Xml;
 using OfficeOpenXml.ConditionalFormatting.Contracts;
 using System.Text.RegularExpressions;
-using System.Drawing;
 
 namespace OfficeOpenXml.ConditionalFormatting
 {
@@ -985,7 +984,7 @@ namespace OfficeOpenXml.ConditionalFormatting
     /// <param name="Address"></param>
     /// <param name="color"></param>
     /// <returns></returns>
-    public IExcelConditionalFormattingDataBarGroup AddDatabar(ExcelAddress Address, Color color)
+    public IExcelConditionalFormattingDataBarGroup AddDatabar(ExcelAddress Address, OfficeOpenXml.Style.ExcelColorValue color)
     {
         var dataBar = (IExcelConditionalFormattingDataBarGroup)AddRule(
             eExcelConditionalFormattingRuleType.DataBar,

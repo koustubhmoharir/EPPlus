@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Drawing;
-using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Vml;
@@ -9,7 +7,7 @@ using OfficeOpenXml.Drawing.Vml;
 namespace EPPlusTest
 {
     [TestClass]
-    public class ExcelHeaderFooterTest
+    public class ExcelHeaderFooterTest : TestBase
     {
         [TestMethod]
         public void TestHeaderFooterProperties()
@@ -19,37 +17,33 @@ namespace EPPlusTest
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var hf = ws.HeaderFooter;
 
-                // Test AlignWithMargins
                 Assert.IsFalse(hf.AlignWithMargins);
                 hf.AlignWithMargins = true;
                 Assert.IsTrue(hf.AlignWithMargins);
                 hf.AlignWithMargins = false;
                 Assert.IsFalse(hf.AlignWithMargins);
 
-                // Test differentOddEven
                 Assert.IsFalse(hf.differentOddEven);
                 hf.differentOddEven = true;
                 Assert.IsTrue(hf.differentOddEven);
                 hf.differentOddEven = false;
                 Assert.IsFalse(hf.differentOddEven);
 
-                // Test differentFirst
                 Assert.IsFalse(hf.differentFirst);
                 hf.differentFirst = true;
                 Assert.IsTrue(hf.differentFirst);
                 hf.differentFirst = false;
                 Assert.IsFalse(hf.differentFirst);
 
-                // Test ScaleWithDocument (reflection support for dotnetport vs stable parity)
                 var scaleProp = typeof(ExcelHeaderFooter).GetProperty("ScaleWithDocument");
                 if (scaleProp != null)
                 {
                     bool defaultVal = (bool)scaleProp.GetValue(hf, null);
-                    Assert.IsFalse(defaultVal); // In EPPlus, GetXmlNodeBool default should be false if attribute is missing
-                    
+                    Assert.IsFalse(defaultVal);
+
                     scaleProp.SetValue(hf, true, null);
                     Assert.IsTrue((bool)scaleProp.GetValue(hf, null));
-                    
+
                     scaleProp.SetValue(hf, false, null);
                     Assert.IsFalse((bool)scaleProp.GetValue(hf, null));
                 }
@@ -64,7 +58,6 @@ namespace EPPlusTest
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var hf = ws.HeaderFooter;
 
-                // Set text formatting
                 hf.OddHeader.LeftAlignedText = "Left text";
                 hf.OddHeader.CenteredText = "Centered text";
                 hf.OddHeader.RightAlignedText = "Right text";
@@ -86,22 +79,22 @@ namespace EPPlusTest
         }
 
         [TestMethod]
-        public void TestHeaderFooterInsertPictureImage()
+        public void TestHeaderFooterInsertPictureBytes()
         {
+            var sourceBytes = GetEmbeddedResourceBytes("EPPlusTest.Resources.Test1.jpg");
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var hf = ws.HeaderFooter;
 
-                // Set some initial text
                 hf.OddHeader.CenteredText = "Centred text ";
-                
-                Image img = Properties.Resources.Test1;
-                var pic = hf.OddHeader.InsertPicture(img, PictureAlignment.Centered);
+
+                var pic = hf.OddHeader.InsertPicture(sourceBytes, "image/jpeg", PictureAlignment.Centered);
 
                 Assert.IsNotNull(pic);
                 Assert.AreEqual("CH", pic.Id);
                 Assert.IsTrue(hf.OddHeader.CenteredText.EndsWith(ExcelHeaderFooter.Image));
+                CollectionAssert.AreEqual(sourceBytes, pic.ImageBytes);
                 Assert.AreEqual(1, hf.Pictures.Count);
 
                 package.Save();
@@ -114,8 +107,7 @@ namespace EPPlusTest
             string tempImagePath = Path.Combine(Path.GetTempPath(), "test_header_footer_image.jpg");
             try
             {
-                Image img = Properties.Resources.Test1;
-                img.Save(tempImagePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                File.WriteAllBytes(tempImagePath, GetEmbeddedResourceBytes("EPPlusTest.Resources.Test1.jpg"));
 
                 using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
                 {
@@ -144,19 +136,51 @@ namespace EPPlusTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void TestHeaderFooterInsertDuplicatePictureThrows()
+        public void TestHeaderFooterInsertPictureStream()
         {
+            var sourceBytes = GetEmbeddedResourceBytes("EPPlusTest.Resources.Test1.jpg");
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 var hf = ws.HeaderFooter;
 
-                Image img = Properties.Resources.Test1;
-                hf.OddHeader.InsertPicture(img, PictureAlignment.Right);
-                
-                // Inserting another picture at the same alignment should throw InvalidOperationException
-                hf.OddHeader.InsertPicture(img, PictureAlignment.Right);
+                using (var stream = new MemoryStream(sourceBytes))
+                {
+                    var pic = hf.OddHeader.InsertPicture(stream, "image/jpeg", PictureAlignment.Right);
+
+                    Assert.IsNotNull(pic);
+                    Assert.AreEqual("RH", pic.Id);
+                    CollectionAssert.AreEqual(sourceBytes, pic.ImageBytes);
+                    Assert.AreEqual(1, hf.Pictures.Count);
+                }
+
+                package.Save();
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void TestHeaderFooterInsertDuplicatePictureThrows()
+        {
+            var tempImagePath = CreateTempImageFile();
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
+            {
+                try
+                {
+                    var ws = package.Workbook.Worksheets.Add("Sheet1");
+                    var hf = ws.HeaderFooter;
+
+                    hf.OddHeader.InsertPicture(new FileInfo(tempImagePath), PictureAlignment.Right);
+
+                    hf.OddHeader.InsertPicture(new FileInfo(tempImagePath), PictureAlignment.Right);
+                }
+                finally
+                {
+                    if (File.Exists(tempImagePath))
+                    {
+                        File.Delete(tempImagePath);
+                    }
+                }
             }
         }
 
@@ -180,7 +204,6 @@ namespace EPPlusTest
             var scaleProp = typeof(ExcelHeaderFooter).GetProperty("ScaleWithDocument");
             if (scaleProp == null)
             {
-                // Property not present (stable branch), skip this test
                 return;
             }
 
@@ -191,7 +214,7 @@ namespace EPPlusTest
                 var hf = ws.HeaderFooter;
 
                 scaleProp.SetValue(hf, true, null);
-                
+
                 using (var ms = new MemoryStream())
                 {
                     package.SaveAs(ms);
@@ -208,9 +231,8 @@ namespace EPPlusTest
                 bool scaleVal = (bool)scaleProp.GetValue(hf, null);
                 Assert.IsTrue(scaleVal);
 
-                // Set back to false and verify persistence
                 scaleProp.SetValue(hf, false, null);
-                
+
                 using (var ms2 = new MemoryStream())
                 {
                     package.SaveAs(ms2);
@@ -228,5 +250,13 @@ namespace EPPlusTest
                 Assert.IsFalse(scaleVal);
             }
         }
+
+        private static string CreateTempImageFile()
+        {
+            var tempImagePath = Path.Combine(Path.GetTempPath(), "test_header_footer_image_" + Guid.NewGuid().ToString("N") + ".jpg");
+            File.WriteAllBytes(tempImagePath, GetEmbeddedResourceBytes("EPPlusTest.Resources.Test1.jpg"));
+            return tempImagePath;
+        }
+
     }
 }
