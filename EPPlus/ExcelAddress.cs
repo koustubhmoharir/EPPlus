@@ -369,7 +369,8 @@ namespace OfficeOpenXml
             {
                 adr += _ws;
             }
-            adr = "'" + adr.Replace("'", "''") + "'!";
+			if (adr.Length > 0)
+				adr = "'" + adr.Replace("'", "''") + "'!";
             if (IsName)
               adr += GetAddress(_fromRow, _fromCol, _toRow, _toCol);
             else
