@@ -1,4 +1,4 @@
-﻿// ZipFile.Read.cs
+// ZipFile.Read.cs
 // ------------------------------------------------------------------
 //
 // Copyright (c) 2009-2011 Dino Chiesa.
@@ -591,7 +591,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                         success = true;
                     else
                     {
-                        if (posn==0) break; // started at the BOF and found nothing
+                        if (posn == 0) break; // started at the BOF and found nothing
                         nTries++;
                         // Weird: with NETCF, negative offsets from SeekOrigin.End DO
                         // NOT WORK. So rather than seek a negative offset, we seek
@@ -618,7 +618,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
                     int i = 12;
 
-                    uint offset32 = (uint) BitConverter.ToUInt32(block, i);
+                    uint offset32 = (uint)BitConverter.ToUInt32(block, i);
                     if (offset32 == 0xFFFFFFFF)
                     {
                         Zip64SeekToCentralDirectory(zf);
@@ -722,7 +722,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             bool inputUsesZip64 = false;
             ZipEntry de;
             // in lieu of hashset, use a dictionary
-            var previouslySeen = new Dictionary<String,object>(StringComparer.Ordinal);
+            var previouslySeen = new Dictionary<String, object>(StringComparer.Ordinal);
             while ((de = ZipEntry.ReadDirEntry(zf, previouslySeen)) != null)
             {
                 de.ResetDirEntry();
@@ -731,7 +731,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                 if (zf.Verbose)
                     zf.StatusMessageTextWriter.WriteLine("entry {0}", de.FileName);
 
-                zf._entries.Add(de.FileName,de);
+                zf._entries.Add(de.FileName, de);
                 if (!zf._entriesInsensitive.ContainsKey(de.FileName))
                     zf._entriesInsensitive.Add(de.FileName, de);
 
@@ -785,7 +785,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                 if (zf.Verbose)
                     zf.StatusMessageTextWriter.WriteLine("  {0}", e.FileName);
 
-                zf._entries.Add(e.FileName,e);
+                zf._entries.Add(e.FileName, e);
                 if (!zf._entriesInsensitive.ContainsKey(e.FileName))
                     zf._entriesInsensitive.Add(e.FileName, e);
                 firstEntry = false;
@@ -798,7 +798,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             {
                 ZipEntry de;
                 // in lieu of hashset, use a dictionary
-                var previouslySeen = new Dictionary<String,Object>(StringComparer.Ordinal);
+                var previouslySeen = new Dictionary<String, Object>(StringComparer.Ordinal);
                 while ((de = ZipEntry.ReadDirEntry(zf, previouslySeen)) != null)
                 {
                     // Housekeeping: Since ZipFile exposes ZipEntry elements in the enumerator,
@@ -812,7 +812,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                         e1._Comment = de.Comment;
                         if (de.IsDirectory) e1.MarkAsDirectory();
                     }
-                    previouslySeen.Add(de.FileName,null); // to prevent dupes
+                    previouslySeen.Add(de.FileName, null); // to prevent dupes
                 }
 
                 // workitem 8299

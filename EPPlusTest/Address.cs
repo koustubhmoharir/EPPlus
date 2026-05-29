@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,30 +109,30 @@ namespace EPPlusTest
         [TestMethod]
         public void IsValidCellAdress()
         {
-          Assert.IsTrue(ExcelCellBase.IsValidCellAddress("A1"));
-          Assert.IsTrue(ExcelCellBase.IsValidCellAddress("A1048576"));
-          Assert.IsTrue(ExcelCellBase.IsValidCellAddress("XFD1"));
-          Assert.IsTrue(ExcelCellBase.IsValidCellAddress("XFD1048576"));
-          Assert.IsTrue(ExcelCellBase.IsValidCellAddress("Table1!A1"));
-          Assert.IsTrue(ExcelCellBase.IsValidCellAddress("Table1!A1048576"));
-          Assert.IsTrue(ExcelCellBase.IsValidCellAddress("Table1!XFD1"));
-          Assert.IsTrue(ExcelCellBase.IsValidCellAddress("Table1!XFD1048576"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("A"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("A"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("XFD"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("XFD"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("1"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("1048576"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("1"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("1048576"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("A1:A1048576"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("A1:XFD1"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("A1048576:XFD1048576"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("XFD1:XFD1048576"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("Table1!A1:A1048576"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("Table1!A1:XFD1"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("Table1!A1048576:XFD1048576"));
-          Assert.IsFalse(ExcelCellBase.IsValidCellAddress("Table1!XFD1:XFD1048576"));
+            Assert.IsTrue(ExcelCellBase.IsValidCellAddress("A1"));
+            Assert.IsTrue(ExcelCellBase.IsValidCellAddress("A1048576"));
+            Assert.IsTrue(ExcelCellBase.IsValidCellAddress("XFD1"));
+            Assert.IsTrue(ExcelCellBase.IsValidCellAddress("XFD1048576"));
+            Assert.IsTrue(ExcelCellBase.IsValidCellAddress("Table1!A1"));
+            Assert.IsTrue(ExcelCellBase.IsValidCellAddress("Table1!A1048576"));
+            Assert.IsTrue(ExcelCellBase.IsValidCellAddress("Table1!XFD1"));
+            Assert.IsTrue(ExcelCellBase.IsValidCellAddress("Table1!XFD1048576"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("A"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("A"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("XFD"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("XFD"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("1"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("1048576"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("1"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("1048576"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("A1:A1048576"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("A1:XFD1"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("A1048576:XFD1048576"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("XFD1:XFD1048576"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("Table1!A1:A1048576"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("Table1!A1:XFD1"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("Table1!A1048576:XFD1048576"));
+            Assert.IsFalse(ExcelCellBase.IsValidCellAddress("Table1!XFD1:XFD1048576"));
         }
 
         [TestMethod]
@@ -273,7 +273,7 @@ namespace EPPlusTest
                 Assert.AreEqual("B2:C3", namedRange.Address);
             }
         }
-        
+
 
         [TestMethod]
         public void ShouldHandleWorksheetSpec()

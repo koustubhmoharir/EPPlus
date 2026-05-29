@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -112,27 +112,27 @@ namespace OfficeOpenXml.Table
     /// </summary>
     public class ExcelTable : XmlHelper, IEqualityComparer<ExcelTable>
     {
-        internal ExcelTable(Packaging.ZipPackageRelationship rel, ExcelWorksheet sheet) : 
+        internal ExcelTable(Packaging.ZipPackageRelationship rel, ExcelWorksheet sheet) :
             base(sheet.NameSpaceManager)
         {
             WorkSheet = sheet;
             TableUri = UriHelper.ResolvePartUri(rel.SourceUri, rel.TargetUri);
             RelationshipID = rel.Id;
             var pck = sheet._package.Package;
-            Part=pck.GetPart(TableUri);
+            Part = pck.GetPart(TableUri);
 
             TableXml = new XmlDocument();
             LoadXmlSafe(TableXml, Part.GetStream());
             init();
             Address = new ExcelAddressBase(GetXmlNodeString("@ref"));
         }
-        internal ExcelTable(ExcelWorksheet sheet, ExcelAddressBase address, string name, int tblId) : 
+        internal ExcelTable(ExcelWorksheet sheet, ExcelAddressBase address, string name, int tblId) :
             base(sheet.NameSpaceManager)
-	    {
+        {
             WorkSheet = sheet;
             Address = address;
             TableXml = new XmlDocument();
-            LoadXmlSafe(TableXml, GetStartXml(name, tblId), Encoding.UTF8); 
+            LoadXmlSafe(TableXml, GetStartXml(name, tblId), Encoding.UTF8);
             TopNode = TableXml.DocumentElement;
 
             init();
@@ -159,17 +159,17 @@ namespace OfficeOpenXml.Table
             Address.Address);
             xml += string.Format("<autoFilter ref=\"{0}\" />", Address.Address);
 
-            int cols=Address._toCol-Address._fromCol+1;
-            xml += string.Format("<tableColumns count=\"{0}\">",cols);
-            var names = new Dictionary<string, string>();            
-            for(int i=1;i<=cols;i++)
+            int cols = Address._toCol - Address._fromCol + 1;
+            xml += string.Format("<tableColumns count=\"{0}\">", cols);
+            var names = new Dictionary<string, string>();
+            for (int i = 1; i <= cols; i++)
             {
-                var cell = WorkSheet.Cells[Address._fromRow, Address._fromCol+i-1];
+                var cell = WorkSheet.Cells[Address._fromRow, Address._fromCol + i - 1];
                 string colName;
                 if (cell.Value == null || names.ContainsKey(cell.Value.ToString()))
                 {
                     //Get an unique name
-                    int a=i;
+                    int a = i;
                     do
                     {
                         colName = string.Format("Column{0}", a++);
@@ -181,7 +181,7 @@ namespace OfficeOpenXml.Table
                     colName = System.Security.SecurityElement.Escape(cell.Value.ToString());
                 }
                 names.Add(colName, colName);
-                xml += string.Format("<tableColumn id=\"{0}\" name=\"{1}\" />", i,colName);
+                xml += string.Format("<tableColumn id=\"{0}\" name=\"{1}\" />", i, colName);
             }
             xml += "</tableColumns>";
             xml += "<tableStyleInfo name=\"TableStyleMedium9\" showFirstColumn=\"0\" showLastColumn=\"0\" showRowStripes=\"1\" showColumnStripes=\"0\" /> ";
@@ -189,7 +189,7 @@ namespace OfficeOpenXml.Table
 
             return xml;
         }
-        private string cleanDisplayName(string name) 
+        private string cleanDisplayName(string name)
         {
             return Regex.Replace(name, @"[^\w\.-_]", "_");
         }
@@ -220,7 +220,7 @@ namespace OfficeOpenXml.Table
             set;
         }
         const string ID_PATH = "@id";
-        internal int Id 
+        internal int Id
         {
             get
             {
@@ -242,18 +242,18 @@ namespace OfficeOpenXml.Table
             {
                 return GetXmlNodeString(NAME_PATH);
             }
-            set 
+            set
             {
-                if(WorkSheet.Workbook.ExistsTableName(value))
+                if (WorkSheet.Workbook.ExistsTableName(value))
                 {
                     throw (new ArgumentException("Tablename is not unique"));
                 }
                 string prevName = Name;
                 if (WorkSheet.Tables._tableNames.ContainsKey(prevName))
                 {
-                    int ix=WorkSheet.Tables._tableNames[prevName];
+                    int ix = WorkSheet.Tables._tableNames[prevName];
                     WorkSheet.Tables._tableNames.Remove(prevName);
-                    WorkSheet.Tables._tableNames.Add(value,ix);
+                    WorkSheet.Tables._tableNames.Add(value, ix);
                 }
                 SetXmlNodeString(NAME_PATH, value);
                 SetXmlNodeString(DISPLAY_NAME_PATH, cleanDisplayName(value));
@@ -281,7 +281,7 @@ namespace OfficeOpenXml.Table
             internal set
             {
                 _address = value;
-                SetXmlNodeString("@ref",value.Address);
+                SetXmlNodeString("@ref", value.Address);
                 WriteAutoFilter(ShowTotal);
             }
         }
@@ -293,7 +293,7 @@ namespace OfficeOpenXml.Table
         {
             get
             {
-                if(_cols==null)
+                if (_cols == null)
                 {
                     _cols = new ExcelTableColumnCollection(this);
                 }
@@ -312,7 +312,7 @@ namespace OfficeOpenXml.Table
             }
             set
             {
-                _tableStyle=value;
+                _tableStyle = value;
                 if (value != TableStyles.Custom)
                 {
                     SetXmlNodeString(STYLENAME_PATH, "TableStyle" + value.ToString());
@@ -328,7 +328,7 @@ namespace OfficeOpenXml.Table
         {
             get
             {
-                return GetXmlNodeInt(HEADERROWCOUNT_PATH)!=0;
+                return GetXmlNodeInt(HEADERROWCOUNT_PATH) != 0;
             }
             set
             {
@@ -338,14 +338,14 @@ namespace OfficeOpenXml.Table
                     throw (new Exception("Cant set ShowHeader-property. Table has too few rows"));
                 }
 
-                if(value)
+                if (value)
                 {
                     DeleteNode(HEADERROWCOUNT_PATH);
                     WriteAutoFilter(ShowTotal);
                     for (int i = 0; i < Columns.Count; i++)
                     {
                         var v = WorkSheet.GetValue<string>(Address._fromRow, Address._fromCol + i);
-                        if(string.IsNullOrEmpty(v))
+                        if (string.IsNullOrEmpty(v))
                         {
                             WorkSheet.SetValue(Address._fromRow, Address._fromCol + i, _cols[i].Name);
                         }
@@ -366,7 +366,7 @@ namespace OfficeOpenXml.Table
         {
             get
             {
-                string a=GetXmlNodeString(AUTOFILTER_PATH);
+                string a = GetXmlNodeString(AUTOFILTER_PATH);
                 if (a == "")
                 {
                     return null;
@@ -396,8 +396,8 @@ namespace OfficeOpenXml.Table
         /// <summary>
         /// If the header row has an autofilter
         /// </summary>
-        public bool ShowFilter 
-        { 
+        public bool ShowFilter
+        {
             get
             {
                 return ShowHeader && AutoFilterAddress != null;
@@ -410,14 +410,14 @@ namespace OfficeOpenXml.Table
                     {
                         WriteAutoFilter(ShowTotal);
                     }
-                    else 
+                    else
                     {
                         DeleteAllNode(AUTOFILTER_PATH);
                     }
                 }
-                else if(value)
+                else if (value)
                 {
-                    throw(new InvalidOperationException("Filter can only be applied when ShowHeader is set to true"));
+                    throw (new InvalidOperationException("Filter can only be applied when ShowHeader is set to true"));
                 }
             }
         }
@@ -438,7 +438,7 @@ namespace OfficeOpenXml.Table
                 {
                     if (value)
                     {
-                        Address=new ExcelAddress(WorkSheet.Name, ExcelAddressBase.GetAddress(Address.Start.Row, Address.Start.Column, Address.End.Row+1, Address.End.Column));
+                        Address = new ExcelAddress(WorkSheet.Name, ExcelAddressBase.GetAddress(Address.Start.Row, Address.Start.Column, Address.End.Row + 1, Address.End.Column));
                     }
                     else
                     {
@@ -473,7 +473,7 @@ namespace OfficeOpenXml.Table
                 {
                     try
                     {
-                        _tableStyle = (TableStyles)Enum.Parse(typeof(TableStyles), value.Substring(10,value.Length-10), true);
+                        _tableStyle = (TableStyles)Enum.Parse(typeof(TableStyles), value.Substring(10, value.Length - 10), true);
                     }
                     catch
                     {
@@ -489,7 +489,7 @@ namespace OfficeOpenXml.Table
                 {
                     _tableStyle = TableStyles.Custom;
                 }
-                SetXmlNodeString(STYLENAME_PATH,value,true);
+                SetXmlNodeString(STYLENAME_PATH, value, true);
             }
         }
         const string SHOWFIRSTCOLUMN_PATH = "d:tableStyleInfo/@showFirstColumn";
@@ -505,7 +505,7 @@ namespace OfficeOpenXml.Table
             set
             {
                 SetXmlNodeBool(SHOWFIRSTCOLUMN_PATH, value, false);
-            }   
+            }
         }
         const string SHOWLASTCOLUMN_PATH = "d:tableStyleInfo/@showLastColumn";
         /// <summary>

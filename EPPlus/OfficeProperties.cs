@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -206,19 +206,19 @@ namespace OfficeOpenXml
 	    /// Gets/sets the created property of the document (core property)
 	    /// </summary>
 	    public DateTime Created
-	    {
-	        get
-	        {
-	            DateTime date;
-	            return DateTime.TryParse(_coreHelper.GetXmlNodeString(CreatedPath), out date) ? date : DateTime.MinValue;
-	        }
-	        set
-	        {
-	            var dateString = value.ToUniversalTime().ToString("s", CultureInfo.InvariantCulture) + "Z";
-	            _coreHelper.SetXmlNodeString(CreatedPath, dateString);
+        {
+            get
+            {
+                DateTime date;
+                return DateTime.TryParse(_coreHelper.GetXmlNodeString(CreatedPath), out date) ? date : DateTime.MinValue;
+            }
+            set
+            {
+                var dateString = value.ToUniversalTime().ToString("s", CultureInfo.InvariantCulture) + "Z";
+                _coreHelper.SetXmlNodeString(CreatedPath, dateString);
                 _coreHelper.SetXmlNodeString(CreatedPath + "/@xsi:type", "dcterms:W3CDTF");
-	        }
-	    }
+            }
+        }
 
         const string CategoryPath = "cp:category";
         /// <summary>
@@ -315,23 +315,23 @@ namespace OfficeOpenXml
         }
 
         const string ModifiedPath = "dcterms:modified";
-	    /// <summary>
-	    /// Gets/sets the modified property of the document (core property)
-	    /// </summary>
-	    public DateTime Modified
-	    {
-	        get
-	        {
-	            DateTime date;
-	            return DateTime.TryParse(_coreHelper.GetXmlNodeString(ModifiedPath), out date) ? date : DateTime.MinValue;
-	        }
-	        set
-	        {
-	            var dateString = value.ToUniversalTime().ToString("s", CultureInfo.InvariantCulture) + "Z";
-	            _coreHelper.SetXmlNodeString(ModifiedPath, dateString);
+        /// <summary>
+        /// Gets/sets the modified property of the document (core property)
+        /// </summary>
+        public DateTime Modified
+        {
+            get
+            {
+                DateTime date;
+                return DateTime.TryParse(_coreHelper.GetXmlNodeString(ModifiedPath), out date) ? date : DateTime.MinValue;
+            }
+            set
+            {
+                var dateString = value.ToUniversalTime().ToString("s", CultureInfo.InvariantCulture) + "Z";
+                _coreHelper.SetXmlNodeString(ModifiedPath, dateString);
                 _coreHelper.SetXmlNodeString(ModifiedPath + "/@xsi:type", "dcterms:W3CDTF");
-	        }
-	    }
+            }
+        }
 
         #region Get and Set Extended Properties
         /// <summary>
@@ -355,7 +355,8 @@ namespace OfficeOpenXml
         /// </summary>
         /// <param name="propertyName">The name of the property</param>
         /// <param name="value">The value</param>
-        public void SetExtendedPropertyValue(string propertyName, string value){
+        public void SetExtendedPropertyValue(string propertyName, string value)
+        {
             string propertyPath = string.Format("xp:Properties/xp:{0}", propertyName);
             _extendedHelper.SetXmlNodeString(propertyPath, value);
         }
@@ -377,7 +378,7 @@ namespace OfficeOpenXml
                     _xmlPropertiesCustom = GetXmlDocument(string.Format("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?><Properties xmlns:vt=\"{0}\" xmlns=\"{1}\"></Properties>",
                             ExcelPackage.schemaVt,
                             ExcelPackage.schemaCustom),
-                         _uriPropertiesCustom, 
+                         _uriPropertiesCustom,
                          @"application/vnd.openxmlformats-officedocument.custom-properties+xml",
                          @"http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties");
                 }

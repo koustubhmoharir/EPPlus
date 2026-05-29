@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -38,13 +38,13 @@ using System.Collections;
 namespace OfficeOpenXml.Drawing.Vml
 {
     public class ExcelVmlDrawingBaseCollection
-    {        
+    {
         internal ExcelVmlDrawingBaseCollection(ExcelPackage pck, ExcelWorksheet ws, Uri uri)
         {
             VmlDrawingXml = new XmlDocument();
             VmlDrawingXml.PreserveWhitespace = false;
-            
-            NameTable nt=new NameTable();
+
+            NameTable nt = new NameTable();
             NameSpaceManager = new XmlNamespaceManager(nt);
             NameSpaceManager.AddNamespace("v", ExcelPackage.schemaMicrosoftVml);
             NameSpaceManager.AddNamespace("o", ExcelPackage.schemaMicrosoftOffice);
@@ -56,8 +56,8 @@ namespace OfficeOpenXml.Drawing.Vml
             }
             else
             {
-                Part=pck.Package.GetPart(uri);
-                XmlHelper.LoadXmlSafe(VmlDrawingXml, Part.GetStream()); 
+                Part = pck.Package.GetPart(uri);
+                XmlHelper.LoadXmlSafe(VmlDrawingXml, Part.GetStream());
             }
         }
         internal XmlDocument VmlDrawingXml { get; set; }

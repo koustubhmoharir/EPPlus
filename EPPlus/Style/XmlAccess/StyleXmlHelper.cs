@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -38,10 +38,10 @@ namespace OfficeOpenXml.Style.XmlAccess
     /// <summary>
     /// Xml helper class for cell style classes
     /// </summary>
-    public abstract class  StyleXmlHelper : XmlHelper
+    public abstract class StyleXmlHelper : XmlHelper
     {
         internal StyleXmlHelper(XmlNamespaceManager nameSpaceManager) : base(nameSpaceManager)
-        { 
+        {
 
         }
         internal StyleXmlHelper(XmlNamespaceManager nameSpaceManager, XmlNode topNode) : base(nameSpaceManager, topNode)
@@ -52,8 +52,8 @@ namespace OfficeOpenXml.Style.XmlAccess
         {
             get;
         }
-        internal long useCnt=0;
-        internal int newID=int.MinValue;
+        internal long useCnt = 0;
+        internal int newID = int.MinValue;
         protected bool GetBoolValue(XmlNode topNode, string path)
         {
             var node = topNode.SelectSingleNode(path, NameSpaceManager);
@@ -70,7 +70,7 @@ namespace OfficeOpenXml.Style.XmlAccess
                 else
                 {
                     return false;
-                }                
+                }
             }
         }
 

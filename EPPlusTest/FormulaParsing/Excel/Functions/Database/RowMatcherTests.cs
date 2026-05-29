@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml.FormulaParsing;
@@ -14,7 +14,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Database
         {
             var provider = MockRepository.GenerateStub<ExcelDataProvider>();
             var criteria = MockRepository.GenerateStub<ExcelDatabaseCriteria>(provider, string.Empty);
-            
+
             criteria.Stub(x => x.Items).Return(items);
             return criteria;
         }

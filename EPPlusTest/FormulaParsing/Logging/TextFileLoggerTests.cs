@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -53,7 +53,7 @@ namespace EPPlusTest.FormulaParsing.Logging
         public void ShouldOverwriteLogFileByInStable()
         {
             File.WriteAllText(_logFile, "initial content");
-            
+
             var fileInfo = new FileInfo(_logFile);
             using (var logger = CreateLogger(fileInfo))
             {

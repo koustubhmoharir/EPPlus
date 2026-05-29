@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -71,7 +71,7 @@ namespace OfficeOpenXml.Drawing.Vml
             }
             set
             {
-                SetStyleProp("width",value.ToString(CultureInfo.InvariantCulture) + "pt");
+                SetStyleProp("width", value.ToString(CultureInfo.InvariantCulture) + "pt");
             }
         }
         /// <summary>
@@ -127,7 +127,7 @@ namespace OfficeOpenXml.Drawing.Vml
             }
             set
             {
-                SetXmlNodeString("v:imagedata/@o:title",value);
+                SetXmlNodeString("v:imagedata/@o:title", value);
             }
         }
         /// <summary>
@@ -162,9 +162,9 @@ namespace OfficeOpenXml.Drawing.Vml
             }
             set
             {
-                SetXmlNodeString("v:imagedata/@o:relid",value);
+                SetXmlNodeString("v:imagedata/@o:relid", value);
             }
-        }        
+        }
         /// <summary>
         /// Determines whether an image will be displayed in black and white
         /// </summary>
@@ -172,7 +172,7 @@ namespace OfficeOpenXml.Drawing.Vml
         {
             get
             {
-                return GetXmlNodeString("v:imagedata/@bilevel")=="t";
+                return GetXmlNodeString("v:imagedata/@bilevel") == "t";
             }
             set
             {
@@ -193,7 +193,7 @@ namespace OfficeOpenXml.Drawing.Vml
         {
             get
             {
-                return GetXmlNodeString("v:imagedata/@grayscale")=="t";
+                return GetXmlNodeString("v:imagedata/@grayscale") == "t";
             }
             set
             {
@@ -216,7 +216,7 @@ namespace OfficeOpenXml.Drawing.Vml
             get
             {
                 string v = GetXmlNodeString("v:imagedata/@gain");
-                return GetFracDT(v,1);
+                return GetFracDT(v, 1);
             }
             set
             {
@@ -243,7 +243,7 @@ namespace OfficeOpenXml.Drawing.Vml
             get
             {
                 string v = GetXmlNodeString("v:imagedata/@gamma");
-                return GetFracDT(v,0);
+                return GetFracDT(v, 0);
             }
             set
             {

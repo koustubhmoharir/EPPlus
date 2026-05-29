@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -41,11 +41,11 @@ namespace OfficeOpenXml
     {
         internal XmlHelperInstance(XmlNamespaceManager namespaceManager)
             : base(namespaceManager)
-        {}
+        { }
 
         internal XmlHelperInstance(XmlNamespaceManager namespaceManager, XmlNode topNode)
             : base(namespaceManager, topNode)
-        {}
+        { }
 
     }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,15 +34,15 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup
             }
             if (arg1.IsExcelRange)
             {
-                var row = ArgToInt(arguments, 1);                 
-                var col = arguments.Count()>2 ? ArgToInt(arguments, 2) : 1;
-                var ri=arg1.ValueAsRangeInfo;
+                var row = ArgToInt(arguments, 1);
+                var col = arguments.Count() > 2 ? ArgToInt(arguments, 2) : 1;
+                var ri = arg1.ValueAsRangeInfo;
                 if (row > ri.Address._toRow - ri.Address._fromRow + 1 ||
                     col > ri.Address._toCol - ri.Address._fromCol + 1)
                 {
                     ThrowExcelErrorValueException(eErrorType.Ref);
                 }
-                var candidate = ri.GetOffset(row-1, col-1);
+                var candidate = ri.GetOffset(row - 1, col - 1);
                 //Commented JK-Can be any data type
                 //if (!IsNumber(candidate.Value))   
                 //{

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -38,81 +38,81 @@ using OfficeOpenXml.ConditionalFormatting.Contracts;
 
 namespace OfficeOpenXml.ConditionalFormatting
 {
-  /// <summary>
-  /// ExcelConditionalFormattingUniqueValues
-  /// </summary>
-  public class ExcelConditionalFormattingUniqueValues
-    : ExcelConditionalFormattingRule,
-    IExcelConditionalFormattingUniqueValues
-  {
-    /****************************************************************************************/
-
-    #region Constructors
     /// <summary>
-    /// 
+    /// ExcelConditionalFormattingUniqueValues
     /// </summary>
-    /// <param name="address"></param>
-    /// <param name="priority"></param>
-    /// <param name="worksheet"></param>
-    /// <param name="itemElementNode"></param>
-    /// <param name="namespaceManager"></param>
-    internal ExcelConditionalFormattingUniqueValues(
-      ExcelAddress address,
-      int priority,
-      ExcelWorksheet worksheet,
-      XmlNode itemElementNode,
-      XmlNamespaceManager namespaceManager)
-      : base(
-        eExcelConditionalFormattingRuleType.UniqueValues,
-        address,
-        priority,
-        worksheet,
-        itemElementNode,
-        (namespaceManager == null) ? worksheet.NameSpaceManager : namespaceManager)
+    public class ExcelConditionalFormattingUniqueValues
+      : ExcelConditionalFormattingRule,
+      IExcelConditionalFormattingUniqueValues
     {
-    }
+        /****************************************************************************************/
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="priority"></param>
-    /// <param name="address"></param>
-    /// <param name="worksheet"></param>
-    /// <param name="itemElementNode"></param>
-    internal ExcelConditionalFormattingUniqueValues(
-      ExcelAddress address,
-      int priority,
-      ExcelWorksheet worksheet,
-      XmlNode itemElementNode)
-      : this(
-        address,
-        priority,
-        worksheet,
-        itemElementNode,
-        null)
-    {
-    }
+        #region Constructors
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="priority"></param>
+        /// <param name="worksheet"></param>
+        /// <param name="itemElementNode"></param>
+        /// <param name="namespaceManager"></param>
+        internal ExcelConditionalFormattingUniqueValues(
+          ExcelAddress address,
+          int priority,
+          ExcelWorksheet worksheet,
+          XmlNode itemElementNode,
+          XmlNamespaceManager namespaceManager)
+          : base(
+            eExcelConditionalFormattingRuleType.UniqueValues,
+            address,
+            priority,
+            worksheet,
+            itemElementNode,
+            (namespaceManager == null) ? worksheet.NameSpaceManager : namespaceManager)
+        {
+        }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="priority"></param>
-    /// <param name="address"></param>
-    /// <param name="worksheet"></param>
-    internal ExcelConditionalFormattingUniqueValues(
-      ExcelAddress address,
-      int priority,
-      ExcelWorksheet worksheet)
-      : this(
-        address,
-        priority,
-        worksheet,
-        null,
-        null)
-    {
-    }
-    #endregion Constructors
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <param name="address"></param>
+        /// <param name="worksheet"></param>
+        /// <param name="itemElementNode"></param>
+        internal ExcelConditionalFormattingUniqueValues(
+          ExcelAddress address,
+          int priority,
+          ExcelWorksheet worksheet,
+          XmlNode itemElementNode)
+          : this(
+            address,
+            priority,
+            worksheet,
+            itemElementNode,
+            null)
+        {
+        }
 
-    /****************************************************************************************/
-  }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <param name="address"></param>
+        /// <param name="worksheet"></param>
+        internal ExcelConditionalFormattingUniqueValues(
+          ExcelAddress address,
+          int priority,
+          ExcelWorksheet worksheet)
+          : this(
+            address,
+            priority,
+            worksheet,
+            null,
+            null)
+        {
+        }
+        #endregion Constructors
+
+        /****************************************************************************************/
+    }
 }

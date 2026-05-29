@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -86,7 +86,7 @@ namespace OfficeOpenXml
             /// <returns></returns>
             public static bool IsErrorValue(object candidate)
             {
-                if(candidate == null || !(candidate is ExcelErrorValue)) return false;
+                if (candidate == null || !(candidate is ExcelErrorValue)) return false;
                 var candidateString = candidate.ToString();
                 return (!string.IsNullOrEmpty(candidateString) && _values.ContainsKey(candidateString));
             }
@@ -156,13 +156,13 @@ namespace OfficeOpenXml
             {
                 return Create(Values.ToErrorType(val));
             }
-            if(string.IsNullOrEmpty(val)) throw new ArgumentNullException("val");
+            if (string.IsNullOrEmpty(val)) throw new ArgumentNullException("val");
             throw new ArgumentException("Not a valid error value: " + val);
         }
 
         private ExcelErrorValue(eErrorType type)
         {
-            Type=type; 
+            Type = type;
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace OfficeOpenXml
         /// <returns></returns>
         public override string ToString()
         {
-            switch(Type)
+            switch (Type)
             {
                 case eErrorType.Div0:
                     return Values.Div0;
@@ -195,7 +195,7 @@ namespace OfficeOpenXml
                 case eErrorType.GettingData:
                     return Values.GettingData;
                 default:
-                    throw(new ArgumentException("Invalid errortype"));
+                    throw (new ArgumentException("Invalid errortype"));
             }
         }
         public static ExcelErrorValue operator +(object v1, ExcelErrorValue v2)
@@ -215,7 +215,7 @@ namespace OfficeOpenXml
         public override bool Equals(object obj)
         {
             if (!(obj is ExcelErrorValue)) return false;
-            return ((ExcelErrorValue) obj).ToString() == this.ToString();
+            return ((ExcelErrorValue)obj).ToString() == this.ToString();
         }
     }
 }

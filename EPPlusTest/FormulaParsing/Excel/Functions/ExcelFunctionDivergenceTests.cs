@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,9 +87,9 @@ namespace EPPlusTest.Excel.Functions
             var tester = new ExcelFunctionTester();
             var rangeInfo = new MockRangeInfo { Address = new ExcelAddressBase(1, 1, 2, 2) };
             var args = new List<FunctionArgument> { new FunctionArgument(rangeInfo) };
-            
+
             var result = tester.ArgToAddressPublic(args, 0);
-            
+
             Assert.AreEqual("A1:B2", result);
         }
 
@@ -98,9 +98,9 @@ namespace EPPlusTest.Excel.Functions
         {
             var tester = new ExcelFunctionTester();
             var args = new List<FunctionArgument> { new FunctionArgument("SomeString") };
-            
+
             var result = tester.ArgToAddressPublic(args, 0);
-            
+
             Assert.AreEqual("SomeString", result);
         }
     }

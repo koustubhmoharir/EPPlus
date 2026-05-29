@@ -1,4 +1,4 @@
-﻿// ZipFile.saveSelfExtractor.cs
+// ZipFile.saveSelfExtractor.cs
 // ------------------------------------------------------------------
 //
 // Copyright (c) 2008-2011 Dino Chiesa.
@@ -758,7 +758,8 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                 Assembly a1 = typeof(ZipFile).Assembly;
 
                 using (var csharp = new Microsoft.CSharp.CSharpCodeProvider
-                       (new Dictionary<string,string>() { { "CompilerVersion", "v2.0" } })) {
+                       (new Dictionary<string, string>() { { "CompilerVersion", "v2.0" } }))
+                {
 
                     // The following is a perfect opportunity for a linq query, but
                     // I cannot use it.  DotNetZip needs to run on .NET 2.0,

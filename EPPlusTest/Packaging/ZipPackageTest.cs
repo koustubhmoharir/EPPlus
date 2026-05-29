@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -73,13 +73,13 @@ namespace EPPlusTest.Packaging
                 var uri = new Uri("/test/part.xml", UriKind.Relative);
                 var part = CreatePart(package, uri, "text/xml");
                 Assert.IsNotNull(part);
-                
+
                 var uriProp = part.GetType().GetProperty("Uri", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
                 Assert.AreEqual(uri, uriProp.GetValue(part, null));
-                
+
                 var contentTypeProp = part.GetType().GetProperty("ContentType", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
                 Assert.AreEqual("text/xml", contentTypeProp.GetValue(part, null));
-                
+
                 Assert.IsTrue(PartExists(package, uri));
             }
         }
@@ -110,7 +110,7 @@ namespace EPPlusTest.Packaging
                 var createRelMethod = part1.GetType().GetMethod("CreateRelationship", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
                 var rel = createRelMethod.Invoke(part1, new object[] { uri2, TargetMode.Internal, "http://schema.test.com/rel" });
                 Assert.IsNotNull(rel);
-                
+
                 var targetUriProp = rel.GetType().GetProperty("TargetUri", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
                 Assert.AreEqual(uri2, targetUriProp.GetValue(rel, null));
 
@@ -136,7 +136,7 @@ namespace EPPlusTest.Packaging
                     var bContent = Encoding.UTF8.GetBytes("<root>test</root>");
                     stream.Write(bContent, 0, bContent.Length);
                     stream.Flush();
-                    
+
                     var saveMethod = package.GetType().GetMethod("Save", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, new[] { typeof(Stream) }, null);
                     saveMethod.Invoke(package, new object[] { ms });
                 }
@@ -150,10 +150,10 @@ namespace EPPlusTest.Packaging
                     var uri = new Uri("/test/part.xml", UriKind.Relative);
                     Assert.IsTrue(PartExists(package, uri));
                     var part = GetPart(package, uri);
-                    
+
                     var contentTypeProp = part.GetType().GetProperty("ContentType", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
                     Assert.AreEqual("text/xml", contentTypeProp.GetValue(part, null));
-                    
+
                     var stream = GetStream(part);
                     using (var reader = new StreamReader(stream))
                     {

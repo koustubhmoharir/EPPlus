@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -42,7 +42,7 @@ namespace OfficeOpenXml.Packaging
     public abstract class ZipPackageRelationshipBase
     {
         protected ZipPackageRelationshipCollection _rels = new ZipPackageRelationshipCollection();
-        protected internal 
+        protected internal
         int maxRId = 1;
         internal void DeleteRelationship(string id)
         {
@@ -99,7 +99,7 @@ namespace OfficeOpenXml.Packaging
                 var rel = new ZipPackageRelationship();
                 rel.Id = c.GetAttribute("Id");
                 rel.RelationshipType = c.GetAttribute("Type");
-                rel.TargetMode = c.GetAttribute("TargetMode").Equals("external",StringComparison.InvariantCultureIgnoreCase) ? TargetMode.External : TargetMode.Internal;
+                rel.TargetMode = c.GetAttribute("TargetMode").Equals("external", StringComparison.InvariantCultureIgnoreCase) ? TargetMode.External : TargetMode.Internal;
                 try
                 {
                     rel.TargetUri = new Uri(c.GetAttribute("Target"), UriKind.RelativeOrAbsolute);
@@ -107,7 +107,7 @@ namespace OfficeOpenXml.Packaging
                 catch
                 {
                     //The URI is not a valid URI. Encode it to make i valid.
-                    rel.TargetUri = new Uri(Uri.EscapeUriString("Invalid:URI "+c.GetAttribute("Target")), UriKind.RelativeOrAbsolute);
+                    rel.TargetUri = new Uri(Uri.EscapeUriString("Invalid:URI " + c.GetAttribute("Target")), UriKind.RelativeOrAbsolute);
                 }
                 if (!string.IsNullOrEmpty(source))
                 {

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -53,16 +53,16 @@ namespace OfficeOpenXml.FormulaParsing.Exceptions
             return Code.GetHashCode();
         }
 
-        public override bool  Equals(object obj)
+        public override bool Equals(object obj)
         {
             if (obj is ExcelErrorCodes)
             {
                 return ((ExcelErrorCodes)obj).Code.Equals(Code);
             }
- 	        return false;
+            return false;
         }
 
-        public static bool operator == (ExcelErrorCodes c1, ExcelErrorCodes c2)
+        public static bool operator ==(ExcelErrorCodes c1, ExcelErrorCodes c2)
         {
             return c1.Code.Equals(c2.Code);
         }

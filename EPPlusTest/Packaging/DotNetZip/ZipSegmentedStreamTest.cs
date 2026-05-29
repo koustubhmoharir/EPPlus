@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -53,7 +53,7 @@ namespace EPPlusTest.Packaging.DotNetZip
                 Assert.AreEqual(2u, GetCurrentSegment(stream));
 
                 var tempName = (string)GetPrivateField(stream, "_currentTempName");
-                stream.Dispose(); 
+                stream.Dispose();
                 if (File.Exists(tempName))
                 {
                     File.Move(tempName, _baseFileName);
@@ -65,12 +65,12 @@ namespace EPPlusTest.Packaging.DotNetZip
                 byte[] buffer = new byte[100];
                 int read = stream.Read(buffer, 0, 100);
                 Assert.AreEqual(50, read);
-                
+
                 Assert.AreEqual(0x50, buffer[0]);
                 Assert.AreEqual(0x4B, buffer[1]);
                 Assert.AreEqual(0x07, buffer[2]);
                 Assert.AreEqual(0x08, buffer[3]);
-                
+
                 for (int i = 0; i < 16; i++) Assert.AreEqual((byte)i, buffer[i + 4]);
                 for (int i = 0; i < 20; i++) Assert.AreEqual((byte)(i + 16), buffer[i + 20]);
                 for (int i = 0; i < 10; i++) Assert.AreEqual((byte)(i + 36), buffer[i + 40]);
@@ -95,13 +95,13 @@ namespace EPPlusTest.Packaging.DotNetZip
             {
                 byte[] buffer = new byte[60];
                 stream.Read(buffer, 0, 5);
-                
+
                 int read = stream.Read(buffer, 5, 30);
                 Assert.AreEqual(30, read);
                 Assert.AreEqual(1u, GetCurrentSegment(stream));
-                
+
                 read = stream.Read(buffer, 35, 25);
-                Assert.AreEqual(25, read); 
+                Assert.AreEqual(25, read);
             }
         }
 
@@ -161,7 +161,7 @@ namespace EPPlusTest.Packaging.DotNetZip
                 using (var stream = ForWriting(_baseFileName, 10))
                 {
                     SetPrivateField(stream, "_currentDiskNumber", 98u);
-                    stream.Write(new byte[20], 0, 20); 
+                    stream.Write(new byte[20], 0, 20);
                 }
 #if Core
                 Assert.Fail("Should have thrown OverflowException on dotnetport");
@@ -191,24 +191,24 @@ namespace EPPlusTest.Packaging.DotNetZip
                 Assert.IsTrue(stream.CanSeek);
                 Assert.IsFalse(stream.CanRead);
                 Assert.AreEqual(4L, stream.Length); // Sig is 4 bytes
-                
+
                 stream.Write(new byte[10], 0, 10);
                 Assert.AreEqual(14L, stream.Length);
                 Assert.AreEqual(14L, stream.Position);
-                
+
                 stream.Position = 4;
                 Assert.AreEqual(4L, stream.Position);
-                
+
                 stream.Flush();
-                
+
                 stream.Seek(10, SeekOrigin.Begin);
                 Assert.AreEqual(10L, stream.Position);
-                
+
                 stream.SetLength(20);
                 Assert.AreEqual(20L, stream.Length);
-                
+
                 Assert.IsNotNull(GetPrivateProperty(stream, "CurrentTempName"));
-                
+
                 var computeMethod = stream.GetType().GetMethod("ComputeSegment", BindingFlags.Instance | BindingFlags.Public);
                 uint nextSeg = (uint)computeMethod.Invoke(stream, new object[] { 200 });
                 Assert.AreEqual(1u, nextSeg);

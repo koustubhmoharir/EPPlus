@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -37,7 +37,7 @@ namespace OfficeOpenXml.Style
     internal enum eStyleClass
     {
         Numberformat,
-        Font,    
+        Font,
         Border,
         BorderTop,
         BorderLeft,
@@ -98,7 +98,7 @@ namespace OfficeOpenXml.Style
         internal StyleChangeEventArgs(eStyleClass styleclass, eStyleProperty styleProperty, object value, int positionID, string address)
         {
             StyleClass = styleclass;
-            StyleProperty=styleProperty;
+            StyleProperty = styleProperty;
             Value = value;
             Address = address;
             PositionID = positionID;

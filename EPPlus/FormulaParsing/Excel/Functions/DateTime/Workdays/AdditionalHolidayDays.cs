@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +9,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime.Workdays
     public class AdditionalHolidayDays
     {
         private readonly FunctionArgument _holidayArg;
-        private readonly List<System.DateTime> _holidayDates = new List<System.DateTime>(); 
+        private readonly List<System.DateTime> _holidayDates = new List<System.DateTime>();
 
         public AdditionalHolidayDays(FunctionArgument holidayArg)
         {

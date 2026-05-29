@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -39,7 +39,7 @@ namespace EPPlusExcelFormDemo
             {
                 for (var row = 1; row < 9; row++)
                 {
-                    ws1.Cells[row, col].Value = row*col;
+                    ws1.Cells[row, col].Value = row * col;
                 }
             }
             ws1.Cells[7, 1].Value = "SUM";
@@ -63,7 +63,7 @@ namespace EPPlusExcelFormDemo
         private void InitEvents(DataGridView gridView)
         {
             gridView.CellEnter += DataGrid1OnCellEnter;
-            gridView.CellLeave += DataGrid1OnCellLeave; 
+            gridView.CellLeave += DataGrid1OnCellLeave;
         }
 
         /// <summary>
@@ -78,14 +78,14 @@ namespace EPPlusExcelFormDemo
             var gridView = GetGrid();
             InitFonts(gridView);
             InitEvents(gridView);
-            
+
             for (var row = 0; row < ws.Dimension.Rows; row++)
             {
-                var gridRow = new DataGridViewRow {HeaderCell = {Value = (row + 1).ToString()}};
+                var gridRow = new DataGridViewRow { HeaderCell = { Value = (row + 1).ToString() } };
                 for (var col = 0; col < NumberOfColumns; col++)
                 {
                     var cell = ws.Cells[row + 1, col + 1];
-                    if (cell.Value!=null)
+                    if (cell.Value != null)
                     {
                         using (var uiCell = new DataGridViewTextBoxCell())
                         {
@@ -153,7 +153,7 @@ namespace EPPlusExcelFormDemo
                 textBox_fx.Text = "=" + excelCell.Formula;
                 cell.Value = "=" + excelCell.Formula;
             }
-            else if(excelCell.Value != null)
+            else if (excelCell.Value != null)
             {
                 textBox_fx.Text = excelCell.Value.ToString();
             }
@@ -239,7 +239,7 @@ namespace EPPlusExcelFormDemo
         {
             var frm = new frmFunctions(_package.Workbook.FormulaParserManager.GetImplementedFunctionNames().ToList());
             frm.ShowDialog(this);
-            
+
         }
     }
 }

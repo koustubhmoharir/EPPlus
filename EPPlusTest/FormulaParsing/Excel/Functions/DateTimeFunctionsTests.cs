@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.IO;
@@ -139,7 +139,7 @@ namespace EPPlusTest.Excel.Functions
             var expectedResult = GetTime(10, 11, 12);
             var func = new Time();
             var result = func.Execute(FunctionsHelper.CreateArgs(10, 11, 12), _parsingContext);
-            Assert.AreEqual(expectedResult, result.Result);  
+            Assert.AreEqual(expectedResult, result.Result);
         }
 
         [TestMethod]
@@ -280,7 +280,7 @@ namespace EPPlusTest.Excel.Functions
             var r2 = func.Execute(FunctionsHelper.CreateArgs(dt2arg, -1), _parsingContext);
             var r3 = func.Execute(FunctionsHelper.CreateArgs(dt3arg, 2), _parsingContext);
 
-            var dt1 = DateTime.FromOADate((double) r1.Result);
+            var dt1 = DateTime.FromOADate((double)r1.Result);
             var dt2 = DateTime.FromOADate((double)r2.Result);
             var dt3 = DateTime.FromOADate((double)r3.Result);
 
@@ -367,7 +367,7 @@ namespace EPPlusTest.Excel.Functions
 
             var result = func.Execute(FunctionsHelper.CreateArgs(dt1arg, dt2arg), _parsingContext);
 
-            var roundedResult = Math.Round((double) result.Result, 4);
+            var roundedResult = Math.Round((double)result.Result, 4);
 
             Assert.IsTrue(Math.Abs(0.0861 - roundedResult) < double.Epsilon);
         }
@@ -498,7 +498,7 @@ namespace EPPlusTest.Excel.Functions
                 var expectedDate = new DateTime(2016, 6, 13).ToOADate();
                 var actualDate = ws.Cells["B3"].Value;
                 Assert.AreEqual(expectedDate, actualDate);
-            } 
+            }
         }
 
         [TestMethod]

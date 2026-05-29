@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -57,7 +57,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime
                                                                              startDay);
             return CreateResult(week, DataType.Integer);
         }
-        
-        
+
+
     }
 }

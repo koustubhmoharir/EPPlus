@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -40,7 +40,7 @@ namespace OfficeOpenXml.Packaging
     internal class ZipPackagePart : ZipPackageRelationshipBase, IDisposable
     {
         internal delegate void SaveHandlerDelegate(ZipOutputStream stream, CompressionLevel compressionLevel, string fileName);
-        
+
         internal ZipPackagePart(ZipPackage package, ZipEntry entry)
         {
             Package = package;
@@ -86,7 +86,7 @@ namespace OfficeOpenXml.Packaging
             }
             else
             {
-                _stream.Seek(0, SeekOrigin.Begin);                
+                _stream.Seek(0, SeekOrigin.Begin);
             }
             return _stream;
         }

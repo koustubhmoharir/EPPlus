@@ -1,4 +1,4 @@
-﻿//#define Trace
+//#define Trace
 
 // WinZipAes.cs
 // ------------------------------------------------------------------
@@ -310,7 +310,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
     }
 
 #endif
-    #endregion
+#endregion
 
 
 

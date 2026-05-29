@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Diagnostics.Design;
@@ -69,7 +69,7 @@ namespace EPPlusTest
         public void EvaluateShouldHandleDateArg()
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            var result = _evaluator.Evaluate(new DateTime(2016,6,28), "2016-06-28");
+            var result = _evaluator.Evaluate(new DateTime(2016, 6, 28), "2016-06-28");
             Assert.IsTrue(result);
         }
 

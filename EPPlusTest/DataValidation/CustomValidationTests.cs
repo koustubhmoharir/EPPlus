@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace EPPlusTest.DataValidation
             // Arrange
             var sb = new StringBuilder();
             for (var x = 0; x < 257; x++) sb.Append("x");
-            
+
             // Act
             var validation = _sheet.DataValidations.AddCustomValidation("A1");
             validation.Formula.ExcelFormula = sb.ToString();

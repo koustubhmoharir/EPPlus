@@ -1,4 +1,4 @@
-﻿// Shared.cs
+// Shared.cs
 // ------------------------------------------------------------------
 //
 // Copyright (c) 2006-2011 Dino Chiesa.
@@ -146,8 +146,8 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             if (String.IsNullOrEmpty(pathName)) return pathName;
 
             // trim volume if necessary
-            if ((pathName.Length >= 2)  && ((pathName[1] == ':') && (pathName[2] == '\\')))
-                pathName =  pathName.Substring(3);
+            if ((pathName.Length >= 2) && ((pathName[1] == ':') && (pathName[2] == '\\')))
+                pathName = pathName.Substring(3);
 
             // swap slashes
             pathName = pathName.Replace('\\', '/');
@@ -423,11 +423,11 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             if (hour >= 24) { day++; hour = 0; }
 
             DateTime d = System.DateTime.Now;
-            bool success= false;
+            bool success = false;
             try
             {
                 d = new System.DateTime(year, month, day, hour, minute, second, 0);
-                success= true;
+                success = true;
             }
             catch (System.ArgumentOutOfRangeException)
             {
@@ -436,14 +436,14 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                     try
                     {
                         d = new System.DateTime(1980, 1, 1, hour, minute, second, 0);
-                success= true;
+                        success = true;
                     }
                     catch (System.ArgumentOutOfRangeException)
                     {
                         try
                         {
                             d = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
-                success= true;
+                            success = true;
                         }
                         catch (System.ArgumentOutOfRangeException) { }
 
@@ -467,7 +467,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                         while (second < 0) second++;
                         while (second > 59) second--;
                         d = new System.DateTime(year, month, day, hour, minute, second, 0);
-                        success= true;
+                        success = true;
                     }
                     catch (System.ArgumentOutOfRangeException) { }
                 }

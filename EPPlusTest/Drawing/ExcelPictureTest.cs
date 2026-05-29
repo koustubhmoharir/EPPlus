@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
@@ -14,7 +14,7 @@ namespace EPPlusTest.Drawing
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("TestSheet");
-                
+
                 // Use an existing test resource image to avoid GDI+ issues on Mono
                 var image = EPPlusTest.Properties.Resources.Test1;
 
@@ -24,7 +24,7 @@ namespace EPPlusTest.Drawing
                 Assert.IsNotNull(pic.Image);
                 Assert.IsNotNull(pic.ImageHash);
                 Assert.AreEqual("TestPic", pic.Name);
-                
+
                 // On stable this is ImageConverter. On .NET Core this is ImageCompat.
                 // Either way, the image format should be processed (often Jpeg or Png).
                 // Actually EPPlus tries to guess. If it's a Bitmap it might save as Jpeg or Png.

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -54,14 +54,14 @@ namespace OfficeOpenXml.Drawing.Chart
             Init();
         }
 
-        internal ExcelSurfaceChart(ExcelChart topChart, XmlNode chartNode) : 
+        internal ExcelSurfaceChart(ExcelChart topChart, XmlNode chartNode) :
             base(topChart, chartNode)
         {
             Init();
         }
         private void Init()
         {
- 	        _floor=new ExcelChartSurface(NameSpaceManager, _chartXmlHelper.TopNode.SelectSingleNode("c:floor", NameSpaceManager));
+            _floor = new ExcelChartSurface(NameSpaceManager, _chartXmlHelper.TopNode.SelectSingleNode("c:floor", NameSpaceManager));
             _backWall = new ExcelChartSurface(NameSpaceManager, _chartXmlHelper.TopNode.SelectSingleNode("c:sideWall", NameSpaceManager));
             _sideWall = new ExcelChartSurface(NameSpaceManager, _chartXmlHelper.TopNode.SelectSingleNode("c:backWall", NameSpaceManager));
             SetTypeProperties();
@@ -104,35 +104,35 @@ namespace OfficeOpenXml.Drawing.Chart
             {
                 _chartXmlHelper.SetXmlNodeBool(WIREFRAME_PATH, value);
             }
-        }        
+        }
         internal void SetTypeProperties()
         {
-               if(ChartType==eChartType.SurfaceWireframe || ChartType==eChartType.SurfaceTopViewWireframe)
-               {
-                   Wireframe=true;
-               }
-               else 
-               {
-                   Wireframe=false;
-               }
+            if (ChartType == eChartType.SurfaceWireframe || ChartType == eChartType.SurfaceTopViewWireframe)
+            {
+                Wireframe = true;
+            }
+            else
+            {
+                Wireframe = false;
+            }
 
-                if(ChartType==eChartType.SurfaceTopView || ChartType==eChartType.SurfaceTopViewWireframe)
-                {
-                   View3D.RotY = 0;
-                   View3D.RotX = 90;
-                }
-                else
-                {
-                   View3D.RotY = 20;
-                   View3D.RotX = 15;
-                }
-                View3D.RightAngleAxes = false;
-                View3D.Perspective = 0;
-                Axis[1].CrossBetween = eCrossBetween.MidCat;
+            if (ChartType == eChartType.SurfaceTopView || ChartType == eChartType.SurfaceTopViewWireframe)
+            {
+                View3D.RotY = 0;
+                View3D.RotX = 90;
+            }
+            else
+            {
+                View3D.RotY = 20;
+                View3D.RotX = 15;
+            }
+            View3D.RightAngleAxes = false;
+            View3D.Perspective = 0;
+            Axis[1].CrossBetween = eCrossBetween.MidCat;
         }
         internal override eChartType GetChartType(string name)
         {
-            if(Wireframe)
+            if (Wireframe)
             {
                 if (name == "surfaceChart")
                 {

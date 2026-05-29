@@ -1,4 +1,4 @@
-﻿// ZipFile.cs
+// ZipFile.cs
 //
 // Copyright (c) 2006-2010 Dino Chiesa
 // All rights reserved.
@@ -2952,7 +2952,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                 throw new ZipException(String.Format("{0} is not a valid zip file", fileName), e1);
             }
         }
-        
+
 
         private void _InitInstance(string zipFileName, TextWriter statusMessageWriter)
         {
@@ -3686,7 +3686,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             {
                 if (_readstream == null)
                 {
-                    if (_readName != null || _name !=null)
+                    if (_readName != null || _name != null)
                     {
                         _readstream = File.Open(_readName ?? _name,
                                                 FileMode.Open,

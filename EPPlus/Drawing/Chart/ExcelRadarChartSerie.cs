@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -81,14 +81,14 @@ namespace OfficeOpenXml.Drawing.Chart
             get
             {
                 string marker = GetXmlNodeString(markerPath);
-                if (marker == "" || marker=="none")
+                if (marker == "" || marker == "none")
                 {
                     return eMarkerStyle.None;
                 }
                 else
                 {
                     return (eMarkerStyle)Enum.Parse(typeof(eMarkerStyle), marker, true);
-                }                
+                }
             }
             internal set
             {

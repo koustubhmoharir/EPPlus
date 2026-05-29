@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -237,16 +237,16 @@ namespace OfficeOpenXml
         /// </summary>
         public const int MaxRows = 1048576;
         #endregion
-        
+
 
         internal string tempFolder;
         private string GetTempFile()
-		{
-			if (tempFolder != null && !Directory.Exists(tempFolder))
-			{
-				Directory.CreateDirectory(tempFolder);
-			}
-			return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
+        {
+            if (tempFolder != null && !Directory.Exists(tempFolder))
+            {
+                Directory.CreateDirectory(tempFolder);
+            }
+            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
         }
         internal static FileStream CreateTempStream(string filePath)
         {

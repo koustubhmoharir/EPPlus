@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -48,21 +48,21 @@ namespace OfficeOpenXml.Style
         internal ExcelRichText(XmlNamespaceManager ns, XmlNode topNode, ExcelRichTextCollection collection) :
             base(ns, topNode)
         {
-            SchemaNodeOrder=new string[] {"rPr", "t", "b", "i","strike", "u", "vertAlign" , "sz", "color", "rFont", "family", "scheme", "charset"};
+            SchemaNodeOrder = new string[] { "rPr", "t", "b", "i", "strike", "u", "vertAlign", "sz", "color", "rFont", "family", "scheme", "charset" };
             _collection = collection;
         }
         internal delegate void CallbackDelegate();
         CallbackDelegate _callback;
         internal void SetCallback(CallbackDelegate callback)
         {
-            _callback=callback;
+            _callback = callback;
         }
-        const string TEXT_PATH="d:t";
+        const string TEXT_PATH = "d:t";
         /// <summary>
         /// The text
         /// </summary>
-        public string Text 
-        { 
+        public string Text
+        {
 
             get
             {
@@ -92,7 +92,7 @@ namespace OfficeOpenXml.Style
                 XmlElement elem = TopNode.SelectSingleNode(TEXT_PATH, NameSpaceManager) as XmlElement;
                 if (elem != null)
                 {
-                    return elem.GetAttribute("xml:space")=="preserve";
+                    return elem.GetAttribute("xml:space") == "preserve";
                 }
                 return false;
             }
@@ -135,7 +135,7 @@ namespace OfficeOpenXml.Style
                 {
                     DeleteNode(BOLD_PATH);
                 }
-                if(_callback!=null) _callback();
+                if (_callback != null) _callback();
             }
         }
         const string ITALIC_PATH = "d:rPr/d:i";
@@ -220,8 +220,8 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                string v=GetXmlNodeString(VERT_ALIGN_PATH);
-                if(v=="")
+                string v = GetXmlNodeString(VERT_ALIGN_PATH);
+                if (v == "")
                 {
                     return ExcelVerticalAlignmentFont.None;
                 }
@@ -242,13 +242,15 @@ namespace OfficeOpenXml.Style
                 _collection.ConvertRichtext();
                 if (value == ExcelVerticalAlignmentFont.None)
                 {
-					// If Excel 2010 encounters a vertical align value of blank, it will not load
-					// the spreadsheet. So if None is specified, delete the node, it will be 
-					// recreated if a new value is applied later.
-					DeleteNode(VERT_ALIGN_PATH);
-				} else {
-					SetXmlNodeString(VERT_ALIGN_PATH, value.ToString().ToLowerInvariant());
-				}
+                    // If Excel 2010 encounters a vertical align value of blank, it will not load
+                    // the spreadsheet. So if None is specified, delete the node, it will be 
+                    // recreated if a new value is applied later.
+                    DeleteNode(VERT_ALIGN_PATH);
+                }
+                else
+                {
+                    SetXmlNodeString(VERT_ALIGN_PATH, value.ToString().ToLowerInvariant());
+                }
                 if (_callback != null) _callback();
             }
         }

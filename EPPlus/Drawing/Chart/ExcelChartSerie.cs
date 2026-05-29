@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -37,52 +37,52 @@ using System.Collections;
 
 namespace OfficeOpenXml.Drawing.Chart
 {
-   /// <summary>
-   /// A chart serie
-   /// </summary>
+    /// <summary>
+    /// A chart serie
+    /// </summary>
     public class ExcelChartSerie : XmlHelper
-   {
-       internal ExcelChartSeries _chartSeries;
-       protected XmlNode _node;
-       protected XmlNamespaceManager _ns;
+    {
+        internal ExcelChartSeries _chartSeries;
+        protected XmlNode _node;
+        protected XmlNamespaceManager _ns;
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="chartSeries">Parent collection</param>
         /// <param name="ns">Namespacemanager</param>
         /// <param name="node">Topnode</param>
-       /// <param name="isPivot">Is pivotchart</param>
-       internal ExcelChartSerie(ExcelChartSeries chartSeries, XmlNamespaceManager ns, XmlNode node, bool isPivot)
-           : base(ns,node)
-       {
-           _chartSeries = chartSeries;
-           _node=node;
-           _ns=ns;
-           SchemaNodeOrder = new string[] { "idx", "order","spPr", "tx", "marker", "trendline", "explosion","invertIfNegative", "dLbls", "cat", "val", "xVal", "yVal", "bubbleSize", "bubble3D", "smooth" };
+        /// <param name="isPivot">Is pivotchart</param>
+        internal ExcelChartSerie(ExcelChartSeries chartSeries, XmlNamespaceManager ns, XmlNode node, bool isPivot)
+            : base(ns, node)
+        {
+            _chartSeries = chartSeries;
+            _node = node;
+            _ns = ns;
+            SchemaNodeOrder = new string[] { "idx", "order", "spPr", "tx", "marker", "trendline", "explosion", "invertIfNegative", "dLbls", "cat", "val", "xVal", "yVal", "bubbleSize", "bubble3D", "smooth" };
             var chartType = chartSeries.Chart.ChartType;
             if (chartType == 0)
                 chartType = chartSeries.Chart.GetChartTypeBase(chartSeries.Chart.ChartNode.LocalName);
-           if (chartType == eChartType.XYScatter ||
-               chartType == eChartType.XYScatterLines ||
-               chartType == eChartType.XYScatterLinesNoMarkers ||
-               chartType == eChartType.XYScatterSmooth ||
-               chartType == eChartType.XYScatterSmoothNoMarkers ||
-               chartType == eChartType.Bubble ||
-               chartType == eChartType.Bubble3DEffect)
-           {
-               _seriesTopPath = "c:yVal";
-               _xSeriesTopPath = "c:xVal";
-           }
-           else
-           {
-               _seriesTopPath = "c:val";
-               _xSeriesTopPath = "c:cat";
-           }
-           _seriesPath = string.Format(_seriesPath, _seriesTopPath);
+            if (chartType == eChartType.XYScatter ||
+                chartType == eChartType.XYScatterLines ||
+                chartType == eChartType.XYScatterLinesNoMarkers ||
+                chartType == eChartType.XYScatterSmooth ||
+                chartType == eChartType.XYScatterSmoothNoMarkers ||
+                chartType == eChartType.Bubble ||
+                chartType == eChartType.Bubble3DEffect)
+            {
+                _seriesTopPath = "c:yVal";
+                _xSeriesTopPath = "c:xVal";
+            }
+            else
+            {
+                _seriesTopPath = "c:val";
+                _xSeriesTopPath = "c:cat";
+            }
+            _seriesPath = string.Format(_seriesPath, _seriesTopPath);
 
             var np = string.Format(_xSeriesPath, _xSeriesTopPath, isPivot ? "c:multiLvlStrRef" : "c:numRef");
-            var sp= string.Format(_xSeriesPath, _xSeriesTopPath, isPivot ? "c:multiLvlStrRef" : "c:strRef");
-            if(ExistNode(sp))
+            var sp = string.Format(_xSeriesPath, _xSeriesTopPath, isPivot ? "c:multiLvlStrRef" : "c:strRef");
+            if (ExistNode(sp))
             {
                 _xSeriesPath = sp;
             }
@@ -91,53 +91,53 @@ namespace OfficeOpenXml.Drawing.Chart
                 _xSeriesPath = np;
             }
         }
-       internal void SetID(string id)
-       {
-           SetXmlNodeString("c:idx/@val",id);
-           SetXmlNodeString("c:order/@val", id);
-       }
-       const string headerPath="c:tx/c:v";
-       /// <summary>
-       /// Header for the serie.
-       /// </summary>
-       public string Header 
-       {
-           get
-           {
+        internal void SetID(string id)
+        {
+            SetXmlNodeString("c:idx/@val", id);
+            SetXmlNodeString("c:order/@val", id);
+        }
+        const string headerPath = "c:tx/c:v";
+        /// <summary>
+        /// Header for the serie.
+        /// </summary>
+        public string Header
+        {
+            get
+            {
                 return GetXmlNodeString(headerPath);
             }
             set
             {
                 Cleartx();
-                SetXmlNodeString(headerPath, value);            
+                SetXmlNodeString(headerPath, value);
             }
         }
 
-       private void Cleartx()
-       {
-           var n = TopNode.SelectSingleNode("c:tx", NameSpaceManager);
-           if (n != null)
-           {
-               n.InnerXml = "";
-           }
-       }
-       const string headerAddressPath = "c:tx/c:strRef/c:f";
+        private void Cleartx()
+        {
+            var n = TopNode.SelectSingleNode("c:tx", NameSpaceManager);
+            if (n != null)
+            {
+                n.InnerXml = "";
+            }
+        }
+        const string headerAddressPath = "c:tx/c:strRef/c:f";
         /// <summary>
-       /// Header address for the serie.
-       /// </summary>
-       public ExcelAddressBase HeaderAddress
-       {
-           get
-           {
-               string address = GetXmlNodeString(headerAddressPath);
-               if (address == "")
-               {
-                   return null;
-               }
-               else
-               {
-                   return new ExcelAddressBase(address);
-               }
+        /// Header address for the serie.
+        /// </summary>
+        public ExcelAddressBase HeaderAddress
+        {
+            get
+            {
+                string address = GetXmlNodeString(headerAddressPath);
+                if (address == "")
+                {
+                    return null;
+                }
+                else
+                {
+                    return new ExcelAddressBase(address);
+                }
             }
             set
             {
@@ -150,58 +150,58 @@ namespace OfficeOpenXml.Drawing.Chart
                 SetXmlNodeString(headerAddressPath, ExcelCellBase.GetFullAddress(value.WorkSheet, value.Address));
                 SetXmlNodeString("c:tx/c:strRef/c:strCache/c:ptCount/@val", "0");
             }
-        }        
+        }
         string _seriesTopPath;
-        string _seriesPath = "{0}/c:numRef/c:f";       
-       /// <summary>
-       /// Set this to a valid address or the drawing will be invalid.
-       /// </summary>
-       public virtual string Series
-       {
-           get
-           {
-               return GetXmlNodeString(_seriesPath);
-           }
-           set
-           {
-               CreateNode(_seriesPath,true);
-               SetXmlNodeString(_seriesPath, ExcelCellBase.GetFullAddress(_chartSeries.Chart.WorkSheet.Name, value));
+        string _seriesPath = "{0}/c:numRef/c:f";
+        /// <summary>
+        /// Set this to a valid address or the drawing will be invalid.
+        /// </summary>
+        public virtual string Series
+        {
+            get
+            {
+                return GetXmlNodeString(_seriesPath);
+            }
+            set
+            {
+                CreateNode(_seriesPath, true);
+                SetXmlNodeString(_seriesPath, ExcelCellBase.GetFullAddress(_chartSeries.Chart.WorkSheet.Name, value));
 
-               if (_chartSeries.Chart.PivotTableSource != null)
-               {
+                if (_chartSeries.Chart.PivotTableSource != null)
+                {
                     XmlNode cache = TopNode.SelectSingleNode(string.Format("{0}/c:numRef/c:numCache", _seriesTopPath), _ns);
                     if (cache != null)
                     {
                         cache.ParentNode.RemoveChild(cache);
                     }
                     SetXmlNodeString(string.Format("{0}/c:numRef/c:numCache", _seriesTopPath), "General");
-               }
-               
-               XmlNode lit = TopNode.SelectSingleNode(string.Format("{0}/c:numLit",_seriesTopPath), _ns);
-               if (lit != null)
-               {
-                   lit.ParentNode.RemoveChild(lit);
-               }
-           }
+                }
 
-       }
-       string _xSeriesTopPath;
-       string _xSeriesPath = "{0}/{1}/c:f";
-       /// <summary>
-       /// Set an address for the horisontal labels
-       /// </summary>
-       public virtual string XSeries
-       {
-           get
-           {
-               return GetXmlNodeString(_xSeriesPath);
-           }
-           set
-           {
-               CreateNode(_xSeriesPath, true);
-               SetXmlNodeString(_xSeriesPath, ExcelCellBase.GetFullAddress(_chartSeries.Chart.WorkSheet.Name, value));
+                XmlNode lit = TopNode.SelectSingleNode(string.Format("{0}/c:numLit", _seriesTopPath), _ns);
+                if (lit != null)
+                {
+                    lit.ParentNode.RemoveChild(lit);
+                }
+            }
 
-                if(_xSeriesPath.IndexOf("c:numRef")>0)
+        }
+        string _xSeriesTopPath;
+        string _xSeriesPath = "{0}/{1}/c:f";
+        /// <summary>
+        /// Set an address for the horisontal labels
+        /// </summary>
+        public virtual string XSeries
+        {
+            get
+            {
+                return GetXmlNodeString(_xSeriesPath);
+            }
+            set
+            {
+                CreateNode(_xSeriesPath, true);
+                SetXmlNodeString(_xSeriesPath, ExcelCellBase.GetFullAddress(_chartSeries.Chart.WorkSheet.Name, value));
+
+                if (_xSeriesPath.IndexOf("c:numRef") > 0)
                 {
                     XmlNode cache = TopNode.SelectSingleNode(string.Format("{0}/c:numRef/c:numCache", _xSeriesTopPath), _ns);
                     if (cache != null)
@@ -230,11 +230,11 @@ namespace OfficeOpenXml.Drawing.Chart
                     }
                 }
             }
-       }
-       ExcelChartTrendlineCollection _trendLines = null;
-       /// <summary>
-       /// Access to the trendline collection
-       /// </summary>
+        }
+        ExcelChartTrendlineCollection _trendLines = null;
+        /// <summary>
+        /// Access to the trendline collection
+        /// </summary>
         public ExcelChartTrendlineCollection TrendLines
         {
             get

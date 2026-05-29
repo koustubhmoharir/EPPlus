@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Information
 
             var v = GetFirstValue(arguments);
 
-            if (v is ExcelErrorValue && ((ExcelErrorValue)v).Type==eErrorType.NA)
+            if (v is ExcelErrorValue && ((ExcelErrorValue)v).Type == eErrorType.NA)
             {
                 return CreateResult(true, DataType.Boolean);
             }

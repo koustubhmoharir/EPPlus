@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +11,9 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime.Workdays
         private readonly List<DayOfWeek> _holidayDays = new List<DayOfWeek>();
 
         public HolidayWeekdays()
-            :this(DayOfWeek.Saturday, DayOfWeek.Sunday)
+            : this(DayOfWeek.Saturday, DayOfWeek.Sunday)
         {
-            
+
         }
 
         public int NumberOfWorkdaysPerWeek => 7 - _holidayDays.Count;

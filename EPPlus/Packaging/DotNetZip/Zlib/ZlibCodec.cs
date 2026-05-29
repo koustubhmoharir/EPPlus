@@ -1,4 +1,4 @@
-﻿// ZlibCodec.cs
+// ZlibCodec.cs
 // ------------------------------------------------------------------
 //
 // Copyright (c) 2009 Dino Chiesa and Microsoft Corporation.  
@@ -65,7 +65,7 @@
 
 
 using System;
-using Interop=System.Runtime.InteropServices;
+using Interop = System.Runtime.InteropServices;
 
 namespace OfficeOpenXml.Packaging.Ionic.Zlib
 {
@@ -257,7 +257,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zlib
         /// <returns>Z_OK if all goes well.</returns>
         public int InitializeInflate(int windowBits)
         {
-            this.WindowBits = windowBits;            
+            this.WindowBits = windowBits;
             return InitializeInflate(windowBits, true);
         }
 
@@ -676,10 +676,10 @@ namespace OfficeOpenXml.Packaging.Ionic.Zlib
 
             Array.Copy(dstate.pending, dstate.nextPending, OutputBuffer, NextOut, len);
 
-            NextOut             += len;
-            dstate.nextPending  += len;
-            TotalBytesOut       += len;
-            AvailableBytesOut   -= len;
+            NextOut += len;
+            dstate.nextPending += len;
+            TotalBytesOut += len;
+            AvailableBytesOut -= len;
             dstate.pendingCount -= len;
             if (dstate.pendingCount == 0)
             {

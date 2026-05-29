@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -26,11 +26,11 @@ namespace EPPlusTest.DotNetZip
                 {
                     var entriesProp = zipFileType.GetProperty("Entries", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     var entries = (System.Collections.ICollection)entriesProp.GetValue(zf, null);
-                    
+
                     Assert.AreEqual(2, entries.Count);
-                    
+
                     var containsEntryMethod = zipFileType.GetMethod("ContainsEntry", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { typeof(string) }, null);
-                    
+
                     Assert.IsTrue((bool)containsEntryMethod.Invoke(zf, new object[] { "test.txt" }));
                     Assert.IsTrue((bool)containsEntryMethod.Invoke(zf, new object[] { "test (copy 1).txt" }));
                 }
@@ -56,9 +56,9 @@ namespace EPPlusTest.DotNetZip
 
                 var entriesProp = zipFileType.GetProperty("Entries", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 var entries = (System.Collections.ICollection)entriesProp.GetValue(zf, null);
-                
+
                 Assert.AreEqual(1, entries.Count);
-                
+
                 var containsEntryMethod = zipFileType.GetMethod("ContainsEntry", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { typeof(string) }, null);
                 Assert.IsTrue((bool)containsEntryMethod.Invoke(zf, new object[] { "test.txt" }));
 

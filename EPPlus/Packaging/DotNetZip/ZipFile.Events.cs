@@ -1,4 +1,4 @@
-﻿// ZipFile.Events.cs
+// ZipFile.Events.cs
 // ------------------------------------------------------------------
 //
 // Copyright (c) 2008, 2009, 2011 Dino Chiesa .
@@ -644,8 +644,8 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             EventHandler<ReadProgressEventArgs> rp = ReadProgress;
             if (rp != null)
             {
-                    var e = ReadProgressEventArgs.Started(ArchiveNameForEvent);
-                    rp(this, e);
+                var e = ReadProgressEventArgs.Started(ArchiveNameForEvent);
+                rp(this, e);
             }
         }
 
@@ -654,8 +654,8 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             EventHandler<ReadProgressEventArgs> rp = ReadProgress;
             if (rp != null)
             {
-                    var e = ReadProgressEventArgs.Completed(ArchiveNameForEvent);
-                    rp(this, e);
+                var e = ReadProgressEventArgs.Completed(ArchiveNameForEvent);
+                rp(this, e);
             }
         }
 
@@ -664,11 +664,11 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             EventHandler<ReadProgressEventArgs> rp = ReadProgress;
             if (rp != null)
             {
-                    var e = ReadProgressEventArgs.ByteUpdate(ArchiveNameForEvent,
-                                        entry,
-                                        ReadStream.Position,
-                                        LengthOfReadStream);
-                    rp(this, e);
+                var e = ReadProgressEventArgs.ByteUpdate(ArchiveNameForEvent,
+                                    entry,
+                                    ReadStream.Position,
+                                    LengthOfReadStream);
+                rp(this, e);
             }
         }
 
@@ -920,7 +920,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             if (ep != null)
             {
                 var e = ExtractProgressEventArgs.ExtractAllCompleted(ArchiveNameForEvent,
-                                                                     path );
+                                                                     path);
                 ep(this, e);
             }
         }
@@ -932,7 +932,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             if (ep != null)
             {
                 var e = ExtractProgressEventArgs.ExtractAllStarted(ArchiveNameForEvent,
-                                                                   path );
+                                                                   path);
                 ep(this, e);
             }
         }

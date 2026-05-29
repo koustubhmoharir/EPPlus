@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  * You may amend and distribute as you like, but don't remove this header!
  * 
  * EPPlus provides server-side generation of Excel 2007 spreadsheets.
@@ -44,7 +44,7 @@ namespace EPPlusSamples
     {
         public class SalesDTO
         {
-            public string Title { get; set; }            
+            public string Title { get; set; }
             public string FirstName { get; set; }
             public string MiddleName { get; set; }
             public string LastName { get; set; }
@@ -90,14 +90,14 @@ namespace EPPlusSamples
 
                 var dataRange = wsData.Cells["A1"].LoadFromCollection
                     (
-                    from s in list 
-                    orderby s.LastName, s.FirstName 
-                    select s, 
-                   true, OfficeOpenXml.Table.TableStyles.Medium2);                
-                
+                    from s in list
+                    orderby s.LastName, s.FirstName
+                    select s,
+                   true, OfficeOpenXml.Table.TableStyles.Medium2);
+
                 wsData.Cells[2, 6, dataRange.End.Row, 6].Style.Numberformat.Format = "mm-dd-yy";
                 wsData.Cells[2, 7, dataRange.End.Row, 11].Style.Numberformat.Format = "#,##0";
-                
+
                 dataRange.AutoFitColumns();
 
                 var wsPivot = pck.Workbook.Worksheets.Add("PivotSimple");
@@ -105,18 +105,18 @@ namespace EPPlusSamples
 
                 pivotTable1.RowFields.Add(pivotTable1.Fields[4]);
                 var dataField = pivotTable1.DataFields.Add(pivotTable1.Fields[6]);
-                dataField.Format="#,##0";
+                dataField.Format = "#,##0";
                 pivotTable1.DataOnRows = true;
 
                 var chart = wsPivot.Drawings.AddChart("PivotChart", eChartType.Pie, pivotTable1);
                 chart.SetPosition(1, 0, 4, 0);
                 chart.SetSize(600, 400);
-                    
+
                 var wsPivot2 = pck.Workbook.Worksheets.Add("PivotDateGrp");
                 var pivotTable2 = wsPivot2.PivotTables.Add(wsPivot2.Cells["A3"], dataRange, "PerEmploeeAndQuarter");
 
                 pivotTable2.RowFields.Add(pivotTable2.Fields["Name"]);
-                
+
                 //Add a rowfield
                 var rowField = pivotTable2.RowFields.Add(pivotTable2.Fields["OrderDate"]);
                 //This is a date field so we want to group by Years and quaters. This will create one additional field for years.
@@ -129,10 +129,10 @@ namespace EPPlusSamples
                 quaterField.Items[3].Text = "Q3";
                 quaterField.Items[4].Text = "Q4";
                 quaterField.Items[5].Text = ">"; //Values above max date, but we use auto so its not used
-                
+
                 //Add a pagefield
                 var pageField = pivotTable2.PageFields.Add(pivotTable2.Fields["Title"]);
-                
+
                 //Add the data fields and format them
                 dataField = pivotTable2.DataFields.Add(pivotTable2.Fields["SubTotal"]);
                 dataField.Format = "#,##0";
@@ -140,7 +140,7 @@ namespace EPPlusSamples
                 dataField.Format = "#,##0";
                 dataField = pivotTable2.DataFields.Add(pivotTable2.Fields["Freight"]);
                 dataField.Format = "#,##0";
-                
+
                 //We want the datafields to appear in columns
                 pivotTable2.DataOnRows = false;
 
@@ -152,8 +152,8 @@ namespace EPPlusSamples
         private static List<SalesDTO> GetRandomData()
         {
             List<SalesDTO> ret = new List<SalesDTO>();
-            var firstNames = new string[] {"John", "Gunnar", "Karl", "Alice"};
-            var lastNames = new string[] {"Smith", "Johansson", "Lindeman"};
+            var firstNames = new string[] { "John", "Gunnar", "Karl", "Alice" };
+            var lastNames = new string[] { "Smith", "Johansson", "Lindeman" };
             Random r = new Random();
             for (int i = 0; i < 500; i++)
             {
@@ -163,7 +163,7 @@ namespace EPPlusSamples
                         FirstName = firstNames[r.Next(4)],
                         LastName = lastNames[r.Next(3)],
                         OrderDate = new DateTime(2002, 1, 1).AddDays(r.Next(1000)),
-                        Title="Sales Representative",
+                        Title = "Sales Representative",
                         SubTotal = r.Next(100, 10000),
                         Tax = 0,
                         Freight = 0
@@ -190,13 +190,13 @@ namespace EPPlusSamples
                             ret.Add(new SalesDTO
                             {
                                 Title = sqlReader["Title"].ToString(),
-                                FirstName=sqlReader["FirstName"].ToString(),
-                                MiddleName=sqlReader["MiddleName"].ToString(),
-                                LastName=sqlReader["LastName"].ToString(),
+                                FirstName = sqlReader["FirstName"].ToString(),
+                                MiddleName = sqlReader["MiddleName"].ToString(),
+                                LastName = sqlReader["LastName"].ToString(),
                                 OrderDate = (DateTime)sqlReader["OrderDate"],
                                 SubTotal = (decimal)sqlReader["SubTotal"],
-                                Tax=(decimal)sqlReader["TaxAmt"],
-                                Freight=(decimal)sqlReader["Freight"]
+                                Tax = (decimal)sqlReader["TaxAmt"],
+                                Freight = (decimal)sqlReader["Freight"]
                             });
                         }
                     }

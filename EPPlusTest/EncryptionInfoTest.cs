@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -10,7 +10,7 @@ namespace EPPlusTest
     [TestClass]
     public class EncryptionInfoTest
     {
-        private const string AgileXml = 
+        private const string AgileXml =
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n" +
             "<encryption xmlns=\"http://schemas.microsoft.com/office/2006/encryption\" xmlns:p=\"http://schemas.microsoft.com/office/2006/keyEncryptor/password\" xmlns:c=\"http://schemas.microsoft.com/office/2006/keyEncryptor/certificate\">\r\n" +
             "    <keyData saltSize=\"16\" blockSize=\"16\" keyBits=\"256\" hashSize=\"64\" cipherAlgorithm=\"AES\" cipherChaining=\"ChainingModeCBC\" hashAlgorithm=\"SHA512\" saltValue=\"pa+hrJ3s1zrY6hmVuSa5JQ==\" />\r\n" +
@@ -25,23 +25,23 @@ namespace EPPlusTest
         {
             byte[] xmlBytes = Encoding.UTF8.GetBytes(AgileXml);
             byte[] data = new byte[8 + xmlBytes.Length];
-            
+
             // Major version = 4, Minor version = 4
             byte[] majorBytes = BitConverter.GetBytes((short)4);
             byte[] minorBytes = BitConverter.GetBytes((short)4);
             Array.Copy(majorBytes, 0, data, 0, 2);
             Array.Copy(minorBytes, 0, data, 2, 2);
-            
+
             // 4 extra bytes for header
             Array.Copy(xmlBytes, 0, data, 8, xmlBytes.Length);
 
             EncryptionInfo info = EncryptionInfo.ReadBinary(data);
             Assert.IsInstanceOfType(info, typeof(EncryptionInfoAgile));
-            
+
             EncryptionInfoAgile agile = (EncryptionInfoAgile)info;
             Assert.AreEqual(4, agile.MajorVersion);
             Assert.AreEqual(4, agile.MinorVersion);
-            
+
             // KeyData assertions
             Assert.AreEqual(16, agile.KeyData.SaltSize);
             Assert.AreEqual(16, agile.KeyData.BlockSize);
@@ -51,7 +51,7 @@ namespace EPPlusTest
             Assert.AreEqual(eChainingMode.ChainingModeCBC, agile.KeyData.CipherChaining);
             Assert.AreEqual(eHashAlogorithm.SHA512, agile.KeyData.HashAlgorithm);
             Assert.AreEqual("pa+hrJ3s1zrY6hmVuSa5JQ==", Convert.ToBase64String(agile.KeyData.SaltValue));
-            
+
             // DataIntegrity assertions
             Assert.AreEqual("O6oegHpQVz2uO7Om4oZijSi4kzLiiMZGIjfZlq/EFFO6PZbKitenBqe2or1REaxaI7gO/JmtJzZ1ViucqTaw4g==", Convert.ToBase64String(agile.DataIntegrity.EncryptedHmacValue));
             Assert.AreEqual("nd8i4sEKjsMjVN2gLo91oFN2e7bhMpWKDCAUBEpz4GW6NcE3hBXDobLksZvQGwLrPj0SUVzQA8VuDMyjMAfVCA==", Convert.ToBase64String(agile.DataIntegrity.EncryptedHmacKey));
@@ -83,7 +83,7 @@ namespace EPPlusTest
             XmlNode topNode = doc.SelectSingleNode("//p:encryptedKey", nsm);
 
             EncryptionInfoAgile.EncryptionKeyEncryptor encryptor = new EncryptionInfoAgile.EncryptionKeyEncryptor(nsm, topNode);
-            
+
             // Test all the byte[] setters/getters
             byte[] dummyBytes = new byte[] { 1, 2, 3 };
             encryptor.SaltValue = dummyBytes;
@@ -211,7 +211,7 @@ namespace EPPlusTest
         {
             byte[] xmlBytes = Encoding.UTF8.GetBytes(AgileXml);
             byte[] data = new byte[8 + xmlBytes.Length];
-            
+
             byte[] majorBytes = BitConverter.GetBytes((short)4);
             byte[] minorBytes = BitConverter.GetBytes((short)4);
             Array.Copy(majorBytes, 0, data, 0, 2);
@@ -226,7 +226,7 @@ namespace EPPlusTest
                 {
                     EncryptionInfo info = EncryptionInfo.ReadFile(fs);
                     Assert.IsInstanceOfType(info, typeof(EncryptionInfoAgile));
-                    
+
                     EncryptionInfoAgile agile = (EncryptionInfoAgile)info;
                     Assert.AreEqual(4, agile.MajorVersion);
                     Assert.AreEqual(4, agile.MinorVersion);

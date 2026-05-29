@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -187,7 +187,7 @@ namespace OfficeOpenXml.DataValidation.Formulas
                 if (@value.StartsWith("\"") && @value.EndsWith("\""))
                 {
                     @value = @value.TrimStart('"').TrimEnd('"');
-                    var items = @value.Split(new char[]{','}, StringSplitOptions.RemoveEmptyEntries);
+                    var items = @value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var item in items)
                     {
                         Values.Add(item);
@@ -220,7 +220,7 @@ namespace OfficeOpenXml.DataValidation.Formulas
             private set;
         }
 
-        protected override string  GetValueAsString()
+        protected override string GetValueAsString()
         {
             var sb = new StringBuilder();
             foreach (var val in Values)

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -65,7 +65,7 @@ namespace OfficeOpenXml
         ///<param name="address">The address</param>
         public ExcelCellAddress(string address)
         {
-            this.Address = address; 
+            this.Address = address;
         }
         /// <summary>
         /// Row
@@ -83,7 +83,7 @@ namespace OfficeOpenXml
                     throw new ArgumentOutOfRangeException("value", "Row cannot be less than 1.");
                 }
                 this._row = value;
-                if(_column>0) 
+                if (_column > 0)
                     _address = ExcelCellBase.GetAddress(_row, _column);
                 else
                     _address = "#REF!";

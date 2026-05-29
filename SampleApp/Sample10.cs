@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  * 
  * All rights reserved.
@@ -43,25 +43,25 @@ namespace EPPlusSamples
     public static class Sample10
     {
         public static void RunSample10(DirectoryInfo outputDir)
-        {            
+        {
             //Create a Sample10 directory...
-            if(!Directory.Exists(outputDir.FullName + @"\Sample10"))
+            if (!Directory.Exists(outputDir.FullName + @"\Sample10"))
             {
                 outputDir.CreateSubdirectory("Sample10");
             }
-            outputDir=new DirectoryInfo(outputDir + @"\Sample10");
+            outputDir = new DirectoryInfo(outputDir + @"\Sample10");
 
             //create the three FileInfo objects...
             FileInfo templateFile = new FileInfo(outputDir.FullName + @"\Template.xlsx");
             if (templateFile.Exists)
             {
-                templateFile.Delete(); 
+                templateFile.Delete();
                 templateFile = new FileInfo(outputDir.FullName + @"\Template.xlsx");
             }
             FileInfo answerFile = new FileInfo(outputDir.FullName + @"\Answers.xlsx");
             if (answerFile.Exists)
             {
-                answerFile.Delete();  
+                answerFile.Delete();
                 answerFile = new FileInfo(outputDir.FullName + @"\Answers.xlsx");
             }
 
@@ -94,9 +94,9 @@ namespace EPPlusSamples
                 var sheet = package.Workbook.Worksheets.Add("Quiz");
                 sheet.View.ShowGridLines = false;
                 sheet.View.ShowHeaders = false;
-                using(var range=sheet.Cells["A:XFD"])
+                using (var range = sheet.Cells["A:XFD"])
                 {
-                    range.Style.Fill.PatternType=ExcelFillStyle.Solid;
+                    range.Style.Fill.PatternType = ExcelFillStyle.Solid;
                     range.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
                     range.Style.Font.Name = "Broadway";
                     range.Style.Hidden = true;
@@ -188,7 +188,7 @@ namespace EPPlusSamples
 
             //Now lets correct the user form...
             var packAnswers = new ExcelPackage(answerFile, "EPPlus");    //Supply the password, so the file can be decrypted
-            var packUser =  new ExcelPackage(JKAnswerFile, "JK");        //Supply the password, so the file can be decrypted
+            var packUser = new ExcelPackage(JKAnswerFile, "JK");        //Supply the password, so the file can be decrypted
 
             var wsAnswers = packAnswers.Workbook.Worksheets[1];
             var wsUser = packUser.Workbook.Worksheets[1];

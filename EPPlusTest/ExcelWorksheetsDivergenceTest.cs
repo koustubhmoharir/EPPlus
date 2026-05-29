@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -32,14 +32,14 @@ namespace EPPlusTest
             using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("SyncTest");
-                
+
                 var appXml = pck.Workbook.Properties.ExtendedPropertiesXml;
                 var nsm = new XmlNamespaceManager(appXml.NameTable);
                 nsm.AddNamespace("xp", "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties");
                 nsm.AddNamespace("vt", "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes");
 
                 var titlesNode = appXml.SelectSingleNode("//xp:TitlesOfParts/vt:vector", nsm);
-                
+
                 if (titlesNode != null)
                 {
                     bool containsSheet = false;
@@ -82,7 +82,7 @@ namespace EPPlusTest
             {
                 var ws = pck.Workbook.Worksheets.Add("Source");
                 ws.Cells["A1:B2"].Merge = true;
-                
+
                 var wsCopy = pck.Workbook.Worksheets.Add("Copy", ws);
                 Assert.AreEqual(1, wsCopy.MergedCells.Count, "Merged cells count should be preserved");
                 Assert.AreEqual("A1:B2", wsCopy.MergedCells[0], "Merged address should be preserved");
@@ -96,7 +96,7 @@ namespace EPPlusTest
             {
                 pck.Workbook.CreateVBAProject();
                 var ws = pck.Workbook.Worksheets.Add("SheetWithVBA");
-                
+
                 bool exists = false;
                 foreach (var m in pck.Workbook.VbaProject.Modules)
                 {
@@ -113,8 +113,8 @@ namespace EPPlusTest
             {
                 var ws = pck.Workbook.Worksheets.Add("TableTest");
                 var table = ws.Tables.Add(ws.Cells["A1:B2"], "Table1");
-                
-                var nextTableIdField = typeof(ExcelWorkbook).GetField("_nextTableID", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic );
+
+                var nextTableIdField = typeof(ExcelWorkbook).GetField("_nextTableID", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
                 if (nextTableIdField != null)
                 {
                     int nextTableId = (int)nextTableIdField.GetValue(pck.Workbook);

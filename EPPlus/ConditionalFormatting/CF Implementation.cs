@@ -1,4 +1,4 @@
-﻿#region TODO
+#region TODO
 //TODO: Add the "DataBar" extended options
 //TODO: Add tests for all the rules
 //TODO: Add the IconSet options

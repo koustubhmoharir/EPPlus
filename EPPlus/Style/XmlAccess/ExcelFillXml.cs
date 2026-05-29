@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -39,7 +39,7 @@ namespace OfficeOpenXml.Style.XmlAccess
     /// <summary>
     /// Xml access class for fills
     /// </summary>
-    public class ExcelFillXml : StyleXmlHelper 
+    public class ExcelFillXml : StyleXmlHelper
     {
         internal ExcelFillXml(XmlNamespaceManager nameSpaceManager)
             : base(nameSpaceManager)
@@ -48,7 +48,7 @@ namespace OfficeOpenXml.Style.XmlAccess
             _backgroundColor = new ExcelColorXml(NameSpaceManager);
             _patternColor = new ExcelColorXml(NameSpaceManager);
         }
-        internal ExcelFillXml(XmlNamespaceManager nsm, XmlNode topNode):
+        internal ExcelFillXml(XmlNamespaceManager nsm, XmlNode topNode) :
             base(nsm, topNode)
         {
             PatternType = GetPatternType(GetXmlNodeString(fillPatternTypePath));
@@ -90,7 +90,7 @@ namespace OfficeOpenXml.Style.XmlAccess
             }
             set
             {
-                _fillPatternType=value;
+                _fillPatternType = value;
             }
         }
         protected ExcelColorXml _patternColor = null;
@@ -122,7 +122,7 @@ namespace OfficeOpenXml.Style.XmlAccess
             }
             internal set
             {
-                _backgroundColor=value;
+                _backgroundColor = value;
             }
         }
         #endregion

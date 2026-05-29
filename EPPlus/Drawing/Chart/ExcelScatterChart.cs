@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -61,19 +61,19 @@ namespace OfficeOpenXml.Drawing.Chart
         }
         private void SetTypeProperties()
         {
-           /***** ScatterStyle *****/
-           if(ChartType == eChartType.XYScatter ||
-              ChartType == eChartType.XYScatterLines ||
-              ChartType == eChartType.XYScatterLinesNoMarkers)
-           {
-               ScatterStyle = eScatterStyle.LineMarker;
-          }
-           else if (
-              ChartType == eChartType.XYScatterSmooth ||
-              ChartType == eChartType.XYScatterSmoothNoMarkers) 
-           {
-               ScatterStyle = eScatterStyle.SmoothMarker;
-           }
+            /***** ScatterStyle *****/
+            if (ChartType == eChartType.XYScatter ||
+               ChartType == eChartType.XYScatterLines ||
+               ChartType == eChartType.XYScatterLinesNoMarkers)
+            {
+                ScatterStyle = eScatterStyle.LineMarker;
+            }
+            else if (
+               ChartType == eChartType.XYScatterSmooth ||
+               ChartType == eChartType.XYScatterSmoothNoMarkers)
+            {
+                ScatterStyle = eScatterStyle.SmoothMarker;
+            }
         }
         #region "Grouping Enum Translation"
         string _scatterTypePath = "c:scatterStyle/@val";
@@ -133,7 +133,7 @@ namespace OfficeOpenXml.Drawing.Chart
         {
             if (name == "scatterChart")
             {
-                if (ScatterStyle==eScatterStyle.LineMarker)
+                if (ScatterStyle == eScatterStyle.LineMarker)
                 {
                     if (((ExcelScatterChartSerie)Series[0]).Marker == eMarkerStyle.None)
                     {
@@ -141,7 +141,7 @@ namespace OfficeOpenXml.Drawing.Chart
                     }
                     else
                     {
-                        if(ExistNode("c:ser/c:spPr/a:ln/noFill"))
+                        if (ExistNode("c:ser/c:spPr/a:ln/noFill"))
                         {
                             return eChartType.XYScatter;
                         }

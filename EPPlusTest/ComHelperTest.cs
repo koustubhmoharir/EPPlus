@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using OfficeOpenXml.Packaging.Ionic.Zip;
@@ -12,7 +12,7 @@ namespace EPPlusTest
         public void TestComHelperMethods()
         {
             var helper = new ComHelper();
-            
+
             // 1. GetZipLibraryVersion
             var version = helper.GetZipLibraryVersion();
             Assert.IsNotNull(version);

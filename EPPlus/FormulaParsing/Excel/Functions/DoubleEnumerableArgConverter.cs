@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,17 +41,17 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
                     {
                         foreach (var cell in arg.ValueAsRangeInfo)
                         {
-                            if(!ignoreErrors && cell.IsExcelError) throw new ExcelErrorValueException(ExcelErrorValue.Parse(cell.Value.ToString()));
+                            if (!ignoreErrors && cell.IsExcelError) throw new ExcelErrorValueException(ExcelErrorValue.Parse(cell.Value.ToString()));
                             if (!CellStateHelper.ShouldIgnore(ignoreHidden, cell, context) && ConvertUtil.IsNumeric(cell.Value))
                             {
                                 var val = new ExcelDoubleCellValue(cell.ValueDouble, cell.Row);
                                 argList.Add(val);
-                            }       
+                            }
                         }
                     }
                     else
                     {
-                        if(!ignoreErrors && arg.ValueIsExcelError) throw new ExcelErrorValueException(arg.ValueAsExcelErrorValue);
+                        if (!ignoreErrors && arg.ValueIsExcelError) throw new ExcelErrorValueException(arg.ValueAsExcelErrorValue);
                         if (ConvertUtil.IsNumeric(arg.Value) && !CellStateHelper.ShouldIgnore(ignoreHidden, arg, context))
                         {
                             var val = new ExcelDoubleCellValue(ConvertUtil.GetValueDouble(arg.Value));

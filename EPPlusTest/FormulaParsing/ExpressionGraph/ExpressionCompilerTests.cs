@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace EPPlusTest.FormulaParsing.ExpressionGraph
     {
         private IExpressionCompiler _expressionCompiler;
         private ExpGraph _graph;
-        
+
         [TestInitialize]
         public void Setup()
         {

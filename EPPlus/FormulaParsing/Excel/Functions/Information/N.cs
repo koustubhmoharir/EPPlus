@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,10 +14,10 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Information
         {
             ValidateArguments(arguments, 1);
             var arg = GetFirstValue(arguments);
-            
+
             if (arg is bool)
             {
-                var val = (bool) arg ? 1d : 0d;
+                var val = (bool)arg ? 1d : 0d;
                 return CreateResult(val, DataType.Decimal);
             }
             else if (IsNumeric(arg))

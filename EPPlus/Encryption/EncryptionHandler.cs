@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -55,12 +55,12 @@ namespace OfficeOpenXml.Encryption
 
         private string tempFolder;
         private string GetTempFile()
-		{
-			if (tempFolder != null && !Directory.Exists(tempFolder))
-			{
-				Directory.CreateDirectory(tempFolder);
-			}
-			return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
+        {
+            if (tempFolder != null && !Directory.Exists(tempFolder))
+            {
+                Directory.CreateDirectory(tempFolder);
+            }
+            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
         }
 
         public Stream DecryptPackage(string fileName, string password)

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -52,7 +52,7 @@ namespace OfficeOpenXml.DataValidation.Contracts
         /// <summary>
         /// Controls how Excel will handle invalid values.
         /// </summary>
-        ExcelDataValidationWarningStyle ErrorStyle{ get; set; }
+        ExcelDataValidationWarningStyle ErrorStyle { get; set; }
         /// <summary>
         /// True if input message should be shown
         /// </summary>

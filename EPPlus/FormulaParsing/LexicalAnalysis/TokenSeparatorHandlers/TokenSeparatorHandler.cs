@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -42,7 +42,7 @@ namespace OfficeOpenXml.FormulaParsing.LexicalAnalysis.TokenSeparatorHandlers
     public static class TokenSeparatorHandler
     {
         private static SeparatorHandler[] _handlers = new SeparatorHandler[]
-        { 
+        {
             new StringHandler(),
             new BracketHandler(),
             new SheetnameHandler(),
@@ -59,9 +59,9 @@ namespace OfficeOpenXml.FormulaParsing.LexicalAnalysis.TokenSeparatorHandlers
         /// <returns>Returns true if the tokenseparator was handled.</returns>
         public static bool Handle(char c, Token tokenSeparator, TokenizerContext context, ITokenIndexProvider tokenIndexProvider)
         {
-            foreach(var handler in _handlers)
+            foreach (var handler in _handlers)
             {
-                if(handler.Handle(c, tokenSeparator, context, tokenIndexProvider))
+                if (handler.Handle(c, tokenSeparator, context, tokenIndexProvider))
                 {
                     return true;
                 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,7 +31,7 @@ namespace EPPlusTest
                     var stylesDict = new System.Collections.Generic.Dictionary<string, string>();
                     string[] styles = a1.Comment.Style
                         .Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach(var s in styles)
+                    foreach (var s in styles)
                     {
                         string[] split = s.Split(':');
                         if (split.Length == 2)

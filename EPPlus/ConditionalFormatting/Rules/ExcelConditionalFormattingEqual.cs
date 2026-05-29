@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -38,86 +38,86 @@ using OfficeOpenXml.ConditionalFormatting.Contracts;
 
 namespace OfficeOpenXml.ConditionalFormatting
 {
-  /// <summary>
-  /// ExcelConditionalFormattingEqual
-  /// </summary>
-  public class ExcelConditionalFormattingEqual
-    : ExcelConditionalFormattingRule,
-    IExcelConditionalFormattingEqual
-  {
-    /****************************************************************************************/
-
-    #region Constructors
     /// <summary>
-    /// 
+    /// ExcelConditionalFormattingEqual
     /// </summary>
-      /// <param name="address"></param>
-      /// <param name="priority"></param>
-      /// <param name="worksheet"></param>
-    /// <param name="itemElementNode"></param>
-    /// <param name="namespaceManager"></param>
-    internal ExcelConditionalFormattingEqual(
-      ExcelAddress address,
-      int priority,
-      ExcelWorksheet worksheet,
-      XmlNode itemElementNode,
-      XmlNamespaceManager namespaceManager)
-      : base(
-        eExcelConditionalFormattingRuleType.Equal,
-        address,
-        priority,
-        worksheet,
-        itemElementNode,
-        (namespaceManager == null) ? worksheet.NameSpaceManager : namespaceManager)
+    public class ExcelConditionalFormattingEqual
+      : ExcelConditionalFormattingRule,
+      IExcelConditionalFormattingEqual
     {
-        if (itemElementNode==null) //Set default values and create attributes if needed
+        /****************************************************************************************/
+
+        #region Constructors
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="priority"></param>
+        /// <param name="worksheet"></param>
+        /// <param name="itemElementNode"></param>
+        /// <param name="namespaceManager"></param>
+        internal ExcelConditionalFormattingEqual(
+          ExcelAddress address,
+          int priority,
+          ExcelWorksheet worksheet,
+          XmlNode itemElementNode,
+          XmlNamespaceManager namespaceManager)
+          : base(
+            eExcelConditionalFormattingRuleType.Equal,
+            address,
+            priority,
+            worksheet,
+            itemElementNode,
+            (namespaceManager == null) ? worksheet.NameSpaceManager : namespaceManager)
         {
-            Operator = eExcelConditionalFormattingOperatorType.Equal;
-            Formula = string.Empty;
+            if (itemElementNode == null) //Set default values and create attributes if needed
+            {
+                Operator = eExcelConditionalFormattingOperatorType.Equal;
+                Formula = string.Empty;
+            }
         }
-    }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="priority"></param>
-    /// <param name="address"></param>
-    /// <param name="worksheet"></param>
-    /// <param name="itemElementNode"></param>
-    internal ExcelConditionalFormattingEqual(
-      ExcelAddress address,
-      int priority,
-      ExcelWorksheet worksheet,
-      XmlNode itemElementNode)
-      : this(
-        address,
-        priority,
-        worksheet,
-        itemElementNode,
-        null)
-    {
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <param name="address"></param>
+        /// <param name="worksheet"></param>
+        /// <param name="itemElementNode"></param>
+        internal ExcelConditionalFormattingEqual(
+          ExcelAddress address,
+          int priority,
+          ExcelWorksheet worksheet,
+          XmlNode itemElementNode)
+          : this(
+            address,
+            priority,
+            worksheet,
+            itemElementNode,
+            null)
+        {
+        }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="priority"></param>
-    /// <param name="address"></param>
-    /// <param name="worksheet"></param>
-    internal ExcelConditionalFormattingEqual(
-      ExcelAddress address,
-      int priority,
-      ExcelWorksheet worksheet)
-      : this(
-        address,
-        priority,
-        worksheet,
-        null,
-        null)
-    {
-    }
-    #endregion Constructors
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <param name="address"></param>
+        /// <param name="worksheet"></param>
+        internal ExcelConditionalFormattingEqual(
+          ExcelAddress address,
+          int priority,
+          ExcelWorksheet worksheet)
+          : this(
+            address,
+            priority,
+            worksheet,
+            null,
+            null)
+        {
+        }
+        #endregion Constructors
 
-    /****************************************************************************************/
-  }
+        /****************************************************************************************/
+    }
 }

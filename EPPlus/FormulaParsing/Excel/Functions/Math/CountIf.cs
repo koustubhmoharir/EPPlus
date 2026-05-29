@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,9 +63,9 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Math
             }
             else if (range.Value is IEnumerable<FunctionArgument>)
             {
-                foreach (var arg in (IEnumerable<FunctionArgument>) range.Value)
+                foreach (var arg in (IEnumerable<FunctionArgument>)range.Value)
                 {
-                    if(Evaluate(arg.Value, criteria))
+                    if (Evaluate(arg.Value, criteria))
                     {
                         result++;
                     }

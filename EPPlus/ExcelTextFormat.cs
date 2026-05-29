@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -90,10 +90,10 @@ namespace OfficeOpenXml
             TextQualifier = '\0';
             EOL = "\r\n";
             Culture = CultureInfo.InvariantCulture;
-            DataTypes=null;
+            DataTypes = null;
             SkipLinesBeginning = 0;
             SkipLinesEnd = 0;
-            Encoding=Encoding.ASCII;
+            Encoding = Encoding.ASCII;
         }
         /// <summary>
         /// Delimiter character
@@ -102,7 +102,7 @@ namespace OfficeOpenXml
         /// <summary>
         /// Text qualifier character 
         /// </summary>
-        public char TextQualifier {get; set; }
+        public char TextQualifier { get; set; }
         /// <summary>
         /// End of line characters. Default CRLF
         /// </summary>
@@ -114,7 +114,7 @@ namespace OfficeOpenXml
         /// <summary>
         /// Culture used when parsing. Default CultureInfo.InvariantCulture
         /// </summary>
-        public CultureInfo Culture {get; set; }
+        public CultureInfo Culture { get; set; }
         /// <summary>
         /// Number of lines skiped in the begining of the file. Default 0.
         /// </summary>

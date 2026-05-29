@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -53,12 +53,12 @@ namespace OfficeOpenXml
         /// <param name="nsm"></param>
         /// <param name="topNode">The topnode of the worksheet</param>
         /// <param name="workSheet">Worksheet reference</param>
-        internal  ExcelBackgroundImage(XmlNamespaceManager nsm, XmlNode topNode, ExcelWorksheet workSheet) :
+        internal ExcelBackgroundImage(XmlNamespaceManager nsm, XmlNode topNode, ExcelWorksheet workSheet) :
             base(nsm, topNode)
         {
             _workSheet = workSheet;
         }
-        
+
         const string BACKGROUNDPIC_PATH = "d:picture/@r:id";
         /// <summary>
         /// The background image of the worksheet. 
@@ -141,7 +141,7 @@ namespace OfficeOpenXml
 
                 //Delete the relation
                 _workSheet.Part.DeleteRelationship(relID);
-                
+
                 // Keep the package image cache in sync with the removed relationship.
                 // RemoveImage decrements the reference count and deletes the part only
                 // when it is no longer shared by any other drawing.
@@ -149,7 +149,7 @@ namespace OfficeOpenXml
                 {
                     _workSheet.Workbook._package.RemoveImage(ii.Hash);
                 }
-                
+
             }
         }
     }

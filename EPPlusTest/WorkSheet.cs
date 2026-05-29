@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -2521,54 +2521,54 @@ namespace EPPlusTest
                 Assert.AreEqual("'Sheet2'!M3", sheet1.Cells[2, 2].Formula);
                 Assert.AreEqual("Hello, world!", sheet1.Cells[2, 2].Value);
             }
-    }
+        }
 
-    [TestMethod]
-    public void CrossSheetInsertRowAfterReferencesHasNoEffect()
-    {
-      FileInfo file = new FileInfo("report.xlsx");
-      using (ExcelPackage package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
-      {
-        var sheet = package.Workbook.Worksheets.Add("New Sheet");
-        var otherSheet = package.Workbook.Worksheets.Add("Other Sheet");
-        sheet.Cells[3, 3].Formula = "'Other Sheet'!C3";
-        otherSheet.Cells[3, 3].Formula = "45";
-        otherSheet.InsertRow(5, 1);
-        Assert.AreEqual("'Other Sheet'!C3", sheet.Cells[3, 3].Formula);
-      }
-    }
+        [TestMethod]
+        public void CrossSheetInsertRowAfterReferencesHasNoEffect()
+        {
+            FileInfo file = new FileInfo("report.xlsx");
+            using (ExcelPackage package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
+            {
+                var sheet = package.Workbook.Worksheets.Add("New Sheet");
+                var otherSheet = package.Workbook.Worksheets.Add("Other Sheet");
+                sheet.Cells[3, 3].Formula = "'Other Sheet'!C3";
+                otherSheet.Cells[3, 3].Formula = "45";
+                otherSheet.InsertRow(5, 1);
+                Assert.AreEqual("'Other Sheet'!C3", sheet.Cells[3, 3].Formula);
+            }
+        }
 
-    [TestMethod]
-    public void CrossSheetInsertColumnAfterReferencesHasNoEffect()
-    {
-      FileInfo file = new FileInfo("report.xlsx");
-      using (ExcelPackage package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
-      {
-        var sheet = package.Workbook.Worksheets.Add("New Sheet");
-        var otherSheet = package.Workbook.Worksheets.Add("Other Sheet");
-        sheet.Cells[3, 3].Formula = "'Other Sheet'!C3";
-        otherSheet.Cells[3, 3].Formula = "45";
-        otherSheet.InsertColumn(5, 1);
-        Assert.AreEqual("'Other Sheet'!C3", sheet.Cells[3, 3].Formula);
-      }
-    }
+        [TestMethod]
+        public void CrossSheetInsertColumnAfterReferencesHasNoEffect()
+        {
+            FileInfo file = new FileInfo("report.xlsx");
+            using (ExcelPackage package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
+            {
+                var sheet = package.Workbook.Worksheets.Add("New Sheet");
+                var otherSheet = package.Workbook.Worksheets.Add("Other Sheet");
+                sheet.Cells[3, 3].Formula = "'Other Sheet'!C3";
+                otherSheet.Cells[3, 3].Formula = "45";
+                otherSheet.InsertColumn(5, 1);
+                Assert.AreEqual("'Other Sheet'!C3", sheet.Cells[3, 3].Formula);
+            }
+        }
 
-    [TestMethod]
-    public void CrossSheetReferenceIsUpdatedWhenSheetIsRenamed()
-    {
-      FileInfo file = new FileInfo("report.xlsx");
-      using (ExcelPackage package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
-      {
-        var sheet = package.Workbook.Worksheets.Add("New Sheet");
-        var otherSheet = package.Workbook.Worksheets.Add("Other Sheet");
-        sheet.Cells[3, 3].Formula = "'Other Sheet'!C3";
-        otherSheet.Cells[3, 3].Formula = "45";
-        otherSheet.Name = "New Name";
-        Assert.AreEqual("'New Name'!C3", sheet.Cells[3, 3].Formula);
-      }
-    }
+        [TestMethod]
+        public void CrossSheetReferenceIsUpdatedWhenSheetIsRenamed()
+        {
+            FileInfo file = new FileInfo("report.xlsx");
+            using (ExcelPackage package = new ExcelPackage(file, EPPlusTest.TempFolderHelper.Create()))
+            {
+                var sheet = package.Workbook.Worksheets.Add("New Sheet");
+                var otherSheet = package.Workbook.Worksheets.Add("Other Sheet");
+                sheet.Cells[3, 3].Formula = "'Other Sheet'!C3";
+                otherSheet.Cells[3, 3].Formula = "45";
+                otherSheet.Name = "New Name";
+                Assert.AreEqual("'New Name'!C3", sheet.Cells[3, 3].Formula);
+            }
+        }
 
-    [TestMethod]
+        [TestMethod]
         public void CopyCellUpdatesRelativeCrossSheetReferencesCorrectly()
         {
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
@@ -2972,7 +2972,7 @@ namespace EPPlusTest
             using (ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sorting");
-                AddSortingData(ws,1,1);
+                AddSortingData(ws, 1, 1);
                 ws.Cells["A:C"].Sort(2, true);
 
                 AddSortingData(ws, 1, 5);
@@ -2988,7 +2988,7 @@ namespace EPPlusTest
                 ws.Cells["I9"].Value = "aa";
 
 
-                ws.Cells["I:I"].Sort(0,true);
+                ws.Cells["I:I"].Sort(0, true);
                 package.SaveAs(new FileInfo(@"c:\temp\sort.xlsx"));
             }
         }
@@ -2999,18 +2999,18 @@ namespace EPPlusTest
             var addr = ExcelCellBase.GetAddress(row, col, row + 999, col);
             ws.Cells[addr].Style.Fill.PatternType = ExcelFillStyle.Solid;
             ws.Cells[addr].Style.Font.Color.SetColor(Color.White);
-            for (var r = row; r <= row+999; r++)
+            for (var r = row; r <= row + 999; r++)
             {
                 var v = rand.NextDouble() * row;
                 ws.SetValue(r, col, v);
-                ws.SetValue(r, col+1, $"Rad {r} v={v}");
-                ws.SetValue(r, col+2, $"Rad {r} v={v}");
+                ws.SetValue(r, col + 1, $"Rad {r} v={v}");
+                ws.SetValue(r, col + 2, $"Rad {r} v={v}");
                 ws.Cells[r, col].Style.Fill.BackgroundColor.SetColor(r % 3 == 0 ? Color.Red : r % 3 == 1 ? Color.Green : Color.Blue);
                 if (r % 10 == 0)
                 {
-                    ws.Cells[r, col+1, r, col+2].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    ws.Cells[r, col+1].Style.Fill.BackgroundColor.SetColor(Color.LightPink);
-                    ws.Cells[r, col+2].Style.Fill.BackgroundColor.SetColor(Color.LightCyan);
+                    ws.Cells[r, col + 1, r, col + 2].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    ws.Cells[r, col + 1].Style.Fill.BackgroundColor.SetColor(Color.LightPink);
+                    ws.Cells[r, col + 2].Style.Fill.BackgroundColor.SetColor(Color.LightCyan);
                 }
             }
         }

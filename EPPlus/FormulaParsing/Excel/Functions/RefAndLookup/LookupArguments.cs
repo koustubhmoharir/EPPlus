@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -69,7 +69,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup
                 {
                     RangeAddress = arg1.ToString();
                     ArgumentDataType = LookupArgumentDataType.ExcelRange;
-                }  
+                }
             }
             var indexVal = arguments.ElementAt(2);
 
@@ -77,13 +77,13 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup
             {
                 var address = new ExcelAddress(indexVal.Value.ToString());
                 var indexObj = context.ExcelDataProvider.GetRangeValue(address.WorkSheet, address._fromRow, address._fromCol);
-                LookupIndex = (int) _argumentParsers.GetParser(DataType.Integer).Parse(indexObj);
+                LookupIndex = (int)_argumentParsers.GetParser(DataType.Integer).Parse(indexObj);
             }
             else
             {
                 LookupIndex = (int)_argumentParsers.GetParser(DataType.Integer).Parse(arguments.ElementAt(2).Value);
             }
-            
+
             if (arguments.Count() > 3)
             {
                 RangeLookup = (bool)_argumentParsers.GetParser(DataType.Boolean).Parse(arguments.ElementAt(3).Value);
@@ -120,6 +120,6 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup
 
         public ExcelDataProvider.IRangeInfo RangeInfo { get; private set; }
 
-        public LookupArgumentDataType ArgumentDataType { get; private set; } 
+        public LookupArgumentDataType ArgumentDataType { get; private set; }
     }
 }

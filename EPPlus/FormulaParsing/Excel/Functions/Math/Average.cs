@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -72,15 +72,15 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Math
             else
             {
                 var numericValue = GetNumericValue(arg.Value, isInArray);
-				if (numericValue.HasValue)
-				{
-					nValues++;
-					retVal += numericValue.Value;
-				}
-				else if (arg.Value is string && !isInArray)
-				{
-					ThrowExcelErrorValueException(eErrorType.Value);
-				}
+                if (numericValue.HasValue)
+                {
+                    nValues++;
+                    retVal += numericValue.Value;
+                }
+                else if (arg.Value is string && !isInArray)
+                {
+                    ThrowExcelErrorValueException(eErrorType.Value);
+                }
             }
             CheckForAndHandleExcelError(arg);
         }
@@ -91,23 +91,23 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Math
             {
                 return ConvertUtil.GetValueDouble(obj);
             }
-			if (!isInArray)
-			{
-				double number;
-				System.DateTime date;
-				if (obj is bool)
-				{
-					return ConvertUtil.GetValueDouble(obj);
-				}
-				else if (ConvertUtil.TryParseNumericString(obj, out number))
-				{
-					return number;
-				}
-				else if (ConvertUtil.TryParseDateString(obj, out date))
-				{
-					return date.ToOADate();
-				}
-			}
+            if (!isInArray)
+            {
+                double number;
+                System.DateTime date;
+                if (obj is bool)
+                {
+                    return ConvertUtil.GetValueDouble(obj);
+                }
+                else if (ConvertUtil.TryParseNumericString(obj, out number))
+                {
+                    return number;
+                }
+                else if (ConvertUtil.TryParseDateString(obj, out date))
+                {
+                    return date.ToOADate();
+                }
+            }
             return default(double?);
         }
     }

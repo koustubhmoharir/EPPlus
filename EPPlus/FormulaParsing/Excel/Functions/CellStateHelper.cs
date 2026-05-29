@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,8 +33,8 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
         {
             var tokens = c.Tokens;
             if (tokens == null) return false;
-            return c.Tokens.Any(token => 
-                token.TokenType == LexicalAnalysis.TokenType.Function 
+            return c.Tokens.Any(token =>
+                token.TokenType == LexicalAnalysis.TokenType.Function
                 && token.Value.Equals("SUBTOTAL", StringComparison.InvariantCultureIgnoreCase)
                 );
         }

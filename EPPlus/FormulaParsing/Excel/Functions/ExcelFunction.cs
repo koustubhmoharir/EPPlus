@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,7 +47,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
         }
 
         public ExcelFunction(
-            ArgumentCollectionUtil argumentCollectionUtil, 
+            ArgumentCollectionUtil argumentCollectionUtil,
             ArgumentParsers argumentParsers,
             CompileResultValidators compileResultValidators)
         {
@@ -74,12 +74,12 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
         /// <param name="context"></param>
         public virtual void BeforeInvoke(ParsingContext context) { }
 
-        public virtual bool IsLookupFuction 
-        { 
-            get 
-            { 
-                return false; 
-            } 
+        public virtual bool IsLookupFuction
+        {
+            get
+            {
+                return false;
+            }
         }
 
         public virtual bool IsErrorHandlingFunction
@@ -89,7 +89,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Used for some Lookupfunctions to indicate that function arguments should
         /// not be compiled before the function is called.
@@ -98,7 +98,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
         protected object GetFirstValue(IEnumerable<FunctionArgument> val)
         {
             var arg = ((IEnumerable<FunctionArgument>)val).FirstOrDefault();
-            if(arg.Value is ExcelDataProvider.IRangeInfo)
+            if (arg.Value is ExcelDataProvider.IRangeInfo)
             {
                 //var r=((ExcelDataProvider.IRangeInfo)arg);
                 var r = arg.ValueAsRangeInfo;
@@ -106,7 +106,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
             }
             else
             {
-                return arg==null?null:arg.Value;
+                return arg == null ? null : arg.Value;
             }
         }
         /// <summary>
@@ -231,7 +231,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
             {
                 throw new ExcelErrorValueException(eErrorType.Div0);
             }
-            return left/right;
+            return left / right;
         }
 
         protected bool IsNumericString(object value)
@@ -306,7 +306,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
         protected bool IsNumeric(object val)
         {
             if (val == null) return false;
-            return (val.GetType().IsPrimitive || val is double || val is decimal  || val is System.DateTime || val is TimeSpan);
+            return (val.GetType().IsPrimitive || val is double || val is decimal || val is System.DateTime || val is TimeSpan);
         }
 
         //protected virtual bool IsNumber(object obj)
@@ -374,7 +374,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
             var resultList = new List<double>();
             for (var row = startRow; row <= endRow; row++)
             {
-                if(dict.ContainsKey(row))
+                if (dict.ContainsKey(row))
                 {
                     resultList.Add(dict[row]);
                 }
@@ -420,7 +420,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
         /// <param name="result"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        protected virtual double CalculateCollection(IEnumerable<FunctionArgument> collection, double result, Func<FunctionArgument,double,double> action)
+        protected virtual double CalculateCollection(IEnumerable<FunctionArgument> collection, double result, Func<FunctionArgument, double, double> action)
         {
             return _argumentCollectionUtil.CalculateCollection(collection, result, action);
         }

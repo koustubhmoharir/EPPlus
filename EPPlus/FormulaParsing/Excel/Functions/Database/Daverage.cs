@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,14 +32,14 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Database
 {
     public class Daverage : DatabaseFunction
     {
-         public Daverage()
-            : this(new RowMatcher())
+        public Daverage()
+           : this(new RowMatcher())
         {
 
         }
 
-         public Daverage(RowMatcher rowMatcher)
-            : base(rowMatcher)
+        public Daverage(RowMatcher rowMatcher)
+           : base(rowMatcher)
         {
 
         }

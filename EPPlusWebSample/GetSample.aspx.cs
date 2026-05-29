@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  * 
  * All rights reserved.
@@ -131,7 +131,7 @@ namespace EPPlusWebSample
             ExcelPackage pck = new ExcelPackage(new MemoryStream(), Application["Sample3Template"] as Stream);
             var ws = pck.Workbook.Worksheets[1];
             int row = new Random().Next(10) + 10;   //Pick a random row to print the text
-            ws.Cells[row,1].Value = "We make a small change here, after the template has been loaded...";
+            ws.Cells[row, 1].Value = "We make a small change here, after the template has been loaded...";
             ws.Cells[row, 1, row, 5].Style.Fill.PatternType = ExcelFillStyle.Solid;
             ws.Cells[row, 1, row, 5].Style.Fill.BackgroundColor.SetColor(Color.LightGoldenrodYellow);
 
@@ -141,12 +141,12 @@ namespace EPPlusWebSample
         }
         private void Sample4()
         {
-             ExcelPackage pck = new ExcelPackage();
+            ExcelPackage pck = new ExcelPackage();
 
             //Add a worksheet.
-            var ws=pck.Workbook.Worksheets.Add("VBA Sample");
+            var ws = pck.Workbook.Worksheets.Add("VBA Sample");
             ws.Drawings.AddShape("VBASampleRect", eShapeStyle.RoundRect);
-            
+
             //Create a vba project             
             pck.Workbook.CreateVBAProject();
 

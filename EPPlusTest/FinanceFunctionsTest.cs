@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 
@@ -15,7 +15,7 @@ namespace EPPlusTest
                 var ws = pck.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells["A1"].Formula = "PMT(0.08/12, 10, 10000)";
                 ws.Calculate();
-                
+
                 var val = ws.Cells["A1"].Value;
 #if Core
                 Assert.IsNotNull(val);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -71,7 +71,7 @@ namespace EPPlusTest
             {
                 new Implementation(){ Id = "123", Name = "Item 1", Number = 3}
             };
-            var items = objs.Select(x => new {Id = x.Id, Name = x.Name}).ToList();
+            var items = objs.Select(x => new { Id = x.Id, Name = x.Name }).ToList();
             using (var pck = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 var sheet = pck.Workbook.Worksheets.Add("sheet");

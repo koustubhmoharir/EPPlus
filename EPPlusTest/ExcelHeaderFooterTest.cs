@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Drawing;
 using System.Reflection;
@@ -46,10 +46,10 @@ namespace EPPlusTest
                 {
                     bool defaultVal = (bool)scaleProp.GetValue(hf, null);
                     Assert.IsFalse(defaultVal); // In EPPlus, GetXmlNodeBool default should be false if attribute is missing
-                    
+
                     scaleProp.SetValue(hf, true, null);
                     Assert.IsTrue((bool)scaleProp.GetValue(hf, null));
-                    
+
                     scaleProp.SetValue(hf, false, null);
                     Assert.IsFalse((bool)scaleProp.GetValue(hf, null));
                 }
@@ -95,7 +95,7 @@ namespace EPPlusTest
 
                 // Set some initial text
                 hf.OddHeader.CenteredText = "Centred text ";
-                
+
                 Image img = Properties.Resources.Test1;
                 var pic = hf.OddHeader.InsertPicture(img, PictureAlignment.Centered);
 
@@ -154,7 +154,7 @@ namespace EPPlusTest
 
                 Image img = Properties.Resources.Test1;
                 hf.OddHeader.InsertPicture(img, PictureAlignment.Right);
-                
+
                 // Inserting another picture at the same alignment should throw InvalidOperationException
                 hf.OddHeader.InsertPicture(img, PictureAlignment.Right);
             }
@@ -191,7 +191,7 @@ namespace EPPlusTest
                 var hf = ws.HeaderFooter;
 
                 scaleProp.SetValue(hf, true, null);
-                
+
                 using (var ms = new MemoryStream())
                 {
                     package.SaveAs(ms);
@@ -210,7 +210,7 @@ namespace EPPlusTest
 
                 // Set back to false and verify persistence
                 scaleProp.SetValue(hf, false, null);
-                
+
                 using (var ms2 = new MemoryStream())
                 {
                     package.SaveAs(ms2);

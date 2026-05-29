@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -55,7 +55,7 @@ namespace OfficeOpenXml
         public XmlNode TopNode { get; set; }
         internal List<T> _list = new List<T>();
         Dictionary<string, int> _dic = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
-        internal int NextId=0;
+        internal int NextId = 0;
         #region IEnumerable<T> Members
 
         public IEnumerator<T> GetEnumerator()
@@ -96,7 +96,7 @@ namespace OfficeOpenXml
             _list.Add(item);
             if (!_dic.ContainsKey(key.ToLower(CultureInfo.InvariantCulture))) _dic.Add(key.ToLower(CultureInfo.InvariantCulture), _list.Count - 1);
             if (_setNextIdManual) NextId++;
-            return _list.Count-1;
+            return _list.Count - 1;
         }
         /// <summary>
         /// Finds the key 

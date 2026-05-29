@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -43,12 +43,12 @@ namespace OfficeOpenXml.Style
     {
         eStyleClass _cls;
         StyleBase _parent;
-        internal ExcelBorderItem (ExcelStyles styles, OfficeOpenXml.XmlHelper.ChangedEventHandler ChangedEvent, int worksheetID, string address, eStyleClass cls, StyleBase parent) : 
+        internal ExcelBorderItem(ExcelStyles styles, OfficeOpenXml.XmlHelper.ChangedEventHandler ChangedEvent, int worksheetID, string address, eStyleClass cls, StyleBase parent) :
             base(styles, ChangedEvent, worksheetID, address)
-	    {
-            _cls=cls;
+        {
+            _cls = cls;
             _parent = parent;
-	    }
+        }
         /// <summary>
         /// The line style of the border
         /// </summary>
@@ -63,7 +63,7 @@ namespace OfficeOpenXml.Style
                 _ChangedEvent(this, new StyleChangeEventArgs(_cls, eStyleProperty.Style, value, _positionID, _address));
             }
         }
-        ExcelColor _color=null;
+        ExcelColor _color = null;
         /// <summary>
         /// The color of the border
         /// </summary>
@@ -91,7 +91,7 @@ namespace OfficeOpenXml.Style
         {
             int ix = _parent.Index < 0 ? 0 : _parent.Index;
 
-            switch(_cls)
+            switch (_cls)
             {
                 case eStyleClass.BorderTop:
                     return _styles.Borders[ix].Top;

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -47,7 +47,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
         }
 
         public ArgumentCollectionUtil(
-            DoubleEnumerableArgConverter doubleEnumerableArgConverter, 
+            DoubleEnumerableArgConverter doubleEnumerableArgConverter,
             ObjectEnumerableArgConverter objectEnumerableArgConverter)
         {
             _doubleEnumerableArgConverter = doubleEnumerableArgConverter;

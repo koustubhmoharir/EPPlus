@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
@@ -32,7 +32,7 @@ namespace EPPlusTest.FormulaParsing.Excel.Functions.Database
 
                 Assert.IsTrue(database.HasMoreRows);
             }
-            
+
         }
 
         [TestMethod]

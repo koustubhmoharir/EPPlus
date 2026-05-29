@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Linq;
@@ -33,20 +33,20 @@ namespace EPPlusTest.Packaging.DotNetZip
                 var entriesProp = zf.GetType().GetProperty("Entries");
                 var entries = (System.Collections.ICollection)entriesProp.GetValue(zf, null);
                 Assert.AreEqual(2, entries.Count);
-                
+
                 var caseSensitiveProp = zf.GetType().GetProperty("CaseSensitiveRetrieval");
                 Assert.IsFalse((bool)caseSensitiveProp.GetValue(zf, null));
 
                 var indexer = zf.GetType().GetProperty("Item", new[] { typeof(string) });
                 var entry = indexer.GetValue(zf, new object[] { "test.txt" });
-                
+
                 var fileNameProp = entry.GetType().GetProperty("FileName");
                 Assert.AreEqual("TEST.TXT", fileNameProp.GetValue(entry, null));
 
                 caseSensitiveProp.SetValue(zf, true, null);
                 var entry1 = indexer.GetValue(zf, new object[] { "TEST.TXT" });
                 var entry2 = indexer.GetValue(zf, new object[] { "test.txt" });
-                
+
                 Assert.AreEqual("TEST.TXT", fileNameProp.GetValue(entry1, null));
                 Assert.AreEqual("test.txt", fileNameProp.GetValue(entry2, null));
             }
@@ -62,38 +62,38 @@ namespace EPPlusTest.Packaging.DotNetZip
             object zf = CreateZipFile();
             try
             {
-                var content = "åäö"; 
+                var content = "åäö";
                 var addEntryMethod = zf.GetType().GetMethod("AddEntry", new[] { typeof(string), typeof(string) });
                 addEntryMethod.Invoke(zf, new object[] { "test.txt", content });
-                
+
                 using (var ms = new MemoryStream())
                 {
                     var saveMethod = zf.GetType().GetMethod("Save", new[] { typeof(Stream) });
                     saveMethod.Invoke(zf, new object[] { ms });
                     ms.Position = 0;
-                    
+
                     var readMethod = zf.GetType().GetMethod("Read", BindingFlags.Static | BindingFlags.Public, null, new[] { typeof(Stream) }, null);
                     using (var zipRead = (IDisposable)readMethod.Invoke(null, new object[] { ms }))
                     {
                         var indexer = zipRead.GetType().GetProperty("Item", new[] { typeof(string) });
                         var entry = indexer.GetValue(zipRead, new object[] { "test.txt" });
-                        
+
                         using (var entryStream = new MemoryStream())
                         {
                             var extractMethod = entry.GetType().GetMethod("Extract", new[] { typeof(Stream) });
                             extractMethod.Invoke(entry, new object[] { entryStream });
                             var bytes = entryStream.ToArray();
-                            
+
                             var encoding = Encoding.Default;
                             var expectedBytes = encoding.GetBytes(content);
-                            
+
                             var preamble = encoding.GetPreamble();
                             if (preamble.Length > 0 && bytes.Take(preamble.Length).SequenceEqual(preamble))
                             {
                                 bytes = bytes.Skip(preamble.Length).ToArray();
                             }
 
-                            Assert.AreEqual(expectedBytes.Length, bytes.Length, 
+                            Assert.AreEqual(expectedBytes.Length, bytes.Length,
                                 $"Byte length mismatch. Expected: {expectedBytes.Length}, Actual: {bytes.Length}. Encoding: {encoding.EncodingName}");
                             CollectionAssert.AreEqual(expectedBytes, bytes);
                         }

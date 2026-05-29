@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +10,9 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph.FunctionCompilers
     public class IfNaFunctionCompiler : FunctionCompiler
     {
         public IfNaFunctionCompiler(ExcelFunction function)
-            :base(function)
+            : base(function)
         {
-            
+
         }
 
         public override CompileResult Compile(IEnumerable<Expression> children, ParsingContext context)

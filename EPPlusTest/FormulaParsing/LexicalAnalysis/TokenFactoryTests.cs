@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
         [TestCleanup]
         public void Cleanup()
         {
-      
+
         }
 
         [TestMethod]
@@ -160,7 +160,7 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
         public void CreateShouldCreateNamedValueAsExcelAddressToken()
         {
             var input = "NamedValue";
-            _nameValueProvider.Stub(x => x.IsNamedValue("NamedValue","")).Return(true);
+            _nameValueProvider.Stub(x => x.IsNamedValue("NamedValue", "")).Return(true);
             _nameValueProvider.Stub(x => x.IsNamedValue("NamedValue", null)).Return(true);
             var token = _tokenFactory.Create(Enumerable.Empty<Token>(), input);
             Assert.AreEqual(TokenType.NameValue, token.TokenType);

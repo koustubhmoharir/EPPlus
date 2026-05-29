@@ -1,4 +1,4 @@
-﻿// ComHelper.cs
+// ComHelper.cs
 // ------------------------------------------------------------------
 //
 // Copyright (c) 2009 Dino Chiesa.
@@ -24,7 +24,7 @@
 // Created: Tue, 08 Sep 2009  22:03
 //
 
-using Interop=System.Runtime.InteropServices;
+using Interop = System.Runtime.InteropServices;
 
 namespace OfficeOpenXml.Packaging.Ionic.Zip
 {

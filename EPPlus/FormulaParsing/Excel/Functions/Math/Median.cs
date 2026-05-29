@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,8 +45,8 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Math
             }
             else
             {
-                var startIndex = arr.Length/2 - 1;
-                result = (arr[startIndex] + arr[startIndex + 1])/2d;
+                var startIndex = arr.Length / 2 - 1;
+                result = (arr[startIndex] + arr[startIndex + 1]) / 2d;
             }
             return CreateResult(result, DataType.Decimal);
         }

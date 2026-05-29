@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -48,7 +48,7 @@ namespace OfficeOpenXml.Drawing.Chart
         {
         }
 
-        internal ExcelLineChart (ExcelChart topChart, XmlNode chartNode) :
+        internal ExcelLineChart(ExcelChart topChart, XmlNode chartNode) :
             base(topChart, chartNode)
         {
         }
@@ -58,7 +58,7 @@ namespace OfficeOpenXml.Drawing.Chart
             Smooth = false;
         }
         #endregion
-        string MARKER_PATH="c:marker/@val";
+        string MARKER_PATH = "c:marker/@val";
         /// <summary>
         /// If the series has markers
         /// </summary>
@@ -107,44 +107,44 @@ namespace OfficeOpenXml.Drawing.Chart
         }
         internal override eChartType GetChartType(string name)
         {
-               if(name=="lineChart")
-               {
-                   if(Marker)
-                   {
-                       if(Grouping==eGrouping.Stacked)
-                       {
-                           return eChartType.LineMarkersStacked;
-                       }
-                       else if (Grouping == eGrouping.PercentStacked)
-                       {
-                           return eChartType.LineMarkersStacked100;
-                       }
-                       else
-                       {
-                           return eChartType.LineMarkers;
-                       }
-                   }
-                   else
-                   {
-                       if(Grouping==eGrouping.Stacked)
-                       {
-                           return eChartType.LineStacked;
-                       }
-                       else if (Grouping == eGrouping.PercentStacked)
-                       {
-                           return eChartType.LineStacked100;
-                       }
-                       else
-                       {
-                           return eChartType.Line;
-                       }
-                   }
-               }
-               else if (name=="line3DChart")
-               {
-                   return eChartType.Line3D;               
-               }
-               return base.GetChartType(name);
+            if (name == "lineChart")
+            {
+                if (Marker)
+                {
+                    if (Grouping == eGrouping.Stacked)
+                    {
+                        return eChartType.LineMarkersStacked;
+                    }
+                    else if (Grouping == eGrouping.PercentStacked)
+                    {
+                        return eChartType.LineMarkersStacked100;
+                    }
+                    else
+                    {
+                        return eChartType.LineMarkers;
+                    }
+                }
+                else
+                {
+                    if (Grouping == eGrouping.Stacked)
+                    {
+                        return eChartType.LineStacked;
+                    }
+                    else if (Grouping == eGrouping.PercentStacked)
+                    {
+                        return eChartType.LineStacked100;
+                    }
+                    else
+                    {
+                        return eChartType.Line;
+                    }
+                }
+            }
+            else if (name == "line3DChart")
+            {
+                return eChartType.Line3D;
+            }
+            return base.GetChartType(name);
         }
     }
 }

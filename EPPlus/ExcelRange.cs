@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -42,7 +42,7 @@ namespace OfficeOpenXml
     public class ExcelRange : ExcelRangeBase
     {
         #region "Constructors"
-        internal ExcelRange(ExcelWorksheet sheet) : 
+        internal ExcelRange(ExcelWorksheet sheet) :
             base(sheet)
         {
 
@@ -96,7 +96,7 @@ namespace OfficeOpenXml
             int ixStart = address.IndexOf('[');
             if (ixStart == 0) //External Address
             {
-                int ixEnd = address.IndexOf(']',ixStart+1);
+                int ixEnd = address.IndexOf(']', ixStart + 1);
                 if (ixStart >= 0 & ixEnd >= 0)
                 {
                     var external = address.Substring(ixStart + 1, ixEnd - 1);

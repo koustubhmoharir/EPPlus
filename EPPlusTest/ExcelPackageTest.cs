@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
@@ -31,7 +31,7 @@ namespace EPPlusTest
 
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells[1, 1].Value = "Default Constructor Test";
-                
+
 #if Core
                 var bytes = package.GetAsByteArray();
 #else

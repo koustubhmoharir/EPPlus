@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  * 
  * All rights reserved.
@@ -111,7 +111,7 @@ namespace EPPlusSamples
                 newFile.Delete();  // ensures we create a new workbook
                 newFile = new FileInfo(outputDir.FullName + @"\sample6.xlsx");
             }
-            
+
             //Create the workbook
             ExcelPackage pck = new ExcelPackage(newFile);
             //Add the Content sheet
@@ -123,15 +123,15 @@ namespace EPPlusSamples
             ws.Column(2).Width = 60;
             ws.Column(3).Width = 16;
             ws.Column(4).Width = 20;
-            ws.Column(5).Width =20;
-            
+            ws.Column(5).Width = 20;
+
             //This set the outline for column 4 and 5 and hide them
             ws.Column(4).OutlineLevel = 1;
             ws.Column(4).Collapsed = true;
             ws.Column(5).OutlineLevel = 1;
             ws.Column(5).Collapsed = true;
             ws.OutLineSummaryRight = true;
-            
+
             //Headers
             ws.Cells["B1"].Value = "Name";
             ws.Cells["C1"].Value = "Size";
@@ -139,7 +139,7 @@ namespace EPPlusSamples
             ws.Cells["E1"].Value = "Last modified";
             ws.Cells["B1:E1"].Style.Font.Bold = true;
 
-            ws.View.FreezePanes(2,1);
+            ws.View.FreezePanes(2, 1);
             ws.Select("A2");
             //height is 20 pixels 
             double height = 20 * 0.75;
@@ -171,9 +171,9 @@ namespace EPPlusSamples
             shape.Border.LineCap = eLineCap.Round;
             shape.TextAnchoring = eTextAnchoringType.Top;
             shape.TextVertical = eTextVerticalType.Horizontal;
-            shape.TextAnchoringControl=false;
+            shape.TextAnchoringControl = false;
             ws.Calculate();
-            ws.Cells[1,2,row,5].AutoFitColumns();
+            ws.Cells[1, 2, row, 5].AutoFitColumns();
 
             //Add the graph sheet
             AddGraphs(pck, row, dir.FullName);
@@ -210,9 +210,9 @@ namespace EPPlusSamples
             var rt = comment.RichText.Add("This column contains the extensions.");
             rt.Bold = false;
             comment.AutoFit = true;
-            
+
             //Add a comment using the Comment collection
-            comment = ws.Comments.Add(ws.Cells["B3"],"This column contains the size of the files.", "JK");
+            comment = ws.Comments.Add(ws.Cells["B3"], "This column contains the size of the files.", "JK");
             //This sets the size and position. (The position is only when the comment is visible)
             comment.From.Column = 7;
             comment.From.Row = 3;
@@ -260,18 +260,18 @@ namespace EPPlusSamples
                 r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                 r.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(23, 55, 93));
             }
-            
+
             //Use the RichText property to change the font for the directory part of the cell
             var rtDir = ws.Cells["A1"].RichText.Add(dir);
             rtDir.FontName = "Consolas";
-            rtDir.Size=18;
+            rtDir.Size = 18;
 
             //Start with the Extention Size 
-            List<StatItem> lst = new List<StatItem>(_extStat.Values);           
+            List<StatItem> lst = new List<StatItem>(_extStat.Values);
             lst.Sort();
 
             //Add rows
-            int row=AddStatRows(ws, lst, 2, "Extensions", "Size");
+            int row = AddStatRows(ws, lst, 2, "Extensions", "Size");
 
             //Add commets to the Extensions header
             AddComments(ws);
@@ -281,7 +281,7 @@ namespace EPPlusSamples
             //Set top left corner to row 1 column 2
             pieChart.SetPosition(1, 0, 2, 0);
             pieChart.SetSize(400, 400);
-            pieChart.Series.Add(ExcelRange.GetAddress(3, 2, row-1, 2), ExcelRange.GetAddress(3, 1, row-1, 1));
+            pieChart.Series.Add(ExcelRange.GetAddress(3, 2, row - 1, 2), ExcelRange.GetAddress(3, 1, row - 1, 1));
 
             pieChart.Title.Text = "Extension Size";
             //Set datalabels and remove the legend
@@ -291,8 +291,8 @@ namespace EPPlusSamples
             pieChart.Legend.Remove();
 
             //Resort on Count and add the rows
-            lst.Sort((first,second) => first.Count < second.Count ? -1 : first.Count > second.Count ? 1 : 0);
-            row=AddStatRows(ws, lst, 16, "", "Count");
+            lst.Sort((first, second) => first.Count < second.Count ? -1 : first.Count > second.Count ? 1 : 0);
+            row = AddStatRows(ws, lst, 16, "", "Count");
 
             //Add the Doughnut chart
             var doughtnutChart = ws.Drawings.AddChart("crtExtensionCount", eChartType.DoughnutExploded) as ExcelDoughnutChart;
@@ -307,7 +307,7 @@ namespace EPPlusSamples
             doughtnutChart.Style = eChartStyle.Style26; //3D look
             //Top-10 filesize
             _fileSize.Sort();
-            row=AddStatRows(ws, _fileSize, 29, "Files", "Size");
+            row = AddStatRows(ws, _fileSize, 29, "Files", "Size");
             var barChart = ws.Drawings.AddChart("crtFiles", eChartType.BarClustered3D) as ExcelBarChart;
             //3d Settings
             barChart.View3D.RotX = 0;
@@ -356,12 +356,12 @@ namespace EPPlusSamples
                     r.Style.Font.Color.SetColor(Color.White);
                     r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.CenterContinuous;
                     r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    r.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(79 , 129, 189));
+                    r.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(79, 129, 189));
                 }
                 row++;
             }
 
-            int tblStart=row;
+            int tblStart = row;
             //Header 2
             ws.Cells[row, 1].Value = "Name";
             ws.Cells[row, 2].Value = propertyName;
@@ -389,7 +389,7 @@ namespace EPPlusSamples
                     row++;
                 }
             }
-            
+
             //If we have more than 10 items, sum...
             long rest = 0;
             for (int i = 0; i < lst.Count - 10; i++)
@@ -429,7 +429,7 @@ namespace EPPlusSamples
             using (ExcelRange rowRange = ws.Cells[row, 1, row, 2])
             {
                 rowRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                if(row % 2==1)
+                if (row % 2 == 1)
                 {
                     rowRange.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
                 }
@@ -472,9 +472,9 @@ namespace EPPlusSamples
                 if (level < _maxLevels)
                 {
                     row = AddDirectory(ws, subDir, row, height, level + 1, skipIcons);
-                }                           
+                }
             }
-            
+
             //Add files in the directory
             foreach (FileInfo file in dir.GetFiles())
             {
@@ -495,7 +495,7 @@ namespace EPPlusSamples
                 ws.Cells[row, 4].Value = file.CreationTime;
                 ws.Cells[row, 5].Value = file.LastAccessTime;
 
-                ws.Row(row).OutlineLevel = level+1;
+                ws.Row(row).OutlineLevel = level + 1;
 
                 AddStatistics(file);
 
@@ -503,8 +503,8 @@ namespace EPPlusSamples
             }
 
             //Add a subtotal for the directory
-            if (row -1 > prevRow)
-            { 
+            if (row - 1 > prevRow)
+            {
                 ws.Cells[prevRow, 3].Formula = string.Format("SUBTOTAL(9, {0})", ExcelCellBase.GetAddress(prevRow + 1, 3, row - 1, 3));
             }
             else
@@ -524,14 +524,14 @@ namespace EPPlusSamples
             if (_extStat.ContainsKey(file.Extension))
             {
                 _extStat[file.Extension].Count++;
-                _extStat[file.Extension].Size+=file.Length;
+                _extStat[file.Extension].Size += file.Length;
             }
             else
             {
                 string ext = file.Extension.Length > 0 ? file.Extension.Remove(0, 1) : "";
                 _extStat.Add(file.Extension, new StatItem() { Name = ext, Count = 1, Size = file.Length });
             }
-            
+
             //File top 10;
             if (_fileSize.Count < 10)
             {
@@ -541,7 +541,7 @@ namespace EPPlusSamples
                     _fileSize.Sort();
                 }
             }
-            else if(_fileSize[0].Size < file.Length)
+            else if (_fileSize[0].Size < file.Length)
             {
                 _fileSize.RemoveAt(0);
                 _fileSize.Add(new StatItem { Name = file.Name, Size = file.Length });
@@ -557,7 +557,7 @@ namespace EPPlusSamples
         {
             try
             {
-                SHFILEINFO shinfo = new SHFILEINFO();                
+                SHFILEINFO shinfo = new SHFILEINFO();
 
                 var ret = SHGetFileInfo(FileName,
                                           0,

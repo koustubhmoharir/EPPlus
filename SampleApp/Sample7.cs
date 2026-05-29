@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -36,7 +36,7 @@ namespace EPPlusSamples
                 cols.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 cols.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
 
-                var rnd = new Random();                
+                var rnd = new Random();
                 for (int row = 1; row <= Rows; row++)
                 {
                     ws.SetValue(row, 1, row);                               //The SetValue method is a little bit faster than using the Value property
@@ -98,7 +98,7 @@ namespace EPPlusSamples
                 ws.Cells[2, 3, Rows + 1, 4].Style.Fill.PatternType = ExcelFillStyle.Solid;
                 ws.Cells[2, 3, Rows + 1, 4].Style.Fill.BackgroundColor.SetColor(Color.White);
                 ws.Cells[1, 5, Rows + 2, 5].Style.Hidden = true;    //Hide the formula
-                
+
                 ws.Protection.SetPassword("EPPlus");
 
                 ws.Select("C2");

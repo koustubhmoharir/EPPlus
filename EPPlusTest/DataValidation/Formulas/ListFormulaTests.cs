@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +43,7 @@ namespace EPPlusTest.DataValidation.Formulas
             // Act
             var validation = new ExcelDataValidationList(_sheet, "A1", ExcelDataValidationType.List, _dataValidationNode, _namespaceManager);
             // Assert
-            CollectionAssert.AreEquivalent(new List<string>{ "1", "2"}, (ICollection)validation.Formula.Values);
+            CollectionAssert.AreEquivalent(new List<string> { "1", "2" }, (ICollection)validation.Formula.Values);
         }
 
         [TestMethod]

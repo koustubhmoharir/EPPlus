@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -44,14 +44,14 @@ namespace OfficeOpenXml.Table
     {
         List<ExcelTable> _tables = new List<ExcelTable>();
         internal Dictionary<string, int> _tableNames = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
-        ExcelWorksheet _ws;        
+        ExcelWorksheet _ws;
         internal ExcelTableCollection(ExcelWorksheet ws)
         {
             var pck = ws._package.Package;
             _ws = ws;
-            foreach(XmlElement node in ws.WorksheetXml.SelectNodes("//d:tableParts/d:tablePart", ws.NameSpaceManager))
+            foreach (XmlElement node in ws.WorksheetXml.SelectNodes("//d:tableParts/d:tablePart", ws.NameSpaceManager))
             {
-                var rel = ws.Part.GetRelationship(node.GetAttribute("id",ExcelPackage.schemaRelationships));
+                var rel = ws.Part.GetRelationship(node.GetAttribute("id", ExcelPackage.schemaRelationships));
                 var tbl = new ExcelTable(rel, ws);
                 _tableNames.Add(tbl.Name, _tables.Count);
                 _tables.Add(tbl);
@@ -80,7 +80,7 @@ namespace OfficeOpenXml.Table
             {
                 throw new ArgumentException("Range does not belong to worksheet", "Range");
             }
-            
+
             if (string.IsNullOrEmpty(Name))
             {
                 Name = GetNewTableName();

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -40,13 +40,13 @@ namespace OfficeOpenXml.Style
     /// <summary>
     /// Color for cellstyling
     /// </summary>
-    public sealed class ExcelColor :  StyleBase
+    public sealed class ExcelColor : StyleBase
     {
         eStyleClass _cls;
         StyleBase _parent;
-        internal ExcelColor(ExcelStyles styles, OfficeOpenXml.XmlHelper.ChangedEventHandler ChangedEvent, int worksheetID, string address, eStyleClass cls, StyleBase parent) : 
+        internal ExcelColor(ExcelStyles styles, OfficeOpenXml.XmlHelper.ChangedEventHandler ChangedEvent, int worksheetID, string address, eStyleClass cls, StyleBase parent) :
             base(styles, ChangedEvent, worksheetID, address)
-            
+
         {
             _parent = parent;
             _cls = cls;
@@ -119,7 +119,7 @@ namespace OfficeOpenXml.Style
 
         internal override string Id
         {
-            get 
+            get
             {
                 return Theme + Tint + Rgb + Indexed;
             }
@@ -127,7 +127,7 @@ namespace OfficeOpenXml.Style
         private ExcelColorXml GetSource()
         {
             Index = _parent.Index < 0 ? 0 : _parent.Index;
-            switch(_cls)
+            switch (_cls)
             {
                 case eStyleClass.FillBackgroundColor:
                     return _styles.Fills[Index].BackgroundColor;
@@ -146,7 +146,7 @@ namespace OfficeOpenXml.Style
                 case eStyleClass.BorderDiagonal:
                     return _styles.Borders[Index].Diagonal.Color;
                 default:
-                    throw(new Exception("Invalid style-class for Color"));
+                    throw (new Exception("Invalid style-class for Color"));
             }
         }
         internal override void SetIndex(int index)

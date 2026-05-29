@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -113,17 +113,17 @@ namespace OfficeOpenXml.DataValidation
         private void Init()
         {
             // set schema node order
-            SchemaNodeOrder = new string[]{ 
-                "type", 
-                "errorStyle", 
-                "operator", 
+            SchemaNodeOrder = new string[]{
+                "type",
+                "errorStyle",
+                "operator",
                 "allowBlank",
-                "showInputMessage", 
-                "showErrorMessage", 
-                "errorTitle", 
-                "error", 
-                "promptTitle", 
-                "prompt", 
+                "showInputMessage",
+                "showErrorMessage",
+                "errorTitle",
+                "error",
+                "promptTitle",
+                "prompt",
                 "sqref",
                 "formula1",
                 "formula2"
@@ -399,7 +399,7 @@ namespace OfficeOpenXml.DataValidation
         {
             var dvAddress = AddressUtility.ParseEntireColumnSelections(address);
             SetXmlNodeString(_sqrefPath, dvAddress);
-            
+
         }
     }
 }

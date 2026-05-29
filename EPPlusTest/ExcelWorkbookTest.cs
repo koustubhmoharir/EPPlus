@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -47,7 +47,7 @@ namespace EPPlusTest
                 ws.Cells["A1:B10"].Value = 1;
                 ws.Cells["A1"].Value = "Col1";
                 ws.Cells["B1"].Value = "Col2";
-                
+
                 var pt = ws.PivotTables.Add(ws.Cells["D1"], ws.Cells["A1:B10"], "MyPivot");
 
                 Assert.IsTrue(package.Workbook.ExistsPivotTableName("MyPivot"));
@@ -61,7 +61,7 @@ namespace EPPlusTest
             using (var package = new ExcelPackage(new MemoryStream(), EPPlusTest.TempFolderHelper.Create()))
             {
                 Assert.AreEqual(ExcelCalcMode.Automatic, package.Workbook.CalcMode);
-                
+
                 package.Workbook.CalcMode = ExcelCalcMode.Manual;
                 Assert.AreEqual(ExcelCalcMode.Manual, package.Workbook.CalcMode);
 
@@ -77,7 +77,7 @@ namespace EPPlusTest
             {
                 package.Workbook.Worksheets.Add("Sheet1");
                 Assert.IsFalse(package.Workbook.Date1904);
-                
+
                 package.Workbook.Date1904 = true;
                 Assert.IsTrue(package.Workbook.Date1904);
             }

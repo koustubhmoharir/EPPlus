@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -69,7 +69,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
             get { return _children.Any(); }
         }
 
-        public virtual Expression  PrepareForNextChild()
+        public virtual Expression PrepareForNextChild()
         {
             return this;
         }
@@ -118,7 +118,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
             if (Prev != null)
             {
                 Prev.Next = expression;
-            }            
+            }
             return expression;
         }
 

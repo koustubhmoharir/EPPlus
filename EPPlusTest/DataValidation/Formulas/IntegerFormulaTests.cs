@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,35 +90,35 @@ namespace EPPlusTest.DataValidation.Formulas
 
             // Assert
             Assert.AreEqual("A1", GetExcelFormula(formula));
-		}
+        }
 
-		[TestMethod]
-		public void IntegerFormula_FormulaValueIsSetFromXmlNodeInConstructor2()
-		{
-			// Arrange
-			LoadXmlTestData("A1", "whole", "1");
+        [TestMethod]
+        public void IntegerFormula_FormulaValueIsSetFromXmlNodeInConstructor2()
+        {
+            // Arrange
+            LoadXmlTestData("A1", "whole", "1");
 
-			// Act
-			var formula = CreateFormulaInstance();
+            // Act
+            var formula = CreateFormulaInstance();
 
-			// Assert
-			Assert.AreEqual(1, GetValue(formula));
-		}
+            // Assert
+            Assert.AreEqual(1, GetValue(formula));
+        }
 
-		[TestMethod]
-		public void IntegerFormula_FormulasFormulaIsSetFromXmlNodeInConstructor2()
-		{
-			// Arrange
-			LoadXmlTestData("A1", "whole", "A1");
+        [TestMethod]
+        public void IntegerFormula_FormulasFormulaIsSetFromXmlNodeInConstructor2()
+        {
+            // Arrange
+            LoadXmlTestData("A1", "whole", "A1");
 
-			// Act
-			var formula = CreateFormulaInstance();
+            // Act
+            var formula = CreateFormulaInstance();
 
-			// Assert
-			Assert.AreEqual("A1", GetExcelFormula(formula));
-		}
+            // Assert
+            Assert.AreEqual("A1", GetExcelFormula(formula));
+        }
 
-		[TestMethod]
+        [TestMethod]
         public void IntegerFormula_Constructor_ShouldHandleEmptyOrNullValue()
         {
             // Arrange

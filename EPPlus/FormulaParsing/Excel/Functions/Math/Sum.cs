@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,13 +41,13 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Math
             {
                 foreach (var arg in arguments)
                 {
-                    retVal += Calculate(arg, context);                    
+                    retVal += Calculate(arg, context);
                 }
             }
             return CreateResult(retVal, DataType.Decimal);
         }
 
-        
+
         private double Calculate(FunctionArgument arg, ParsingContext context)
         {
             var retVal = 0d;

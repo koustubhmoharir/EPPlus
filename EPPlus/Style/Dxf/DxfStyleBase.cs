@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -16,10 +16,10 @@ namespace OfficeOpenXml.Style.Dxf
             AllowChange = false; //Don't touch this value in the styles.xml (by default). When Dxfs is fully implemented this can be removed.
         }
         protected internal abstract string Id { get; }
-        protected internal abstract bool HasValue{get;}
+        protected internal abstract bool HasValue { get; }
         protected internal abstract void CreateNodes(XmlHelper helper, string path);
         protected internal abstract T Clone();
-        protected void SetValueColor(XmlHelper helper,string path, ExcelDxfColor color)
+        protected void SetValueColor(XmlHelper helper, string path, ExcelDxfColor color)
         {
             if (color != null && color.HasValue)
             {

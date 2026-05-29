@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
@@ -12,7 +12,7 @@ namespace EPPlusTest
         [Ignore]
         public void ReadWriteEncrypt()
         {
-            using (ExcelPackage pck = new ExcelPackage(new FileInfo(@"Test\Drawing.xlsx"), true, EPPlusTest.TempFolderHelper.Create()))   
+            using (ExcelPackage pck = new ExcelPackage(new FileInfo(@"Test\Drawing.xlsx"), true, EPPlusTest.TempFolderHelper.Create()))
             {
                 pck.Encryption.Password = "EPPlus";
                 pck.Encryption.Algorithm = EncryptionAlgorithm.AES192;
@@ -20,10 +20,10 @@ namespace EPPlusTest
                 pck.Workbook.Protection.LockStructure = true;
                 pck.Workbook.Protection.LockWindows = true;
 
-                pck.SaveAs(new FileInfo(@"Test\DrawingEncr.xlsx"));                
+                pck.SaveAs(new FileInfo(@"Test\DrawingEncr.xlsx"));
             }
 
-            using (ExcelPackage pck = new ExcelPackage(new FileInfo(_worksheetPath + @"\DrawingEncr.xlsx"), true, "EPPlus", EPPlusTest.TempFolderHelper.Create()))            
+            using (ExcelPackage pck = new ExcelPackage(new FileInfo(_worksheetPath + @"\DrawingEncr.xlsx"), true, "EPPlus", EPPlusTest.TempFolderHelper.Create()))
             {
                 pck.Encryption.IsEncrypted = false;
                 pck.SaveAs(new FileInfo(_worksheetPath + @"\DrawingNotEncr.xlsx"));
@@ -93,7 +93,7 @@ namespace EPPlusTest
             var n = p.Workbook.Worksheets[1].Name;
             p.Encryption.Password = null;
             p.SaveAs(new FileInfo(@"c:\temp\encrNew.xlsx"));
-        
+
         }
         [TestMethod, Ignore]
         public void DecrypTestBug()
@@ -115,7 +115,7 @@ namespace EPPlusTest
                 f.Delete();
             }
             var p = new ExcelPackage(f, EPPlusTest.TempFolderHelper.Create());
-            
+
             p.Workbook.Protection.SetPassword("");
             p.Workbook.Protection.LockStructure = true;
             p.Encryption.Version = EncryptionVersion.Agile;

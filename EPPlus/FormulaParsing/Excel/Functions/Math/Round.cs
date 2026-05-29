@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Math
             if (nDigits < 0)
             {
                 nDigits *= -1;
-                return CreateResult(number - (number % (System.Math.Pow(10, nDigits))), DataType.Integer); 
+                return CreateResult(number - (number % (System.Math.Pow(10, nDigits))), DataType.Integer);
             }
             return CreateResult(System.Math.Round(number, nDigits), DataType.Decimal);
         }

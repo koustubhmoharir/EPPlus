@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -54,7 +54,7 @@ namespace OfficeOpenXml.FormulaParsing
         public FormulaParser(ExcelDataProvider excelDataProvider)
             : this(excelDataProvider, ParsingContext.Create())
         {
-           
+
         }
 
         public FormulaParser(ExcelDataProvider excelDataProvider, ParsingContext parsingContext)
@@ -88,7 +88,7 @@ namespace OfficeOpenXml.FormulaParsing
         private IExpressionCompiler _compiler;
 
         public ILexer Lexer { get { return _lexer; } }
-        public IEnumerable<string> FunctionNames { get { return _parsingContext.Configuration.FunctionRepository.FunctionNames; } } 
+        public IEnumerable<string> FunctionNames { get { return _parsingContext.Configuration.FunctionRepository.FunctionNames; } }
 
         internal virtual object Parse(string formula, RangeAddress rangeAddress)
         {
@@ -161,7 +161,7 @@ namespace OfficeOpenXml.FormulaParsing
                         return ExcelErrorValue.Create(eErrorType.Value);
                     }
                 }
-                catch(ExcelErrorValueException ex)
+                catch (ExcelErrorValueException ex)
                 {
                     if (_parsingContext.Debug)
                     {
@@ -176,7 +176,7 @@ namespace OfficeOpenXml.FormulaParsing
         {
             return Parse(formula, _parsingContext.RangeAddressFactory.Create(address));
         }
-        
+
         public virtual object Parse(string formula)
         {
             return Parse(formula, RangeAddress.Empty);
@@ -198,7 +198,7 @@ namespace OfficeOpenXml.FormulaParsing
             }
             else
             {
-                return Parse(f, _parsingContext.RangeAddressFactory.Create(worksheetName,col,row));
+                return Parse(f, _parsingContext.RangeAddressFactory.Create(worksheetName, col, row));
             }
             //var dataItem = _excelDataProvider.GetRangeValues(address).FirstOrDefault();
             //if (dataItem == null /*|| (dataItem.Value == null && dataItem.Formula == null)*/) return null;
@@ -212,7 +212,7 @@ namespace OfficeOpenXml.FormulaParsing
 
         internal void InitNewCalc()
         {
-            if(_excelDataProvider!=null)
+            if (_excelDataProvider != null)
             {
                 _excelDataProvider.Reset();
             }

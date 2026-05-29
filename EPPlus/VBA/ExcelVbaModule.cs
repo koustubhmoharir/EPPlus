@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -43,19 +43,19 @@ namespace OfficeOpenXml.VBA
         /// <summary>
         /// A Workbook or Worksheet objects
         /// </summary>
-        Document=0,
+        Document = 0,
         /// <summary>
         /// A Module
         /// </summary>
-        Module=1,
+        Module = 1,
         /// <summary>
         /// A Class
         /// </summary>
-        Class=2,
+        Class = 2,
         /// <summary>
         /// Designer, typically a user form
         /// </summary>
-        Designer=3
+        Designer = 3
     }
     internal delegate void ModuleNameChange(string value);
 
@@ -78,8 +78,8 @@ namespace OfficeOpenXml.VBA
         /// <summary>
         /// The name of the module
         /// </summary>
-        public string Name 
-        {   
+        public string Name
+        {
             get
             {
                 return _name;
@@ -105,21 +105,22 @@ namespace OfficeOpenXml.VBA
         /// A description of the module
         /// </summary>
         public string Description { get; set; }
-        private string _code="";
+        private string _code = "";
         /// <summary>
         /// The code without any module level attributes.
         /// <remarks>Can contain function level attributes.</remarks> 
         /// </summary>
-        public string Code {
+        public string Code
+        {
             get
             {
                 return _code;
             }
             set
             {
-                if(value.StartsWith("Attribute",StringComparison.InvariantCultureIgnoreCase) || value.StartsWith("VERSION",StringComparison.InvariantCultureIgnoreCase))
+                if (value.StartsWith("Attribute", StringComparison.InvariantCultureIgnoreCase) || value.StartsWith("VERSION", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw(new InvalidOperationException("Code can't start with an Attribute or VERSION keyword. Attributes can be accessed through the Attributes collection."));
+                    throw (new InvalidOperationException("Code can't start with an Attribute or VERSION keyword. Attributes can be accessed through the Attributes collection."));
                 }
                 _code = value;
             }

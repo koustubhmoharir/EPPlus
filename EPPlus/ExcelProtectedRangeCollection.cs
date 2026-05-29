@@ -1,4 +1,4 @@
-﻿using OfficeOpenXml.Utils;
+using OfficeOpenXml.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,7 +30,7 @@ namespace OfficeOpenXml
             {
                 CreateNode("d:protectedRanges");
             }
-            
+
             var newNode = CreateNode("d:protectedRanges/d:protectedRange");
             var item = new ExcelProtectedRange(name, address, base.NameSpaceManager, newNode);
             _baseList.Add(item);

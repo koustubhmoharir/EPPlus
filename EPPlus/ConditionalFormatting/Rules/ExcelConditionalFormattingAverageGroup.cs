@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -38,89 +38,89 @@ using OfficeOpenXml.ConditionalFormatting.Contracts;
 
 namespace OfficeOpenXml.ConditionalFormatting
 {
-  /// <summary>
-  /// ExcelConditionalFormattingAverageGroup
-  /// </summary>
-  public class ExcelConditionalFormattingAverageGroup
-    : ExcelConditionalFormattingRule,
-    IExcelConditionalFormattingAverageGroup
-  {
-    /****************************************************************************************/
-
-    #region Constructors
     /// <summary>
-    /// 
+    /// ExcelConditionalFormattingAverageGroup
     /// </summary>
-    /// <param name="type"></param>
-    /// <param name="priority"></param>
-    /// <param name="address"></param>
-    /// <param name="worksheet"></param>
-    /// <param name="itemElementNode"></param>
-    /// <param name="namespaceManager"></param>
-    internal ExcelConditionalFormattingAverageGroup(
-      eExcelConditionalFormattingRuleType type,
-      ExcelAddress address,
-      int priority,
-      ExcelWorksheet worksheet,
-      XmlNode itemElementNode,
-      XmlNamespaceManager namespaceManager)
-      : base(
-        type,
-        address,
-        priority,
-        worksheet,
-        itemElementNode,
-        (namespaceManager == null) ? worksheet.NameSpaceManager : namespaceManager)
+    public class ExcelConditionalFormattingAverageGroup
+      : ExcelConditionalFormattingRule,
+      IExcelConditionalFormattingAverageGroup
     {
-    }
+        /****************************************************************************************/
 
-    /// <summary>
-    /// 
-    /// </summary>
-    ///<param name="type"></param>
-    /// <param name="priority"></param>
-    /// <param name="address"></param>
-    /// <param name="worksheet"></param>
-    /// <param name="itemElementNode"></param>
-    internal ExcelConditionalFormattingAverageGroup(
-      eExcelConditionalFormattingRuleType type,
-      ExcelAddress address,
-      int priority,
-      ExcelWorksheet worksheet,
-      XmlNode itemElementNode)
-      : this(
-        type,
-        address,
-        priority,
-        worksheet,
-        itemElementNode,
-        null)
-    {
-    }
+        #region Constructors
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="priority"></param>
+        /// <param name="address"></param>
+        /// <param name="worksheet"></param>
+        /// <param name="itemElementNode"></param>
+        /// <param name="namespaceManager"></param>
+        internal ExcelConditionalFormattingAverageGroup(
+          eExcelConditionalFormattingRuleType type,
+          ExcelAddress address,
+          int priority,
+          ExcelWorksheet worksheet,
+          XmlNode itemElementNode,
+          XmlNamespaceManager namespaceManager)
+          : base(
+            type,
+            address,
+            priority,
+            worksheet,
+            itemElementNode,
+            (namespaceManager == null) ? worksheet.NameSpaceManager : namespaceManager)
+        {
+        }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    ///<param name="type"></param>
-    /// <param name="priority"></param>
-    /// <param name="address"></param>
-    /// <param name="worksheet"></param>
-    internal ExcelConditionalFormattingAverageGroup(
-      eExcelConditionalFormattingRuleType type,
-      ExcelAddress address,
-      int priority,
-      ExcelWorksheet worksheet)
-      : this(
-        type,
-        address,
-        priority,
-        worksheet,
-        null,
-        null)
-    {
-    }
-    #endregion Constructors
+        /// <summary>
+        /// 
+        /// </summary>
+        ///<param name="type"></param>
+        /// <param name="priority"></param>
+        /// <param name="address"></param>
+        /// <param name="worksheet"></param>
+        /// <param name="itemElementNode"></param>
+        internal ExcelConditionalFormattingAverageGroup(
+          eExcelConditionalFormattingRuleType type,
+          ExcelAddress address,
+          int priority,
+          ExcelWorksheet worksheet,
+          XmlNode itemElementNode)
+          : this(
+            type,
+            address,
+            priority,
+            worksheet,
+            itemElementNode,
+            null)
+        {
+        }
 
-    /****************************************************************************************/
-  }
+        /// <summary>
+        /// 
+        /// </summary>
+        ///<param name="type"></param>
+        /// <param name="priority"></param>
+        /// <param name="address"></param>
+        /// <param name="worksheet"></param>
+        internal ExcelConditionalFormattingAverageGroup(
+          eExcelConditionalFormattingRuleType type,
+          ExcelAddress address,
+          int priority,
+          ExcelWorksheet worksheet)
+          : this(
+            type,
+            address,
+            priority,
+            worksheet,
+            null,
+            null)
+        {
+        }
+        #endregion Constructors
+
+        /****************************************************************************************/
+    }
 }

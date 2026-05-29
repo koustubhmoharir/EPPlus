@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -65,7 +65,7 @@ namespace OfficeOpenXml.Drawing.Chart
             }
             else if (ExcelChart.IsType3D(chartType) || _list[0].IsType3D())
             {
-                throw(new InvalidOperationException("3D charts can not be combined with other charttypes"));
+                throw (new InvalidOperationException("3D charts can not be combined with other charttypes"));
             }
 
             var prependingChartNode = _list[_list.Count - 1].TopNode;
@@ -104,5 +104,5 @@ namespace OfficeOpenXml.Drawing.Chart
         }
 
 
-}
+    }
 }

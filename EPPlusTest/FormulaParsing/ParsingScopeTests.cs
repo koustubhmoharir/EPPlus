@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +28,7 @@ namespace EPPlusTest.FormulaParsing
         [TestMethod]
         public void ConstructorShouldSetAddress()
         {
-            var expectedAddress =  _factory.Create("A1");
+            var expectedAddress = _factory.Create("A1");
             var scope = new ParsingScope(_parsingScopes, expectedAddress);
             Assert.AreEqual(expectedAddress, scope.Address);
         }

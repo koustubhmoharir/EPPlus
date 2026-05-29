@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  * 
  * All rights reserved.
@@ -33,7 +33,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using OfficeOpenXml;    
+using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
 using OfficeOpenXml.Drawing;
 using System.Drawing;
@@ -70,7 +70,7 @@ namespace EPPlusSamples
                 worksheet.Cells["C6"].Value = 7;
                 worksheet.Cells["D6"].Value = 23.48;
 
-                worksheet.Cells["E2:E6"].FormulaR1C1 = "RC[-2]*RC[-1]";                
+                worksheet.Cells["E2:E6"].FormulaR1C1 = "RC[-2]*RC[-1]";
 
                 var name = worksheet.Names.Add("SubTotalName", worksheet.Cells["C7:E7"]);
                 name.Style.Font.Italic = true;

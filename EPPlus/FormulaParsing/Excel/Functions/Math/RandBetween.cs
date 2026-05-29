@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,7 +47,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Math
         {
             if (high > 0 && low < 0)
             {
-                return high + low * - 1;
+                return high + low * -1;
             }
             else if (high < 0 && low < 0)
             {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -37,7 +37,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void VLookupShouldReturnCorrespondingValue()
         {
-            using(var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("test");
                 var lookupAddress = "A1:B2";
@@ -89,10 +89,10 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         {
             var lookupAddress = "A1:B2";
             A.CallTo(() => _excelDataProvider.GetDimensionEnd(A<string>.Ignored)).Returns(new ExcelCellAddress(5, 5));
-            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName,1, 1)).Returns(3);
-            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName,1, 2)).Returns(5);
-            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName,2, 1)).Returns(1);
-            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName,2, 2)).Returns(2);
+            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName, 1, 1)).Returns(3);
+            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName, 1, 2)).Returns(5);
+            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName, 2, 1)).Returns(1);
+            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName, 2, 2)).Returns(2);
             var result = _parser.Parse("HLOOKUP(4, " + lookupAddress + ", 2, true)");
             Assert.AreEqual(1, result);
         }
@@ -101,10 +101,10 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         public void LookupShouldReturnMatchingValue()
         {
             var lookupAddress = "A1:B2";
-            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName,1, 1)).Returns(3);
-            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName,1, 2)).Returns(5);
-            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName,2, 1)).Returns(4);
-            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName,2, 2)).Returns(1);
+            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName, 1, 1)).Returns(3);
+            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName, 1, 2)).Returns(5);
+            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName, 2, 1)).Returns(4);
+            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName, 2, 2)).Returns(1);
             var result = _parser.Parse("LOOKUP(4, " + lookupAddress + ")");
             Assert.AreEqual(1, result);
         }
@@ -113,8 +113,8 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         public void MatchShouldReturnIndexOfMatchingValue()
         {
             var lookupAddress = "A1:A2";
-            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName,1, 1)).Returns(3);
-            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName,1, 2)).Returns(5);
+            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName, 1, 1)).Returns(3);
+            A.CallTo(() => _excelDataProvider.GetCellValue(WorksheetName, 1, 2)).Returns(5);
             var result = _parser.Parse("MATCH(3, " + lookupAddress + ")");
             Assert.AreEqual(1, result);
         }

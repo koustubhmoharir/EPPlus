@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
 using System;
@@ -11,7 +11,7 @@ namespace EPPlusTest.Drawing.Chart
     public class ExcelChartAxisTest
     {
         private ExcelChartAxis axis;
-        
+
         [TestInitialize]
         public void Initialize()
         {
