@@ -5,8 +5,7 @@ This documents the commands that work in this repository on Windows with Visual 
 ## Prerequisites
 
 - Visual Studio 2022 with MSBuild and the VSTest platform installed.
-- The repo's NuGet packages restored under `packages\`.
-- The local `Microsoft.CodeCoverage` package cache available at `C:\Users\koust\.nuget\packages\microsoft.codecoverage\17.12.0`.
+- The local `Microsoft.CodeCoverage` package cache available at `%USERPROFILE%\.nuget\packages\microsoft.codecoverage\17.12.0`.
 
 ## Build
 
@@ -33,7 +32,7 @@ Copy-Item `
 
 & 'C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\Extensions\TestPlatform\vstest.console.exe' `
   'C:\Work\EPPlusSK\EPPlusTest\bin\Debug\EPPlusTest.dll' `
-  /TestAdapterPath:'C:\Work\EPPlusSK\packages\MSTest.TestAdapter.1.1.18\build\_common;C:\Users\koust\.nuget\packages\microsoft.codecoverage\17.12.0\build\netstandard2.0' `
+  /TestAdapterPath:'C:\Users\koust\.nuget\packages\mstest.testadapter\1.1.18\build\_common;C:\Users\koust\.nuget\packages\microsoft.codecoverage\17.12.0\build\netstandard2.0' `
   /TestCaseFilter:"ClassName=EPPlusTest.WorkSheetTest" `
   /Collect:"Code Coverage;Format=Cobertura" `
   /ResultsDirectory:'C:\Work\EPPlusSK\TestResults\CoverageRun'
@@ -64,3 +63,4 @@ Select-String -Path $report.FullName -SimpleMatch -Pattern 'filename="C:\Work\EP
 
 - `dotnet build` does not work cleanly for this legacy .NET Framework test project.
 - The coverage run can still produce a report even if unrelated tests fail, so use a focused test filter when validating changed lines.
+- The test project uses `PackageReference`, so the adapter path points at the global NuGet cache rather than the repo-local `packages\` folder.
