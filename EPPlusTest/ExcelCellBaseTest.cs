@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 
@@ -55,36 +55,36 @@ namespace EPPlusTest
         [TestMethod]
         public void UpdateFormulaSheetReferences()
         {
-          var result = ExcelCellBase.UpdateFormulaSheetReferences("5+'OldSheet'!$G3+'Some Other Sheet'!C3+SUM(1,2,3)", "OldSheet", "NewSheet");
-          Assert.AreEqual("5+'NewSheet'!$G3+'Some Other Sheet'!C3+SUM(1,2,3)", result);
+            var result = ExcelCellBase.UpdateFormulaSheetReferences("5+'OldSheet'!$G3+'Some Other Sheet'!C3+SUM(1,2,3)", "OldSheet", "NewSheet");
+            Assert.AreEqual("5+'NewSheet'!$G3+'Some Other Sheet'!C3+SUM(1,2,3)", result);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UpdateFormulaSheetReferencesNullOldSheetThrowsException()
         {
-          ExcelCellBase.UpdateFormulaSheetReferences("formula", null, "sheet2");
+            ExcelCellBase.UpdateFormulaSheetReferences("formula", null, "sheet2");
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UpdateFormulaSheetReferencesEmptyOldSheetThrowsException()
         {
-          ExcelCellBase.UpdateFormulaSheetReferences("formula", string.Empty, "sheet2");
+            ExcelCellBase.UpdateFormulaSheetReferences("formula", string.Empty, "sheet2");
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UpdateFormulaSheetReferencesNullNewSheetThrowsException()
         {
-          ExcelCellBase.UpdateFormulaSheetReferences("formula", "sheet1", null);
+            ExcelCellBase.UpdateFormulaSheetReferences("formula", "sheet1", null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UpdateFormulaSheetReferencesEmptyNewSheetThrowsException()
         {
-          ExcelCellBase.UpdateFormulaSheetReferences("formula", "sheet1", string.Empty);
+            ExcelCellBase.UpdateFormulaSheetReferences("formula", "sheet1", string.Empty);
         }
         #endregion
 
@@ -154,11 +154,11 @@ namespace EPPlusTest
 
             Assert.IsFalse(ExcelCellBase.IsValidAddress("A1048577")); // Row out of bounds
             Assert.IsFalse(ExcelCellBase.IsValidAddress("XFE1")); // Column out of bounds
-            #if Core
+#if Core
             Assert.IsFalse(ExcelCellBase.IsValidAddress("A$1$2")); // Invalid $ placement
-            #else
+#else
             Assert.IsTrue(ExcelCellBase.IsValidAddress("A$1$2")); // Stable returns true for this invalid address due to naive parsing
-            #endif
+#endif
             Assert.IsFalse(ExcelCellBase.IsValidAddress("")); // Empty
             Assert.IsFalse(ExcelCellBase.IsValidAddress("   ")); // Whitespace
         }
@@ -169,13 +169,13 @@ namespace EPPlusTest
             // Note: Stable branch may return false for comma-separated addresses, 
             // while dotnetport supports them. We can conditionally assert.
             bool expected = false;
-            #if Core
+#if Core
             expected = true;
-            #endif
+#endif
             Assert.AreEqual(expected, ExcelCellBase.IsValidAddress("A1,B2"));
             Assert.AreEqual(expected, ExcelCellBase.IsValidAddress("A1:B2,C3:D4"));
         }
         #endregion
-  }
+    }
 }
 

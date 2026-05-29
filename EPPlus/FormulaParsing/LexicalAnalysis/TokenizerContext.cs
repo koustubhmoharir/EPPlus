@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -129,7 +129,7 @@ namespace OfficeOpenXml.FormulaParsing.LexicalAnalysis
             var count = _result.Count;
             if (count > 0)
             {
-                _result.RemoveAt(count - 1);   
+                _result.RemoveAt(count - 1);
             }
             _result.Add(newToken);
         }

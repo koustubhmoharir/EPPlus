@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,7 +37,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Database
         public Dget()
             : this(new RowMatcher())
         {
-            
+
         }
 
         public Dget(RowMatcher rowMatcher)
@@ -62,7 +62,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Database
             {
                 var dataRow = db.Read();
                 if (!RowMatcher.IsMatch(dataRow, criteria)) continue;
-                if(++nHits > 1) return CreateResult(ExcelErrorValue.Values.Num, DataType.ExcelError);
+                if (++nHits > 1) return CreateResult(ExcelErrorValue.Values.Num, DataType.ExcelError);
                 retVal = dataRow[field];
             }
             return new CompileResultFactory().Create(retVal);

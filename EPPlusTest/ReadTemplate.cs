@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,9 +38,9 @@ namespace EPPlusTest
         }
         [TestMethod]
         public void test()
-        { 
+        {
             CreateXlsxSheet(@"C:\temp\bug\test4.xlsx", 4, 4);
-            CreateXlsxSheet(@"C:\temp\bug\test25.xlsx", 25, 25); 
+            CreateXlsxSheet(@"C:\temp\bug\test25.xlsx", 25, 25);
         }
         [TestMethod]
         public void VBAerror()
@@ -49,7 +49,7 @@ namespace EPPlusTest
             using (var p = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 p.Workbook.CreateVBAProject();
-                ws = p.Workbook.Worksheets.Add("Градуировка");                
+                ws = p.Workbook.Worksheets.Add("Градуировка");
                 using (var p2 = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
                 {
                     p2.Workbook.CreateVBAProject();
@@ -78,7 +78,7 @@ namespace EPPlusTest
             return templateFIle;
         }
 
-        private static void CreateXlsxSheet(string pFileName, int pRows, int pColumns) 
+        private static void CreateXlsxSheet(string pFileName, int pRows, int pColumns)
         {
             if (File.Exists(pFileName)) File.Delete(pFileName);
 
@@ -112,7 +112,7 @@ namespace EPPlusTest
 
                 // now I would add data to the first column (left out here)...
                 excelPackage.Save();
-            } 
-        }    
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Database
         public RowMatcher()
             : this(new WildCardValueMatcher(), new ExpressionEvaluator())
         {
-            
+
         }
 
         public RowMatcher(WildCardValueMatcher wildCardValueMatcher, ExpressionEvaluator expressionEvaluator)
@@ -58,7 +58,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Database
                 var crit = c.Value;
                 if (candidate.IsNumeric() && crit.IsNumeric())
                 {
-                    if(System.Math.Abs(ConvertUtil.GetValueDouble(candidate) - ConvertUtil.GetValueDouble(crit)) > double.Epsilon) return false;
+                    if (System.Math.Abs(ConvertUtil.GetValueDouble(candidate) - ConvertUtil.GetValueDouble(crit)) > double.Epsilon) return false;
                 }
                 else
                 {

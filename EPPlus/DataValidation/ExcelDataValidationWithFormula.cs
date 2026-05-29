@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -57,7 +57,7 @@ namespace OfficeOpenXml.DataValidation
 
         }
 
-         /// <summary>
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="worksheet">Worksheet that owns the validation</param>
@@ -67,7 +67,7 @@ namespace OfficeOpenXml.DataValidation
         internal ExcelDataValidationWithFormula(ExcelWorksheet worksheet, string address, ExcelDataValidationType validationType, XmlNode itemElementNode)
             : base(worksheet, address, validationType, itemElementNode)
         {
-            
+
         }
 
         /// <summary>

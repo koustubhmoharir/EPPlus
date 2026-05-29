@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 /* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or

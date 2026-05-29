@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -162,14 +162,14 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
             Functions["vlookup"] = new VLookup();
             Functions["lookup"] = new Lookup();
             Functions["match"] = new Match();
-            Functions["row"] = new Row(){SkipArgumentEvaluation = true};
-            Functions["rows"] = new Rows(){SkipArgumentEvaluation = true};
-            Functions["column"] = new Column(){SkipArgumentEvaluation = true};
-            Functions["columns"] = new Columns(){SkipArgumentEvaluation = true};
+            Functions["row"] = new Row() { SkipArgumentEvaluation = true };
+            Functions["rows"] = new Rows() { SkipArgumentEvaluation = true };
+            Functions["column"] = new Column() { SkipArgumentEvaluation = true };
+            Functions["columns"] = new Columns() { SkipArgumentEvaluation = true };
             Functions["choose"] = new Choose();
             Functions["index"] = new OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup.Index();
             Functions["indirect"] = new Indirect();
-            Functions["offset"] = new Offset(){SkipArgumentEvaluation = true};
+            Functions["offset"] = new Offset() { SkipArgumentEvaluation = true };
             // Date
             Functions["date"] = new Date();
             Functions["today"] = new Today();

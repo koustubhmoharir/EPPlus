@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
@@ -37,7 +37,7 @@ namespace EPPlusTest
 
                 ws1.View.TabSelected = true;
                 ws2.View.TabSelectedMulti = true;
-                
+
                 Assert.IsTrue(ws1.View.TabSelected, "Sheet1 should still be selected");
                 Assert.IsTrue(ws2.View.TabSelected, "Sheet2 should also be selected");
             }

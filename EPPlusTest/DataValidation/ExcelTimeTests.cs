@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +12,7 @@ namespace EPPlusTest.DataValidation
     {
         private ExcelTime _time;
         private readonly decimal SecondsPerHour = 3600;
-       // private readonly decimal HoursPerDay = 24;
+        // private readonly decimal HoursPerDay = 24;
         private readonly decimal SecondsPerDay = 3600 * 24;
 
         private decimal Round(decimal value)
@@ -79,9 +79,9 @@ namespace EPPlusTest.DataValidation
         {
             // Act
             _time.Hour = 1;
-            
+
             // Assert
-            Assert.AreEqual(Round(SecondsPerHour/SecondsPerDay), _time.ToExcelTime());
+            Assert.AreEqual(Round(SecondsPerHour / SecondsPerDay), _time.ToExcelTime());
         }
 
         [TestMethod]
@@ -94,7 +94,7 @@ namespace EPPlusTest.DataValidation
             _time.Minute = 20;
 
             // Assert
-            Assert.AreEqual(Round(expected/SecondsPerDay), _time.ToExcelTime());
+            Assert.AreEqual(Round(expected / SecondsPerDay), _time.ToExcelTime());
         }
 
         [TestMethod]
@@ -115,7 +115,7 @@ namespace EPPlusTest.DataValidation
         public void ExcelTimeTests_ConstructorWithValue_ShouldSetHour()
         {
             // Arrange
-            decimal value = 3660M/(decimal)SecondsPerDay;
+            decimal value = 3660M / (decimal)SecondsPerDay;
 
             // Act
             var time = new ExcelTime(value);

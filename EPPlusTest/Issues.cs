@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using Color = OfficeOpenXml.Style.ExcelColorValue;
 using System.Linq;
@@ -1080,7 +1080,7 @@ namespace EPPlusTest
         public void Issue219()
         {
             OpenTemplatePackage("issueFile.xlsx");
-            foreach(var ws in _pck.Workbook.Worksheets)
+            foreach (var ws in _pck.Workbook.Worksheets)
             {
                 Console.WriteLine(ws.Name);
             }
@@ -1101,9 +1101,9 @@ namespace EPPlusTest
 
         [TestMethod]
         public void Issue220()
-        {            
+        {
             OpenPackage("sheetname_pbl.xlsx", true);
-            var ws=_pck.Workbook.Worksheets.Add("Deal's History");
+            var ws = _pck.Workbook.Worksheets.Add("Deal's History");
             var a = ws.Cells["A:B"];
             ws.AutoFilterAddress = ws.Cells["A1:C3"];
             _pck.Workbook.Names.Add("Test", ws.Cells["B1:D2"]);
@@ -1122,7 +1122,7 @@ namespace EPPlusTest
             //get some test data
             var cars = Car.GenerateList();
 
-            OpenPackage("issue233.xlsx",true);
+            OpenPackage("issue233.xlsx", true);
 
             var sheetName = "Summary_GLEDHOWSUGARCO![]()PTY";
 
@@ -1186,7 +1186,7 @@ namespace EPPlusTest
         {
             OpenTemplatePackage("Font55.xlsx");
             var ws = _pck.Workbook.Worksheets["Sheet1"];
-            var d=ws.Drawings.AddShape("Shape1",eShapeStyle.Diamond);
+            var d = ws.Drawings.AddShape("Shape1", eShapeStyle.Diamond);
             ws.Cells["A1"].Value = "tasetraser";
             ws.Cells.AutoFitColumns();
             SaveWorksheet("Font55-Saved.xlsx");
@@ -1194,7 +1194,7 @@ namespace EPPlusTest
         [TestMethod]
         public void Issue241()
         {
-            OpenPackage("issue241",true);
+            OpenPackage("issue241", true);
             var wks = _pck.Workbook.Worksheets.Add("test");
             wks.DefaultRowHeight = 35;
             _pck.Save();
@@ -1208,7 +1208,7 @@ namespace EPPlusTest
             var defaultStyle = pkg.Workbook.Styles.CreateNamedStyle("Default");
             defaultStyle.Style.Font.Name = "Arial";
             defaultStyle.Style.Font.Size = 18;
-            defaultStyle.Style.Font.UnderLine=true;
+            defaultStyle.Style.Font.UnderLine = true;
             var boldStyle = pkg.Workbook.Styles.CreateNamedStyle("Bold", defaultStyle.Style);
             boldStyle.Style.Font.Color.SetColor(Color.Red);
 
@@ -1218,8 +1218,8 @@ namespace EPPlusTest
             Assert.AreEqual("Arial", boldStyle.Style.Font.Name);
             Assert.AreEqual(18, boldStyle.Style.Font.Size);
             Assert.AreEqual(boldStyle.Style.Font.Color.Rgb, "FFFF0000");
-        
+
             pkg.SaveAs(new FileInfo(@"c:\temp\n.xlsx"));
         }
-    }        
+    }
 }

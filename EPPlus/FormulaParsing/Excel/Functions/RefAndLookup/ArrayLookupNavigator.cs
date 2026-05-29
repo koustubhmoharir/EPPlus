@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +12,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup
         private readonly FunctionArgument[] _arrayData;
         private int _index = 0;
         private object _currentValue;
- 
+
         public ArrayLookupNavigator(LookupDirection direction, LookupArguments arguments, ParsingContext parsingContext)
             : base(direction, arguments, parsingContext)
         {

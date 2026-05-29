@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -48,7 +48,7 @@ namespace OfficeOpenXml.Drawing.Vml
         {
             Range = range;
             SchemaNodeOrder = new string[] { "fill", "stroke", "shadow", "path", "textbox", "ClientData", "MoveWithCells", "SizeWithCells", "Anchor", "Locked", "AutoFill", "LockText", "TextHAlign", "TextVAlign", "Row", "Column", "Visible" };
-        }   
+        }
         internal ExcelRangeBase Range { get; set; }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace OfficeOpenXml.Drawing.Vml
             }
         }
 
-        const string VERTICAL_ALIGNMENT_PATH="x:ClientData/x:TextVAlign";
+        const string VERTICAL_ALIGNMENT_PATH = "x:ClientData/x:TextVAlign";
         /// <summary>
         /// Vertical alignment for text
         /// </summary>
@@ -100,7 +100,7 @@ namespace OfficeOpenXml.Drawing.Vml
                 }
             }
         }
-        const string HORIZONTAL_ALIGNMENT_PATH="x:ClientData/x:TextHAlign";
+        const string HORIZONTAL_ALIGNMENT_PATH = "x:ClientData/x:TextHAlign";
         /// <summary>
         /// Horizontal alignment for text
         /// </summary>
@@ -138,24 +138,24 @@ namespace OfficeOpenXml.Drawing.Vml
         /// <summary>
         /// If the drawing object is visible.
         /// </summary>
-        public bool Visible 
-        { 
+        public bool Visible
+        {
             get
             {
-                return (TopNode.SelectSingleNode(VISIBLE_PATH, NameSpaceManager)!=null);
+                return (TopNode.SelectSingleNode(VISIBLE_PATH, NameSpaceManager) != null);
             }
             set
             {
                 if (value)
                 {
                     CreateNode(VISIBLE_PATH);
-                    Style = SetStyle(Style,"visibility", "visible");
+                    Style = SetStyle(Style, "visibility", "visible");
                 }
                 else
                 {
                     DeleteNode(VISIBLE_PATH);
-                    Style = SetStyle(Style,"visibility", "hidden");
-                }                
+                    Style = SetStyle(Style, "visibility", "hidden");
+                }
             }
         }
 
@@ -175,9 +175,9 @@ namespace OfficeOpenXml.Drawing.Vml
                 }
                 else
                 {
-                    if(col.StartsWith("#")) col=col.Substring(1,col.Length-1);
+                    if (col.StartsWith("#")) col = col.Substring(1, col.Length - 1);
                     int res;
-                    if (int.TryParse(col,System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out res))
+                    if (int.TryParse(col, System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out res))
                     {
                         return ExcelColorValue.Parse(res.ToString("X8"));
                     }
@@ -194,16 +194,16 @@ namespace OfficeOpenXml.Drawing.Vml
                 //SetXmlNode(BACKGROUNDCOLOR2_PATH, color);
             }
         }
-        const string LINESTYLE_PATH="v:stroke/@dashstyle";
+        const string LINESTYLE_PATH = "v:stroke/@dashstyle";
         const string ENDCAP_PATH = "v:stroke/@endcap";
         /// <summary>
         /// Linestyle for border
         /// </summary>
-        public eLineStyleVml LineStyle 
-        { 
+        public eLineStyleVml LineStyle
+        {
             get
             {
-                string v=GetXmlNodeString(LINESTYLE_PATH);
+                string v = GetXmlNodeString(LINESTYLE_PATH);
                 if (v == "")
                 {
                     return eLineStyleVml.Solid;
@@ -241,7 +241,7 @@ namespace OfficeOpenXml.Drawing.Vml
                 }
             }
         }
-        const string LINECOLOR_PATH="@strokecolor";
+        const string LINECOLOR_PATH = "@strokecolor";
         /// <summary>
         /// Line color 
         /// </summary>
@@ -266,7 +266,7 @@ namespace OfficeOpenXml.Drawing.Vml
                     {
                         return new ExcelColorValue(0, 0, 0, 0);
                     }
-                }                
+                }
             }
             set
             {
@@ -274,20 +274,20 @@ namespace OfficeOpenXml.Drawing.Vml
                 SetXmlNodeString(LINECOLOR_PATH, color);
             }
         }
-        const string LINEWIDTH_PATH="@strokeweight";
+        const string LINEWIDTH_PATH = "@strokeweight";
         /// <summary>
         /// Width of the border
         /// </summary>
-        public Single LineWidth 
+        public Single LineWidth
         {
             get
             {
-                string wt=GetXmlNodeString(LINEWIDTH_PATH);
+                string wt = GetXmlNodeString(LINEWIDTH_PATH);
                 if (wt == "") return (Single).75;
-                if(wt.EndsWith("pt")) wt=wt.Substring(0,wt.Length-2);
+                if (wt.EndsWith("pt")) wt = wt.Substring(0, wt.Length - 2);
 
                 Single ret;
-                if(Single.TryParse(wt,System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out ret))
+                if (Single.TryParse(wt, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out ret))
                 {
                     return ret;
                 }
@@ -367,18 +367,18 @@ namespace OfficeOpenXml.Drawing.Vml
             {
                 string value;
                 GetStyle(GetXmlNodeString(TEXTBOX_STYLE_PATH), "mso-fit-shape-to-text", out value);
-                return value=="t";
+                return value == "t";
             }
             set
-            {                
-                SetXmlNodeString(TEXTBOX_STYLE_PATH, SetStyle(GetXmlNodeString(TEXTBOX_STYLE_PATH),"mso-fit-shape-to-text", value?"t":"")); 
+            {
+                SetXmlNodeString(TEXTBOX_STYLE_PATH, SetStyle(GetXmlNodeString(TEXTBOX_STYLE_PATH), "mso-fit-shape-to-text", value ? "t" : ""));
             }
-        }        
+        }
         const string LOCKED_PATH = "x:ClientData/x:Locked";
         /// <summary>
         /// If the object is locked when the sheet is protected
         /// </summary>
-        public bool Locked 
+        public bool Locked
         {
             get
             {
@@ -386,10 +386,10 @@ namespace OfficeOpenXml.Drawing.Vml
             }
             set
             {
-                SetXmlNodeBool(LOCKED_PATH, value, false);                
+                SetXmlNodeBool(LOCKED_PATH, value, false);
             }
         }
-        const string LOCK_TEXT_PATH = "x:ClientData/x:LockText";        
+        const string LOCK_TEXT_PATH = "x:ClientData/x:LockText";
         /// <summary>
         /// Specifies that the object's text is locked
         /// </summary>
@@ -486,7 +486,7 @@ namespace OfficeOpenXml.Drawing.Vml
             }
             set
             {
-                
+
             }
         }
 

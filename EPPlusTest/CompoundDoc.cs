@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -68,19 +68,19 @@ namespace EPPlusTest
         [TestMethod, Ignore]
         public void Read()
         {
-           //var doc = File.ReadAllBytes(@"c:\temp\vbaProject.bin");
-           var doc = File.ReadAllBytes(@"c:\temp\vba.bin");
-           var cd = new CompoundDocumentFile(doc);
-           var ms = new MemoryStream();
-           cd.Write(ms);
-           printitems(cd.RootItem);
-           File.WriteAllBytes(@"c:\temp\vba.bin", ms.ToArray());
+            //var doc = File.ReadAllBytes(@"c:\temp\vbaProject.bin");
+            var doc = File.ReadAllBytes(@"c:\temp\vba.bin");
+            var cd = new CompoundDocumentFile(doc);
+            var ms = new MemoryStream();
+            cd.Write(ms);
+            printitems(cd.RootItem);
+            File.WriteAllBytes(@"c:\temp\vba.bin", ms.ToArray());
         }
 
         private void printitems(CompoundDocumentItem item)
         {
-            File.AppendAllText(@"c:\temp\items.txt", item.Name+ "\t");            
-            foreach(var c in item.Children)
+            File.AppendAllText(@"c:\temp\items.txt", item.Name + "\t");
+            foreach (var c in item.Children)
             {
                 printitems(c);
             }
@@ -88,16 +88,16 @@ namespace EPPlusTest
         [TestMethod]
         public void WriteReadCompundDoc()
         {
-            for(int i=1;i<50;i++)
+            for (int i = 1; i < 50; i++)
             {
-                var b=CreateFile(i);
-                ReadFile(b,i);
+                var b = CreateFile(i);
+                ReadFile(b, i);
                 GC.Collect();
             }
             for (int i = 5; i < 20; i++)
             {
-                var b = CreateFile(i*50);
-                ReadFile(b, i*50);
+                var b = CreateFile(i * 50);
+                ReadFile(b, i * 50);
                 GC.Collect();
             }
         }
@@ -107,7 +107,7 @@ namespace EPPlusTest
             var ms = new MemoryStream(b);
             using (var p = new ExcelPackage(ms, EPPlusTest.TempFolderHelper.Create()))
             {
-                Assert.AreEqual(p.Workbook.VbaProject.Modules.Count,noSheets+2);
+                Assert.AreEqual(p.Workbook.VbaProject.Modules.Count, noSheets + 2);
                 Assert.AreEqual(noSheets, p.Workbook.Worksheets.Count);
             }
         }
@@ -132,7 +132,7 @@ namespace EPPlusTest
         [TestMethod, Ignore]
         public void ReadEncLong()
         {
-            var doc=File.ReadAllBytes(@"c:\temp\EncrDocRead.xlsx");
+            var doc = File.ReadAllBytes(@"c:\temp\EncrDocRead.xlsx");
             var cd = new CompoundDocumentFile(doc);
             var ms = new MemoryStream();
             cd.Write(ms);
@@ -199,8 +199,8 @@ namespace EPPlusTest
                         ws.SetValue(row, 1 + c, row);                               //The SetValue method is a little bit faster than using the Value property
                         ws.SetValue(row, 2 + c, string.Format("Row {0}", row));
                         ws.SetValue(row, 3 + c, DateTime.Today.AddDays(row));
-                        ws.SetValue(row, 4 + c, rnd.NextDouble() * 10000); 
-                     }
+                        ws.SetValue(row, 4 + c, rnd.NextDouble() * 10000);
+                    }
                 }
                 var endC = colMult * 5;
                 ws.Cells[1, endC, Rows, endC].FormulaR1C1 = "RC[-4]+RC[-1]";
@@ -276,9 +276,9 @@ namespace EPPlusTest
         {
             //var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\report.xlsm"));
             //var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\report411.xlsm"));
-            var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\sample7.xlsx"),"", EPPlusTest.TempFolderHelper.Create());
+            var p = new ExcelPackage(new FileInfo(@"c:\temp\bug\sample7.xlsx"), "", EPPlusTest.TempFolderHelper.Create());
             var vba = p.Workbook.VbaProject;
         }
-        
+
     }
 }

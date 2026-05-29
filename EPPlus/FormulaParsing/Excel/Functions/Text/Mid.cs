@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,9 +38,9 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Text
             var text = ArgToString(arguments, 0);
             var startIx = ArgToInt(arguments, 1);
             var length = ArgToInt(arguments, 2);
-            if(startIx<=0)
+            if (startIx <= 0)
             {
-                throw(new ArgumentException("Argument start can't be less than 1"));
+                throw (new ArgumentException("Argument start can't be less than 1"));
             }
             //Allow overflowing start and length
             if (startIx > text.Length)

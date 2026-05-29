@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,8 +50,8 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup
                 width = ArgToInt(functionArguments, 4);
                 ThrowExcelErrorValueExceptionIf(() => width == 0, eErrorType.Ref);
             }
-            var ws = context.Scopes.Current.Address.Worksheet;            
-            var r =context.ExcelDataProvider.GetRange(ws,startRange);
+            var ws = context.Scopes.Current.Address.Worksheet;
+            var r = context.ExcelDataProvider.GetRange(ws, startRange);
             var adr = r.Address;
 
             var fromRow = adr._fromRow + rowOffset;

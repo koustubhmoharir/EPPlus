@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Sparkline;
@@ -19,10 +19,10 @@ namespace EPPlusTest
                 var cell = ws.Cells["A1"];
                 cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 var color = cell.Style.Fill.BackgroundColor;
-                
+
                 color.Indexed = 64;
 
-                color.Tint = -0.5m; 
+                color.Tint = -0.5m;
                 // -0.5 * -512 = 256. Round(256) = 256. 256 in hex is 100.
                 Assert.AreEqual("#FF100100100", color.LookupColor());
 
@@ -33,7 +33,7 @@ namespace EPPlusTest
                 color.Tint = -0.999m;
                 // -0.999 * -512 = 511.488. Round = 511. Hex = 1FF.
                 Assert.AreEqual("#FF1FF1FF1FF", color.LookupColor());
-                
+
                 // Testing midpoint rounding
                 // -0.0009765625 * -512 = 0.5
                 color.Tint = -0.0009765625m;
@@ -56,7 +56,7 @@ namespace EPPlusTest
                 var cell = ws.Cells["A1"];
                 cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 var color = cell.Style.Fill.BackgroundColor;
-                
+
                 color.SetColor(Color.Red);
                 Assert.AreEqual("FFFF0000", color.Rgb);
 

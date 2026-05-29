@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System;
 using Color = OfficeOpenXml.Style.ExcelColorValue;
 using System.IO;

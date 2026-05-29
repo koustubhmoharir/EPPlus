@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -80,7 +80,7 @@ namespace OfficeOpenXml.Drawing.Chart
         {
             if (name == "pieChart")
             {
-                if (Series.Count > 0 && ((ExcelPieChartSerie)Series[0]).Explosion>0)
+                if (Series.Count > 0 && ((ExcelPieChartSerie)Series[0]).Explosion > 0)
                 {
                     return eChartType.PieExploded;
                 }

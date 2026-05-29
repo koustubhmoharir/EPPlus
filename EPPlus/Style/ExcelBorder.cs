@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -43,7 +43,7 @@ namespace OfficeOpenXml.Style
     {
         internal Border(ExcelStyles styles, OfficeOpenXml.XmlHelper.ChangedEventHandler ChangedEvent, int PositionID, string address, int index) :
             base(styles, ChangedEvent, PositionID, address)
-	    {
+        {
             Index = index;
         }
         /// <summary>
@@ -99,11 +99,11 @@ namespace OfficeOpenXml.Style
         /// <summary>
         /// A diagonal from the bottom left to top right of the cell
         /// </summary>
-        public bool DiagonalUp 
+        public bool DiagonalUp
         {
             get
             {
-                if (Index >=0)
+                if (Index >= 0)
                 {
                     return _styles.Borders[Index].DiagonalUp;
                 }
@@ -120,7 +120,7 @@ namespace OfficeOpenXml.Style
         /// <summary>
         /// A diagonal from the top left to bottom right of the cell
         /// </summary>
-        public bool DiagonalDown 
+        public bool DiagonalDown
         {
             get
             {
@@ -140,7 +140,7 @@ namespace OfficeOpenXml.Style
         }
         internal override string Id
         {
-            get { return Top.Id + Bottom.Id +Left.Id + Right.Id + Diagonal.Id + DiagonalUp + DiagonalDown; }
+            get { return Top.Id + Bottom.Id + Left.Id + Right.Id + Diagonal.Id + DiagonalUp + DiagonalDown; }
         }
         /// <summary>
         /// Set the border style around the range.
@@ -157,8 +157,8 @@ namespace OfficeOpenXml.Style
         /// <param name="Style">The border style</param>
         /// <param name="Color">The color of the border</param>
         public void BorderAround(ExcelBorderStyle Style, ExcelColorValue Color)
-        {            
-            var addr=new ExcelAddress(_address);
+        {
+            var addr = new ExcelAddress(_address);
             SetBorderAroundStyle(Style, addr);
 
             _ChangedEvent(this, new StyleChangeEventArgs(eStyleClass.BorderTop, eStyleProperty.Color, Color.ToArgbHex(), _positionID, new ExcelAddress(addr._fromRow, addr._fromCol, addr._fromRow, addr._toCol).Address));

@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using OfficeOpenXml.FormulaParsing.LexicalAnalysis.TokenSeparatorHandlers;
 using System.Linq;
@@ -21,9 +21,9 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
             var input = "'Sheet''1'";
             var context = new TokenizerContext(input);
             var indexProvider = new FakeIndexProvider();
-            
+
             var tokenSeparator = new Token("'", TokenType.WorksheetName);
-            
+
             // 1. First '
             indexProvider.Index = 0;
             bool handled = handler.Handle('\'', tokenSeparator, context, indexProvider);
@@ -32,24 +32,24 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
             Assert.AreEqual(1, context.Result.Count);
             Assert.AreEqual("'", context.Result[0].Value);
             Assert.AreEqual(string.Empty, context.CurrentToken);
-            
+
             // simulate chars S h e e t
             context.AppendToCurrentToken('S');
             context.AppendToCurrentToken('h');
             context.AppendToCurrentToken('e');
             context.AppendToCurrentToken('e');
             context.AppendToCurrentToken('t');
-            
+
             // 2. First ' of ''
             indexProvider.Index = 6;
             handled = handler.Handle('\'', tokenSeparator, context, indexProvider);
             Assert.IsTrue(handled);
             Assert.AreEqual(7, indexProvider.Index); // MoveIndexPointerForward was called
             Assert.AreEqual("Sheet''", context.CurrentToken);
-            
+
             // simulate char 1
             context.AppendToCurrentToken('1');
-            
+
             // 3. Last '
             indexProvider.Index = 9;
             handled = handler.Handle('\'', tokenSeparator, context, indexProvider);

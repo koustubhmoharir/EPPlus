@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
@@ -111,11 +111,11 @@ namespace EPPlusTest.Utils
         {
             var now = new DateTime(2026, 5, 18, 12, 0, 0);
             Assert.AreEqual(now, ConvertUtil.GetTypedCellValue<DateTime>(now));
-            
+
             // Double to DateTime
             double oaDate = now.ToOADate();
             Assert.AreEqual(now, ConvertUtil.GetTypedCellValue<DateTime>(oaDate));
-            
+
             // TimeSpan to DateTime
             var ts = TimeSpan.FromHours(1);
             Assert.AreEqual(new DateTime(ts.Ticks), ConvertUtil.GetTypedCellValue<DateTime>(ts));
@@ -126,11 +126,11 @@ namespace EPPlusTest.Utils
         {
             var ts = TimeSpan.FromHours(1);
             Assert.AreEqual(ts, ConvertUtil.GetTypedCellValue<TimeSpan>(ts));
-            
+
             double oaTs = 0.5; // 12 hours
             var expectedTsFromOa = new TimeSpan(DateTime.FromOADate(0.5).Ticks);
             Assert.AreEqual(expectedTsFromOa, ConvertUtil.GetTypedCellValue<TimeSpan>(oaTs));
-            
+
             var dtFromTs = new DateTime(ts.Ticks);
             Assert.AreEqual(ts, ConvertUtil.GetTypedCellValue<TimeSpan>(dtFromTs));
         }

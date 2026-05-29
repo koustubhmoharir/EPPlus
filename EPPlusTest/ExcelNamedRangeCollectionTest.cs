@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing.ExcelUtilities;
@@ -14,18 +14,18 @@ namespace EPPlusTest
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
-                
+
                 // Test Add range
                 var range = ws.Cells["A1:B2"];
                 var namedRange = ws.Names.Add("MyRange", range);
                 Assert.AreEqual("MyRange", namedRange.Name);
                 Assert.AreEqual("A1:B2", namedRange.Address);
-                
+
                 // Test contains and indexer (case insensitivity)
                 Assert.IsTrue(ws.Names.ContainsKey("MyRange"));
                 Assert.IsTrue(ws.Names.ContainsKey("MYRANGE"));
                 Assert.IsTrue(ws.Names.ContainsKey("myrange"));
-                
+
                 var lookedUp = ws.Names["MYRANGE"];
                 Assert.AreEqual(namedRange, lookedUp);
 
@@ -40,17 +40,17 @@ namespace EPPlusTest
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
-                
+
                 // Test AddValue
                 var namedValue = ws.Names.AddValue("MyValue", 42);
                 Assert.AreEqual("MyValue", namedValue.Name);
                 Assert.AreEqual(42, namedValue.NameValue);
-                
+
                 // Test AddFormula
                 var namedFormula = ws.Names.AddFormula("MyFormula", "SUM(A1:B2)");
                 Assert.AreEqual("MyFormula", namedFormula.Name);
                 Assert.AreEqual("SUM(A1:B2)", namedFormula.NameFormula);
-                
+
                 // Test AddFormla (obsolete)
 #pragma warning disable 0618
                 var namedFormlaObsolete = ws.Names.AddFormla("MyFormlaObsolete", "AVERAGE(A1:B2)");
@@ -66,23 +66,23 @@ namespace EPPlusTest
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
-                
+
                 ws.Names.Add("Range1", ws.Cells["A1"]);
                 ws.Names.Add("Range2", ws.Cells["A2"]);
                 ws.Names.Add("Range3", ws.Cells["A3"]);
-                
+
                 Assert.AreEqual(3, ws.Names.Count);
-                
+
                 ws.Names.Remove("Range2");
                 Assert.AreEqual(2, ws.Names.Count);
                 Assert.IsTrue(ws.Names.ContainsKey("Range1"));
                 Assert.IsFalse(ws.Names.ContainsKey("Range2"));
                 Assert.IsTrue(ws.Names.ContainsKey("Range3"));
-                
+
                 // Assert indices were updated/shifted down
                 Assert.AreEqual("Range1", ws.Names[0].Name);
                 Assert.AreEqual("Range3", ws.Names[1].Name);
-                
+
                 ws.Names.Clear();
                 Assert.AreEqual(0, ws.Names.Count);
             }
@@ -94,7 +94,7 @@ namespace EPPlusTest
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
-                
+
                 // On dotnetport, invalid names should throw.
                 // Check if ExcelAddressUtil.IsValidName exists (i.e. dotnetport).
                 var isValidNameMethod = typeof(ExcelAddressUtil).GetMethod("IsValidName", new[] { typeof(string) });
@@ -126,7 +126,7 @@ namespace EPPlusTest
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
-                
+
                 int maxCols = ExcelPackage.MaxColumns;
                 int maxRows = ExcelPackage.MaxRows;
 

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -41,9 +41,9 @@ namespace OfficeOpenXml.Style
     /// </summary>
     public sealed class ExcelParagraph : ExcelTextFont
     {
-        public ExcelParagraph(XmlNamespaceManager ns, XmlNode rootNode, string path, string[] schemaNodeOrder) : 
+        public ExcelParagraph(XmlNamespaceManager ns, XmlNode rootNode, string path, string[] schemaNodeOrder) :
             base(ns, rootNode, path + "a:rPr", schemaNodeOrder)
-        { 
+        {
 
         }
         const string TextPath = "../a:t";

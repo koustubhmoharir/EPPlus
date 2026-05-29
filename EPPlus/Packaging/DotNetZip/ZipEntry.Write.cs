@@ -1,4 +1,4 @@
-﻿//#define Trace
+//#define Trace
 
 // ZipEntry.Write.cs
 // ------------------------------------------------------------------
@@ -77,7 +77,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             // the same as the local entry or MS .NET System.IO.Zip fails read.
             Int16 vNeeded = (Int16)(VersionNeeded != 0 ? VersionNeeded : 20);
             // workitem 12964
-            if (_OutputUsesZip64==null)
+            if (_OutputUsesZip64 == null)
             {
                 // a zipentry in a zipoutputstream, with zero bytes written
                 _OutputUsesZip64 = new Nullable<bool>(_container.Zip64 == Zip64Option.Always);
@@ -614,7 +614,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             // workitem 6513
             var s1 = NormalizeFileName();
 
-            switch(AlternateEncodingUsage)
+            switch (AlternateEncodingUsage)
             {
                 case ZipOption.Always:
                     if (!(_Comment == null || _Comment.Length == 0))
@@ -663,7 +663,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
             // there is a comment. Get the encoded form.
             byte[] cbytes = SharedUtilities.IBM437Encoding.GetBytes(_Comment);
-            string c2 = SharedUtilities.IBM437Encoding.GetString(cbytes,0,cbytes.Length);
+            string c2 = SharedUtilities.IBM437Encoding.GetString(cbytes, 0, cbytes.Length);
 
             // Check for round-trip.
             if (c2 != Comment)

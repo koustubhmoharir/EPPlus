@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -62,7 +62,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
         public override CompileResult Compile()
         {
             double result = _compiledValue.HasValue ? _compiledValue.Value : double.Parse(ExpressionString, CultureInfo.InvariantCulture);
-            result = _negate ? result*-1 : result;
+            result = _negate ? result * -1 : result;
             return new CompileResult(result, DataType.Integer);
         }
     }

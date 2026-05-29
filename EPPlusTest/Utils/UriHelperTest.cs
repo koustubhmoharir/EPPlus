@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml.Utils;
 
@@ -40,7 +40,7 @@ namespace EPPlusTest.Utils
             var source = new Uri("/xl/workbook.xml", UriKind.Relative);
             var target = new Uri("http://example.com/file.xlsx", UriKind.Absolute);
             var result = UriHelper.ResolvePartUri(source, target);
-            
+
             // On stable, it currently tries to resolve this relative to the source.
             // On dotnetport, it should return the target directly.
             // We want to document this difference.

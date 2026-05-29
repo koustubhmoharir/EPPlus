@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -328,7 +328,7 @@ namespace OfficeOpenXml.Drawing
         /// <summary>
         /// Border
         /// </summary>
-        public ExcelDrawingBorder Border        
+        public ExcelDrawingBorder Border
         {
             get
             {
@@ -356,7 +356,7 @@ namespace OfficeOpenXml.Drawing
         }
         string[] paragraphNodeOrder = new string[] { "pPr", "defRPr", "solidFill", "uFill", "latin", "cs", "r", "rPr", "t" };
         const string PARAGRAPH_PATH = "xdr:sp/xdr:txBody/a:p";
-        ExcelTextFont _font=null;
+        ExcelTextFont _font = null;
         public ExcelTextFont Font
         {
             get
@@ -364,9 +364,9 @@ namespace OfficeOpenXml.Drawing
                 if (_font == null)
                 {
                     XmlNode node = TopNode.SelectSingleNode(PARAGRAPH_PATH, NameSpaceManager);
-                    if(node==null)
+                    if (node == null)
                     {
-                        Text="";    //Creates the node p element
+                        Text = "";    //Creates the node p element
                         node = TopNode.SelectSingleNode(PARAGRAPH_PATH, NameSpaceManager);
                     }
                     _font = new ExcelTextFont(NameSpaceManager, TopNode, "xdr:sp/xdr:txBody/a:p/a:pPr/a:defRPr", paragraphNodeOrder);
@@ -420,7 +420,7 @@ namespace OfficeOpenXml.Drawing
                     //{
                     //    CreateNode(PARAGRAPH_PATH);
                     //}
-                        _richText = new ExcelParagraphCollection(NameSpaceManager, TopNode, PARAGRAPH_PATH, paragraphNodeOrder);
+                    _richText = new ExcelParagraphCollection(NameSpaceManager, TopNode, PARAGRAPH_PATH, paragraphNodeOrder);
                 }
                 return _richText;
             }
@@ -470,23 +470,23 @@ namespace OfficeOpenXml.Drawing
         {
             get
             {
-               switch(GetXmlNodeString(TEXT_ALIGN_PATH))
-               {
-                   case "ctr":
-                       return eTextAlignment.Center;
-                   case "r":
-                       return eTextAlignment.Right;
-                   case "dist":
-                       return eTextAlignment.Distributed;
-                   case "just":
-                       return eTextAlignment.Justified;
-                   case "justLow":
-                       return eTextAlignment.JustifiedLow;
-                   case "thaiDist":
-                       return eTextAlignment.ThaiDistributed;
-                   default: 
-                       return eTextAlignment.Left;
-               }
+                switch (GetXmlNodeString(TEXT_ALIGN_PATH))
+                {
+                    case "ctr":
+                        return eTextAlignment.Center;
+                    case "r":
+                        return eTextAlignment.Right;
+                    case "dist":
+                        return eTextAlignment.Distributed;
+                    case "just":
+                        return eTextAlignment.Justified;
+                    case "justLow":
+                        return eTextAlignment.JustifiedLow;
+                    case "thaiDist":
+                        return eTextAlignment.ThaiDistributed;
+                    default:
+                        return eTextAlignment.Left;
+                }
             }
             set
             {
@@ -513,7 +513,7 @@ namespace OfficeOpenXml.Drawing
                     default:
                         DeleteNode(TEXT_ALIGN_PATH);
                         break;
-                }                
+                }
             }
         }
         const string INDENT_ALIGN_PATH = "xdr:sp/xdr:txBody/a:p/a:pPr/@lvl";
@@ -530,7 +530,7 @@ namespace OfficeOpenXml.Drawing
             {
                 if (value < 0 || value > 8)
                 {
-                    throw(new ArgumentOutOfRangeException("Indent level must be between 0 and 8"));
+                    throw (new ArgumentOutOfRangeException("Indent level must be between 0 and 8"));
                 }
                 SetXmlNodeString(INDENT_ALIGN_PATH, value.ToString());
             }

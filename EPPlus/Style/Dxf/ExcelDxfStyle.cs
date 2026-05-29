@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace OfficeOpenXml.Style.Dxf
             {
                 _helper = new XmlHelperInstance(nameSpaceManager, topNode);
                 NumberFormat.NumFmtID = _helper.GetXmlNodeInt("d:numFmt/@numFmtId");
-                NumberFormat.Format = _helper.GetXmlNodeString("d:numFmt/@formatCode"); 
+                NumberFormat.Format = _helper.GetXmlNodeString("d:numFmt/@formatCode");
                 if (NumberFormat.NumFmtID < 164 && string.IsNullOrEmpty(NumberFormat.Format))
                 {
                     NumberFormat.Format = ExcelNumberFormat.GetFromBuildInFromID(NumberFormat.NumFmtID);
@@ -50,8 +50,8 @@ namespace OfficeOpenXml.Style.Dxf
         private ExcelDxfBorderItem GetBorderItem(XmlHelperInstance helper, string path)
         {
             ExcelDxfBorderItem bi = new ExcelDxfBorderItem(_styles);
-            bi.Style = GetBorderStyleEnum(helper.GetXmlNodeString(path+"/@style"));
-            bi.Color = GetColor(helper, path+"/d:color");
+            bi.Style = GetBorderStyleEnum(helper.GetXmlNodeString(path + "/@style"));
+            bi.Color = GetColor(helper, path + "/d:color");
             return bi;
         }
         private ExcelBorderStyle GetBorderStyleEnum(string style)
@@ -82,12 +82,12 @@ namespace OfficeOpenXml.Style.Dxf
             }
         }
         private ExcelDxfColor GetColor(XmlHelperInstance helper, string path)
-        {            
+        {
             ExcelDxfColor ret = new ExcelDxfColor(_styles);
             ret.Theme = helper.GetXmlNodeIntNull(path + "/@theme");
             ret.Index = helper.GetXmlNodeIntNull(path + "/@indexed");
-            string rgb=helper.GetXmlNodeString(path + "/@rgb");
-            if(rgb!="")
+            string rgb = helper.GetXmlNodeString(path + "/@rgb");
+            if (rgb != "")
             {
                 ret.Color = OfficeOpenXml.Style.ExcelColorValue.Parse(rgb);
             }
@@ -97,7 +97,7 @@ namespace OfficeOpenXml.Style.Dxf
         }
         private ExcelUnderLineType? GetUnderLineEnum(string value)
         {
-            switch(value.ToLower(CultureInfo.InvariantCulture))
+            switch (value.ToLower(CultureInfo.InvariantCulture))
             {
                 case "single":
                     return ExcelUnderLineType.Single;
@@ -126,18 +126,18 @@ namespace OfficeOpenXml.Style.Dxf
         }
         protected internal override ExcelDxfStyleConditionalFormatting Clone()
         {
- 	       var s=new ExcelDxfStyleConditionalFormatting(_helper.NameSpaceManager, null, _styles);
-           s.Font = Font.Clone();
-           s.NumberFormat = NumberFormat.Clone();
-           s.Fill = Fill.Clone();
-           s.Border = Border.Clone();
-           return s;
+            var s = new ExcelDxfStyleConditionalFormatting(_helper.NameSpaceManager, null, _styles);
+            s.Font = Font.Clone();
+            s.NumberFormat = NumberFormat.Clone();
+            s.Fill = Fill.Clone();
+            s.Border = Border.Clone();
+            return s;
         }
 
         protected internal override void CreateNodes(XmlHelper helper, string path)
         {
-            if(Font.HasValue) Font.CreateNodes(helper, "d:font");
-            if (NumberFormat.HasValue) NumberFormat.CreateNodes(helper, "d:numFmt");            
+            if (Font.HasValue) Font.CreateNodes(helper, "d:font");
+            if (NumberFormat.HasValue) NumberFormat.CreateNodes(helper, "d:numFmt");
             if (Fill.HasValue) Fill.CreateNodes(helper, "d:fill");
             if (Border.HasValue) Border.CreateNodes(helper, "d:border");
         }

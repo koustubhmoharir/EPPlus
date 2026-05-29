@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -101,7 +101,7 @@ namespace OfficeOpenXml.ConditionalFormatting
                 int pos = 1;
                 foreach (XmlNode node in itemElementNode.SelectNodes("d:iconSet/d:cfvo", NameSpaceManager))
                 {
-                    if(pos==1)
+                    if (pos == 1)
                     {
                         Icon1 = new ExcelConditionalFormattingIconDataBarValue(
                                 type,

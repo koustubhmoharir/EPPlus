@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -51,7 +51,7 @@ namespace OfficeOpenXml.Drawing.Chart
         internal ExcelOfPieChart(ExcelDrawings drawings, XmlNode node, eChartType type, bool isPivot) :
             base(drawings, node, type, isPivot)
         {
-                SetTypeProperties();
+            SetTypeProperties();
         }
         internal ExcelOfPieChart(ExcelDrawings drawings, XmlNode node, eChartType type, ExcelChart topChart, ExcelPivotTable PivotTableSource) :
             base(drawings, node, type, topChart, PivotTableSource)
@@ -117,7 +117,7 @@ namespace OfficeOpenXml.Drawing.Chart
         {
             if (name == "ofPieChart")
             {
-                if (OfPieType==ePieType.Bar)
+                if (OfPieType == ePieType.Bar)
                 {
                     return eChartType.BarOfPie;
                 }

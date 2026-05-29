@@ -1,4 +1,4 @@
-﻿// ZipInputStream.cs
+// ZipInputStream.cs
 //
 // ------------------------------------------------------------------
 //
@@ -37,7 +37,7 @@ using Ionic.Zip;
 using OfficeOpenXml.Packaging.Ionic.Zip;
 using OfficeOpenXml.Packaging.Ionic.Crc;
 
-namespace  Ionic.Zip
+namespace Ionic.Zip
 {
     /// <summary>
     ///   Provides a stream metaphor for reading zip files.
@@ -229,7 +229,7 @@ namespace  Ionic.Zip
         /// End Sub
         /// </code>
         /// </example>
-        public ZipInputStream(Stream stream)  : this (stream, false) { }
+        public ZipInputStream(Stream stream) : this(stream, false) { }
 
 
 
@@ -311,7 +311,7 @@ namespace  Ionic.Zip
         /// </example>
         public ZipInputStream(String fileName)
         {
-            Stream stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read );
+            Stream stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
             _Init(stream, false, fileName);
         }
 
@@ -345,10 +345,10 @@ namespace  Ionic.Zip
             _inputStream = stream;
             if (!_inputStream.CanRead)
                 throw new ZipException("The stream must be readable.");
-            _container= new ZipContainer(this);
+            _container = new ZipContainer(this);
             _provisionalAlternateEncoding = System.Text.Encoding.GetEncoding("IBM437");
             _leaveUnderlyingStreamOpen = leaveOpen;
-            _findRequired= true;
+            _findRequired = true;
             _name = name ?? "(stream)";
         }
 
@@ -362,7 +362,7 @@ namespace  Ionic.Zip
         /// <returns>a string representation of the instance.</returns>
         public override String ToString()
         {
-            return String.Format ("ZipInputStream::{0}(leaveOpen({1})))", _name, _leaveUnderlyingStreamOpen);
+            return String.Format("ZipInputStream::{0}(leaveOpen({1})))", _name, _leaveUnderlyingStreamOpen);
         }
 
 
@@ -519,7 +519,7 @@ namespace  Ionic.Zip
         {
             // Seek to the correct posn in the file, and open a
             // stream that can be read.
-            _crcStream= _currentEntry.InternalOpenReader(_Password);
+            _crcStream = _currentEntry.InternalOpenReader(_Password);
             _LeftToRead = _crcStream.Length;
             _needSetup = false;
         }
@@ -651,7 +651,7 @@ namespace  Ionic.Zip
             _endOfEntry = _inputStream.Position;
             _firstEntry = true;
             _needSetup = true;
-            _findRequired= false;
+            _findRequired = false;
             return _currentEntry;
         }
 
@@ -708,19 +708,19 @@ namespace  Ionic.Zip
 #endif
                 }
             }
-            _closed= true;
+            _closed = true;
         }
 
 
         /// <summary>
         /// Always returns true.
         /// </summary>
-        public override bool CanRead  { get { return true; }}
+        public override bool CanRead { get { return true; } }
 
         /// <summary>
         /// Returns the value of <c>CanSeek</c> for the underlying (wrapped) stream.
         /// </summary>
-        public override bool CanSeek  { get { return _inputStream.CanSeek; } }
+        public override bool CanSeek { get { return _inputStream.CanSeek; } }
 
         /// <summary>
         /// Always returns false.
@@ -730,7 +730,7 @@ namespace  Ionic.Zip
         /// <summary>
         /// Returns the length of the underlying stream.
         /// </summary>
-        public override long Length   { get { return _inputStream.Length; }}
+        public override long Length { get { return _inputStream.Length; } }
 
         /// <summary>
         /// Gets or sets the position of the underlying stream.
@@ -740,7 +740,7 @@ namespace  Ionic.Zip
         /// </remarks>
         public override long Position
         {
-            get { return _inputStream.Position;}
+            get { return _inputStream.Position; }
             set { Seek(value, SeekOrigin.Begin); }
         }
 
@@ -789,7 +789,7 @@ namespace  Ionic.Zip
         /// <returns>The new position</returns>
         public override long Seek(long offset, SeekOrigin origin)
         {
-            _findRequired= true;
+            _findRequired = true;
             var x = _inputStream.Seek(offset, origin);
             // workitem 10178
             SharedUtilities.Workaround_Ladybug318918(_inputStream);

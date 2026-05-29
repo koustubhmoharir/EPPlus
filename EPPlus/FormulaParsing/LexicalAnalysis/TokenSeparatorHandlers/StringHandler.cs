@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -39,8 +39,8 @@ namespace OfficeOpenXml.FormulaParsing.LexicalAnalysis.TokenSeparatorHandlers
     {
         public override bool Handle(char c, Token tokenSeparator, TokenizerContext context, ITokenIndexProvider tokenIndexProvider)
         {
-            if(context.IsInString)
-            { 
+            if (context.IsInString)
+            {
                 if (IsDoubleQuote(tokenSeparator, tokenIndexProvider.Index, context))
                 {
                     tokenIndexProvider.MoveIndexPointerForward();

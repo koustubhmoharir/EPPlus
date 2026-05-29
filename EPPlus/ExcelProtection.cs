@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -56,7 +56,7 @@ namespace OfficeOpenXml
         /// <param name="Password">The password. </param>
         public void SetPassword(string Password)
         {
-            if(string.IsNullOrEmpty(Password))
+            if (string.IsNullOrEmpty(Password))
             {
                 DeleteNode(workbookPasswordPath);
             }
@@ -77,7 +77,7 @@ namespace OfficeOpenXml
             }
             set
             {
-                SetXmlNodeBool(lockStructurePath, value,  false);
+                SetXmlNodeBool(lockStructurePath, value, false);
             }
         }
         const string lockWindowsPath = "d:workbookProtection/@lockWindows";

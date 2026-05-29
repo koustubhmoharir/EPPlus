@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,7 +42,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime
         {
             ValidateArguments(arguments, 1);
             var firstArg = arguments.ElementAt(0).Value.ToString();
-            if(arguments.Count() == 1 && TimeStringParser.CanParse(firstArg))
+            if (arguments.Count() == 1 && TimeStringParser.CanParse(firstArg))
             {
                 var result = TimeStringParser.Parse(firstArg);
                 return new CompileResult(result, DataType.Time);

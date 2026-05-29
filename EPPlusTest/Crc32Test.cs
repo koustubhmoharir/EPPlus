@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml.Packaging.Ionic.Crc;
@@ -44,7 +44,7 @@ namespace EPPlusTest
                 var result = crc.GetCrc32AndCopy(input, output);
                 Assert.AreEqual(data.Length * 2, crc.TotalBytesRead);
                 Assert.AreEqual(result, crc.Crc32Result);
-                
+
                 // Verify output stream has the same data
                 byte[] written = output.ToArray();
                 CollectionAssert.AreEqual(data, written);
@@ -181,7 +181,7 @@ namespace EPPlusTest
                     Assert.IsFalse(writer.CanSeek);
                     writer.Write(data, 0, data.Length);
                     writer.Flush();
-                    
+
                     Assert.AreEqual(data.Length, writer.TotalBytesSlurped);
                     Assert.AreNotEqual(0, writer.Crc);
                 }
@@ -195,7 +195,7 @@ namespace EPPlusTest
                     int bytesRead = reader.Read(readBuffer, 0, readBuffer.Length);
                     Assert.AreEqual(data.Length, bytesRead);
                     Assert.AreEqual(data.Length, reader.TotalBytesSlurped);
-                    
+
                     // Verify correct CRC is calculated during read
                     var expectedCrc = new CRC32();
                     expectedCrc.SlurpBlock(data, 0, data.Length);
@@ -216,7 +216,7 @@ namespace EPPlusTest
                     byte[] readBuffer = new byte[10];
                     int bytesRead = reader.Read(readBuffer, 0, 10);
                     Assert.AreEqual(3, bytesRead);
-                    
+
                     // Further reads should return 0 (EOF)
                     bytesRead = reader.Read(readBuffer, 0, 10);
                     Assert.AreEqual(0, bytesRead);

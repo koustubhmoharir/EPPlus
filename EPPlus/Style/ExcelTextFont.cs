@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -45,7 +45,7 @@ namespace OfficeOpenXml.Style
     {
         Dash,
         DashHeavy,
-        DashLong, 
+        DashLong,
         DashLongHeavy,
         Double,
         DotDash,
@@ -109,7 +109,7 @@ namespace OfficeOpenXml.Style
 
         protected internal void CreateTopNode()
         {
-            if (_path!="" && TopNode == _rootNode)
+            if (_path != "" && TopNode == _rootNode)
             {
                 CreateNode(_path);
                 TopNode = _rootNode.SelectSingleNode(_path, NameSpaceManager);

@@ -1,4 +1,4 @@
-﻿using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
+using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,18 +34,18 @@ namespace OfficeOpenXml.FormulaParsing
             string Address { get; }
             int Row { get; }
             int Column { get; }
-            string Formula { get;  }
+            string Formula { get; }
             object Value { get; }
             double ValueDouble { get; }
             double ValueDoubleLogical { get; }
             bool IsHiddenRow { get; }
             bool IsExcelError { get; }
-            IList<Token> Tokens { get; }   
+            IList<Token> Tokens { get; }
         }
         public interface INameInfo
         {
             ulong Id { get; set; }
-            string Worksheet {get; set;}
+            string Worksheet { get; set; }
             string Name { get; set; }
             string Formula { get; set; }
             IList<Token> Tokens { get; }

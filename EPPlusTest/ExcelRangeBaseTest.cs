@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 
@@ -119,13 +119,13 @@ namespace EPPlusTest
             using (ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
-                
+
                 // Int
                 ws.Cells["A1"].Value = 42;
                 Assert.AreEqual(42, ws.Cells["A1"].GetValue<int>());
                 Assert.AreEqual(42L, ws.Cells["A1"].GetValue<long>());
                 Assert.AreEqual(42.0, ws.Cells["A1"].GetValue<double>());
-                
+
                 // String to double/int
                 ws.Cells["A2"].Value = "123.45";
 #if Core
@@ -133,21 +133,21 @@ namespace EPPlusTest
 #else
                 Assert.AreEqual(0.0, ws.Cells["A2"].GetValue<double>());
 #endif
-                
+
                 // DateTime
                 var date = new DateTime(2023, 10, 1);
                 ws.Cells["A3"].Value = date;
                 Assert.AreEqual(date, ws.Cells["A3"].GetValue<DateTime>());
-                
+
                 // TimeSpan
                 var ts = new TimeSpan(1, 2, 3);
                 ws.Cells["A4"].Value = ts;
                 Assert.AreEqual(ts, ws.Cells["A4"].GetValue<TimeSpan>());
-                
+
                 // Nullable conversions
                 ws.Cells["A5"].Value = "";
                 Assert.IsNull(ws.Cells["A5"].GetValue<int?>());
-                
+
                 ws.Cells["A6"].Value = 99;
                 Assert.AreEqual(99, ws.Cells["A6"].GetValue<int?>());
             }
@@ -159,7 +159,7 @@ namespace EPPlusTest
             using (ExcelPackage package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
-                
+
                 // Basic CSV loading
                 var csv = "1,Hello,10.5\r\n2,World,20.5";
                 var range = ws.Cells["A1"].LoadFromText(csv);
@@ -175,7 +175,7 @@ namespace EPPlusTest
                 Assert.AreEqual(2.0, ws.Cells["A2"].Value);
                 Assert.AreEqual("World", ws.Cells["B2"].Value);
                 Assert.AreEqual(20.5, ws.Cells["C2"].Value);
-                
+
                 // Custom delimiter and text qualifiers
                 var csvQualifier = "\"1\";\"Hello, World\";\"30.5\"\r\n\"2\";\"Test\";\"40.5\"";
                 var format = new ExcelTextFormat { Delimiter = ';', TextQualifier = '"' };
@@ -204,10 +204,10 @@ namespace EPPlusTest
                 var ws = package.Workbook.Worksheets.Add("Sheet1");
                 ws.Cells["A1"].Value = "Val1";
                 ws.Cells["B1"].Value = "Val2";
-                
+
                 Assert.AreEqual("Val1", ws.Cells["A1"].Value);
                 Assert.AreEqual("Val2", ws.Cells["B1"].Value);
-                
+
                 ws.Cells["A1:B1"].Clear();
                 Assert.IsNull(ws.Cells["A1"].Value);
                 Assert.IsNull(ws.Cells["B1"].Value);

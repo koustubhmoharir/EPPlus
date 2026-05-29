@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -59,13 +59,13 @@ namespace OfficeOpenXml.Sparkline
             get
             {
                 return _lst.Count;
-            }            
+            }
         }
 
         private void LoadSparklines()
         {
-            var grps=_slg.TopNode.SelectNodes(_topPath, _slg.NameSpaceManager);
-            foreach(XmlElement grp in grps)
+            var grps = _slg.TopNode.SelectNodes(_topPath, _slg.NameSpaceManager);
+            foreach (XmlElement grp in grps)
             {
                 _lst.Add(new ExcelSparkline(_slg.NameSpaceManager, grp));
             }
@@ -95,7 +95,7 @@ namespace OfficeOpenXml.Sparkline
 
         internal void Add(ExcelCellAddress cell, string worksheetName, ExcelAddressBase sqref)
         {
-            var sparkline = _slg.TopNode.OwnerDocument.CreateElement("x14","sparkline", ExcelPackage.schemaMainX14);            
+            var sparkline = _slg.TopNode.OwnerDocument.CreateElement("x14", "sparkline", ExcelPackage.schemaMainX14);
             var sls = _slg.TopNode.SelectSingleNode("x14:sparklines", _slg.NameSpaceManager);
 
             sls.AppendChild(sparkline);

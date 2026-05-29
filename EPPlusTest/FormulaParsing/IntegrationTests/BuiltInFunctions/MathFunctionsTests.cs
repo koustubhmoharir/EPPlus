@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,7 +158,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void AverageShouldReturnDiv0IfEmptyCell()
         {
-            using(var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
+            using (var pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {
                 var ws = pck.Workbook.Worksheets.Add("test");
                 ws.Cells["A2"].Formula = "AVERAGE(A1)";

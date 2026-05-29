@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
@@ -16,7 +16,7 @@ namespace EPPlusTest.Table
             {
                 var ws = pck.Workbook.Worksheets.Add("Sheet1");
                 var range = ws.Cells["A1:C5"];
-                
+
 #if Core
                 // In dotnetport (.NET 9), names that look like cell addresses are disallowed.
                 try
@@ -28,7 +28,7 @@ namespace EPPlusTest.Table
                 {
                     Assert.AreEqual("Tablename is not valid", ex.Message);
                 }
-                
+
                 // A valid name should still work
                 ws.Tables.Add(range, "MyTable");
                 Assert.AreEqual("MyTable", ws.Tables[0].Name);
@@ -71,7 +71,7 @@ namespace EPPlusTest.Table
             {
                 var ws = pck.Workbook.Worksheets.Add("Sheet1");
                 var range = ws.Cells["A1:C5"];
-                
+
 #if Core
                 // In dotnetport, '#' is rejected by ValidateTableName
                 try

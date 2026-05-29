@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -50,7 +50,7 @@ namespace OfficeOpenXml.Style
         /// <summary>
         /// The numeric index fror the format
         /// </summary>
-        public int NumFmtID 
+        public int NumFmtID
         {
             get
             {
@@ -68,9 +68,9 @@ namespace OfficeOpenXml.Style
         {
             get
             {
-                for(int i=0;i<_styles.NumberFormats.Count;i++)
+                for (int i = 0; i < _styles.NumberFormats.Count; i++)
                 {
-                    if(Index==_styles.NumberFormats[i].NumFmtId)
+                    if (Index == _styles.NumberFormats[i].NumFmtId)
                     {
                         return _styles.NumberFormats[i].Format;
                     }
@@ -78,14 +78,14 @@ namespace OfficeOpenXml.Style
                 return "general";
             }
             set
-            {                
+            {
                 _ChangedEvent(this, new StyleChangeEventArgs(eStyleClass.Numberformat, eStyleProperty.Format, (string.IsNullOrEmpty(value) ? "General" : value), _positionID, _address));
             }
         }
 
         internal override string Id
         {
-            get 
+            get
             {
                 return Format;
             }
@@ -208,7 +208,7 @@ namespace OfficeOpenXml.Style
                     return 38;
                 case "#,##0.00;(#,##0.00)":
                     return 39;
-                case "#,##0.00;[Red](#,##0.00)":                      
+                case "#,##0.00;[Red](#,##0.00)":
                     return 40;
                 case "mm:ss":
                     return 45;

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -54,7 +54,7 @@ namespace OfficeOpenXml.Style
             {
                 foreach (XmlNode n in nl)
                 {
-                    _list.Add(new ExcelParagraph(ns, n, "",schemaNodeOrder));
+                    _list.Add(new ExcelParagraph(ns, n, "", schemaNodeOrder));
                 }
             }
             _path = path;
@@ -89,20 +89,20 @@ namespace OfficeOpenXml.Style
             {
                 doc = TopNode.OwnerDocument;
             }
-            XmlNode parentNode=TopNode.SelectSingleNode(_path, NameSpaceManager);
+            XmlNode parentNode = TopNode.SelectSingleNode(_path, NameSpaceManager);
             if (parentNode == null)
             {
                 CreateNode(_path);
                 parentNode = TopNode.SelectSingleNode(_path, NameSpaceManager);
             }
-            
+
             var node = doc.CreateElement("a", "r", ExcelPackage.schemaDrawings);
             parentNode.AppendChild(node);
             var childNode = doc.CreateElement("a", "rPr", ExcelPackage.schemaDrawings);
             node.AppendChild(childNode);
             var rt = new ExcelParagraph(NameSpaceManager, node, "", SchemaNodeOrder);
             rt.ComplexFont = "Calibri";
-            rt.LatinFont = "Calibri"; 
+            rt.LatinFont = "Calibri";
             rt.Size = 11;
 
             rt.Text = Text;
@@ -149,7 +149,7 @@ namespace OfficeOpenXml.Style
                 {
                     this[0].Text = value;
                     int count = Count;
-                    for (int ix = Count-1; ix > 0; ix--)
+                    for (int ix = Count - 1; ix > 0; ix--)
                     {
                         RemoveAt(ix);
                     }

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -46,7 +46,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
         public ExpressionCompiler()
             : this(new ExpressionConverter(), new CompileStrategyFactory())
         {
- 
+
         }
 
         public ExpressionCompiler(IExpressionConverter expressionConverter, ICompileStrategyFactory compileStrategyFactory)
@@ -66,10 +66,10 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
             return PerformCompilation(worksheet, row, column);
         }
 
-        private CompileResult PerformCompilation(string worksheet="", int row=-1, int column=-1)
+        private CompileResult PerformCompilation(string worksheet = "", int row = -1, int column = -1)
         {
             var compiledExpressions = HandleGroupedExpressions();
-            while(compiledExpressions.Any(x => x.Operator != null))
+            while (compiledExpressions.Any(x => x.Operator != null))
             {
                 var prec = FindLowestPrecedence();
                 compiledExpressions = HandlePrecedenceLevel(prec);
@@ -86,7 +86,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
             if (!_expressions.Any()) return Enumerable.Empty<Expression>();
             var first = _expressions.First();
             var groupedExpressions = _expressions.Where(x => x.IsGroupedExpression);
-            foreach(var groupedExpression in groupedExpressions)
+            foreach (var groupedExpression in groupedExpressions)
             {
                 var result = groupedExpression.Compile();
                 if (result == CompileResult.Empty) continue;
@@ -120,7 +120,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
             {
                 var strategy = _compileStrategyFactory.Create(expression);
                 var compiledExpression = strategy.Compile();
-                if(compiledExpression is ExcelErrorExpression)
+                if (compiledExpression is ExcelErrorExpression)
                 {
                     return RefreshList(compiledExpression);
                 }

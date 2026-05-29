@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
@@ -21,18 +21,19 @@ namespace EPPlusTest
                 ExcelRichTextHtmlUtility.SetRichTextFromHtml(range, html, "Calibri", 11);
 
                 Assert.IsTrue(range.IsRichText);
-                
+
                 string fullText = "";
-                foreach(var rt in range.RichText) fullText += rt.Text;
+                foreach (var rt in range.RichText) fullText += rt.Text;
 #if Core
                 Assert.AreEqual("Bold & More Italic < Tag > \"Quote\" 'Apos'", fullText);
 #else
                 Assert.AreEqual("Bold & More Italic < Tag > \"Quote\" &apos;Apos&apos;", fullText);
 #endif
-                
+
                 bool foundBold = false;
                 bool foundItalic = false;
-                foreach(var rt in range.RichText) {
+                foreach (var rt in range.RichText)
+                {
                     if (rt.Text == "Bold & More" && rt.Bold) foundBold = true;
                     if (rt.Text == "Italic < Tag >" && rt.Italic) foundItalic = true;
                 }
@@ -57,7 +58,7 @@ namespace EPPlusTest
                 Assert.AreEqual("Text with nbsp", range.Value.ToString());
             }
         }
-        
+
         [TestMethod]
         public void RichTextHtml_BrTag_Test()
         {
@@ -87,7 +88,7 @@ namespace EPPlusTest
                 ExcelRichTextHtmlUtility.SetRichTextFromHtml(range, html, "Calibri", 11);
 
                 Assert.IsTrue(range.IsRichText);
-                
+
                 Assert.IsTrue(HasRichText(range, "Bold", rt => rt.Bold));
                 Assert.IsTrue(HasRichText(range, "Strong", rt => rt.Bold));
                 Assert.IsTrue(HasRichText(range, "Italic", rt => rt.Italic));
@@ -100,8 +101,10 @@ namespace EPPlusTest
             }
         }
 
-        private bool HasRichText(ExcelRange range, string text, Func<ExcelRichText, bool> predicate) {
-            foreach(var rt in range.RichText) {
+        private bool HasRichText(ExcelRange range, string text, Func<ExcelRichText, bool> predicate)
+        {
+            foreach (var rt in range.RichText)
+            {
                 if (rt.Text == text && predicate(rt)) return true;
             }
             return false;

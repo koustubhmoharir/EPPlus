@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -80,12 +80,12 @@ namespace OfficeOpenXml.Compatibility
         {
             get
             {
-                return excelPackage._worksheetAdd==1;
+                return excelPackage._worksheetAdd == 1;
             }
             set
             {
                 excelPackage._worksheetAdd = value ? 1 : 0;
-                if(excelPackage._workbook!=null && excelPackage._workbook._worksheets!=null)
+                if (excelPackage._workbook != null && excelPackage._workbook._worksheets != null)
                 {
                     excelPackage.Workbook.Worksheets.ReindexWorksheetDictionary();
 

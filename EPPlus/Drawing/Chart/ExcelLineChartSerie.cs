@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -195,7 +195,7 @@ namespace OfficeOpenXml.Drawing.Chart
             }
             set
             {
-                SetXmlNodeString(LINEWIDTH_PATH, (( int )(12700 * value)).ToString(), true);
+                SetXmlNodeString(LINEWIDTH_PATH, ((int)(12700 * value)).ToString(), true);
             }
         }
         //marker line color

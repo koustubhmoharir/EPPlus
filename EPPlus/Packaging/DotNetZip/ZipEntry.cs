@@ -1,4 +1,4 @@
-﻿// ZipEntry.cs
+// ZipEntry.cs
 // ------------------------------------------------------------------
 //
 // Copyright (c) 2006-2010 Dino Chiesa.
@@ -39,9 +39,9 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
     [Interop.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d00004")]
     [Interop.ComVisible(true)]
-//#if !NETCF
-//    [Interop.ClassInterface(Interop.ClassInterfaceType.AutoDispatch)]  // AutoDual
-//#endif
+    //#if !NETCF
+    //    [Interop.ClassInterface(Interop.ClassInterfaceType.AutoDispatch)]  // AutoDual
+    //#endif
     internal partial class ZipEntry
     {
         /// <summary>
@@ -1464,7 +1464,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             {
                 if (_CompressionMethod != (short)CompressionMethod.Deflate &&
                     _CompressionMethod != (short)CompressionMethod.None)
-                    return ; // no effect
+                    return; // no effect
 
                 if (value == OfficeOpenXml.Packaging.Ionic.Zlib.CompressionLevel.Default &&
                     _CompressionMethod == (short)CompressionMethod.Deflate) return; // nothing to do
@@ -1783,7 +1783,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
                 _Encryption = value;
                 _restreamRequiredOnSave = true;
-                if (_container.ZipFile!=null)
+                if (_container.ZipFile != null)
                     _container.ZipFile.NotifyEntryChanged();
             }
         }

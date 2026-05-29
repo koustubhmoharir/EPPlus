@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -28,7 +28,7 @@
  * ******************************************************************************
  * Jan Källman		    Added       		        2017-11-02
  *******************************************************************************/
- using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;

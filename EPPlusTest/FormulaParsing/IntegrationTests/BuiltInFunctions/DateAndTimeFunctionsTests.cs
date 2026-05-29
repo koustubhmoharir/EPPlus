@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Globalization;
@@ -83,7 +83,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
         [TestMethod]
         public void TimeShouldReturnCorrectResult()
         {
-            var expectedResult = ((double)(12 * 60 * 60 + 13 * 60 + 14))/((double)(24 * 60 * 60));
+            var expectedResult = ((double)(12 * 60 * 60 + 13 * 60 + 14)) / ((double)(24 * 60 * 60));
             var result = _parser.Parse("Time(12, 13, 14)");
             Assert.AreEqual(expectedResult, result);
         }

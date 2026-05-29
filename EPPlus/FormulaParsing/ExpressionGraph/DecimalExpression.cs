@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 /*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
@@ -44,7 +44,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
         public DecimalExpression(string expression)
             : this(expression, false)
         {
-            
+
         }
 
         public DecimalExpression(string expression, bool negate)

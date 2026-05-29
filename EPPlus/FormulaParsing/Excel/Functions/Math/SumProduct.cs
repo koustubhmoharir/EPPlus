@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -55,16 +55,16 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Math
                 }
                 else if (arg.IsExcelRange)
                 {
-                    var r=arg.ValueAsRangeInfo;
+                    var r = arg.ValueAsRangeInfo;
                     for (int col = r.Address._fromCol; col <= r.Address._toCol; col++)
                     {
                         for (int row = r.Address._fromRow; row <= r.Address._toRow; row++)
                         {
-                            AddValue(r.GetValue(row,col), currentResult);
+                            AddValue(r.GetValue(row, col), currentResult);
                         }
                     }
                 }
-                else if(IsNumeric(arg.Value))
+                else if (IsNumeric(arg.Value))
                 {
                     AddValue(arg.Value, currentResult);
                 }

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -52,7 +52,7 @@ namespace OfficeOpenXml.FormulaParsing.ExcelUtilities
             {
                 return CompareStringToString(o1.ToString().ToLower(), o2.ToString().ToLower());
             }
-            else if( o1.GetType() == typeof(string))
+            else if (o1.GetType() == typeof(string))
             {
                 return CompareStringToObject(o1.ToString(), o2);
             }

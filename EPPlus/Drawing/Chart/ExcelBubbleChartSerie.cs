@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -77,7 +77,7 @@ namespace OfficeOpenXml.Drawing.Chart
             }
             set
             {
-                SetXmlNodeBool(BUBBLE3D_PATH, value);    
+                SetXmlNodeBool(BUBBLE3D_PATH, value);
             }
         }
         const string INVERTIFNEGATIVE_PATH = "c:invertIfNegative/@val";
@@ -101,7 +101,7 @@ namespace OfficeOpenXml.Drawing.Chart
             set
             {
                 base.Series = value;
-                if(string.IsNullOrEmpty(BubbleSize))
+                if (string.IsNullOrEmpty(BubbleSize))
                 {
                     GenerateLit();
                 }
@@ -117,14 +117,14 @@ namespace OfficeOpenXml.Drawing.Chart
             }
             set
             {
-                if(string.IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value))
                 {
                     GenerateLit();
                 }
                 else
                 {
                     SetXmlNodeString(BUBBLESIZE_PATH, ExcelCellBase.GetFullAddress(_chartSeries.Chart.WorkSheet.Name, value));
-                
+
                     XmlNode cache = TopNode.SelectSingleNode(string.Format("{0}/c:numCache", BUBBLESIZE_PATH), _ns);
                     if (cache != null)
                     {

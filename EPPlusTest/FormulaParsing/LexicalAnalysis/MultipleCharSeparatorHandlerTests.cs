@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using OfficeOpenXml.FormulaParsing.LexicalAnalysis.TokenSeparatorHandlers;
 using System;
@@ -14,9 +14,9 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
             var handler = new MultipleCharSeparatorHandler();
             var context = new TokenizerContext("<=");
             context.AddToken(new Token("<", TokenType.Operator));
-            
+
             bool handled = handler.Handle('=', null, context, null);
-            
+
             Assert.IsTrue(handled);
             Assert.AreEqual("<=", context.LastToken.Value);
             Assert.AreEqual(TokenType.Operator, context.LastToken.TokenType);
@@ -28,9 +28,9 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
             var handler = new MultipleCharSeparatorHandler();
             var context = new TokenizerContext(">=");
             context.AddToken(new Token(">", TokenType.Operator));
-            
+
             bool handled = handler.Handle('=', null, context, null);
-            
+
             Assert.IsTrue(handled);
             Assert.AreEqual(">=", context.LastToken.Value);
             Assert.AreEqual(TokenType.Operator, context.LastToken.TokenType);
@@ -42,9 +42,9 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
             var handler = new MultipleCharSeparatorHandler();
             var context = new TokenizerContext("<>");
             context.AddToken(new Token("<", TokenType.Operator));
-            
+
             bool handled = handler.Handle('>', null, context, null);
-            
+
             Assert.IsTrue(handled);
             Assert.AreEqual("<>", context.LastToken.Value);
             Assert.AreEqual(TokenType.Operator, context.LastToken.TokenType);
@@ -56,10 +56,10 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
             var handler = new MultipleCharSeparatorHandler();
             var context = new TokenizerContext("<");
             context.AppendToCurrentToken('<');
-            
+
             // CurrentTokenHasValue will be true, so it should return false
             bool handled = handler.Handle('=', null, context, null);
-            
+
             Assert.IsFalse(handled);
         }
 
@@ -69,9 +69,9 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
             var handler = new MultipleCharSeparatorHandler();
             var context = new TokenizerContext("1=");
             context.AddToken(new Token("1", TokenType.Integer));
-            
+
             bool handled = handler.Handle('=', null, context, null);
-            
+
             Assert.IsFalse(handled);
         }
 
@@ -81,9 +81,9 @@ namespace EPPlusTest.FormulaParsing.LexicalAnalysis
             var handler = new MultipleCharSeparatorHandler();
             var context = new TokenizerContext("<+");
             context.AddToken(new Token("<", TokenType.Operator));
-            
+
             bool handled = handler.Handle('+', null, context, null);
-            
+
             Assert.IsFalse(handled);
         }
     }

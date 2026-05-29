@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -63,15 +63,15 @@ namespace OfficeOpenXml.VBA
 
                 var stream = Part.GetStream();
                 BinaryReader br = new BinaryReader(stream);
-                uint cbSignature = br.ReadUInt32();        
+                uint cbSignature = br.ReadUInt32();
                 uint signatureOffset = br.ReadUInt32();     //44 ??
-                uint cbSigningCertStore = br.ReadUInt32();  
-                uint certStoreOffset = br.ReadUInt32();     
-                uint cbProjectName = br.ReadUInt32();       
-                uint projectNameOffset = br.ReadUInt32();   
+                uint cbSigningCertStore = br.ReadUInt32();
+                uint certStoreOffset = br.ReadUInt32();
+                uint cbProjectName = br.ReadUInt32();
+                uint projectNameOffset = br.ReadUInt32();
                 uint fTimestamp = br.ReadUInt32();
                 uint cbTimestampUrl = br.ReadUInt32();
-                uint timestampUrlOffset = br.ReadUInt32();  
+                uint timestampUrlOffset = br.ReadUInt32();
                 byte[] signature = br.ReadBytes((int)cbSignature);
                 uint version = br.ReadUInt32();
                 uint fileType = br.ReadUInt32();
@@ -152,8 +152,8 @@ namespace OfficeOpenXml.VBA
             {
                 return;
             }
-            
-            if (Certificate.HasPrivateKey==false)    //No signature. Remove any Signature part
+
+            if (Certificate.HasPrivateKey == false)    //No signature. Remove any Signature part
             {
                 var storeCert = GetCertFromStore(StoreLocation.CurrentUser);
                 if (storeCert == null)
@@ -213,10 +213,10 @@ namespace OfficeOpenXml.VBA
             }
             if (rel == null)
             {
-                proj.Part.CreateRelationship(UriHelper.ResolvePartUri(proj.Uri, Uri), Packaging.TargetMode.Internal, schemaRelVbaSignature);                
+                proj.Part.CreateRelationship(UriHelper.ResolvePartUri(proj.Uri, Uri), Packaging.TargetMode.Internal, schemaRelVbaSignature);
             }
             var b = ms.ToArray();
-            Part.GetStream(FileMode.Create).Write(b, 0, b.Length);            
+            Part.GetStream(FileMode.Create).Write(b, 0, b.Length);
         }
 
         private X509Certificate2 GetCertFromStore(StoreLocation loc)
@@ -236,9 +236,9 @@ namespace OfficeOpenXml.VBA
                 }
                 finally
                 {
-                    #if Core
-                        store.Dispose();
-                    #endif
+#if Core
+                    store.Dispose();
+#endif
                     store.Close();
                 }
             }
@@ -316,7 +316,7 @@ namespace OfficeOpenXml.VBA
             contentInfo.ContentType.Value = "1.3.6.1.4.1.311.2.1.4";
 #if (Core)
             Verifier = new EnvelopedCms(contentInfo);
-            var r = new CmsRecipient(Certificate);            
+            var r = new CmsRecipient(Certificate);
             Verifier.Encrypt(r);
             return Verifier.Encode();
 #else

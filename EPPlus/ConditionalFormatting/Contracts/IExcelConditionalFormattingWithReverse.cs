@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -37,16 +37,16 @@ using OfficeOpenXml.ConditionalFormatting;
 
 namespace OfficeOpenXml.ConditionalFormatting.Contracts
 {
-  /// <summary>
-  /// IExcelConditionalFormattingWithReverse
-  /// </summary>
-  public interface IExcelConditionalFormattingWithReverse
-  {
-    #region Public Properties
     /// <summary>
-    /// Reverse Attribute
+    /// IExcelConditionalFormattingWithReverse
     /// </summary>
-    bool Reverse { get; set; }
-    #endregion Public Properties
-  }
+    public interface IExcelConditionalFormattingWithReverse
+    {
+        #region Public Properties
+        /// <summary>
+        /// Reverse Attribute
+        /// </summary>
+        bool Reverse { get; set; }
+        #endregion Public Properties
+    }
 }

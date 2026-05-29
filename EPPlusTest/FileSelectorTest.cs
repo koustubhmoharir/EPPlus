@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using System.Collections;
@@ -120,7 +120,7 @@ namespace EPPlusTest
                 var selectorName = CreateFileSelector("name = *.txt");
                 var matchedName = SelectFiles(selectorName, tempDir, false);
                 Assert.AreEqual(2, matchedName.Count);
-                
+
                 bool foundTxt = false, foundSpace = false;
                 foreach (string file in matchedName)
                 {
@@ -134,7 +134,7 @@ namespace EPPlusTest
                 var selectorSpace = CreateFileSelector("name = 'test space.txt'");
                 var matchedSpace = SelectFiles(selectorSpace, tempDir, false);
                 Assert.AreEqual(1, matchedSpace.Count);
-                
+
                 bool foundSpaceOnly = false;
                 foreach (string file in matchedSpace)
                 {
@@ -146,7 +146,7 @@ namespace EPPlusTest
                 var selectorSize = CreateFileSelector("size > 100k");
                 var matchedSize = SelectFiles(selectorSize, tempDir, false);
                 Assert.AreEqual(1, matchedSize.Count);
-                
+
                 bool foundDoc = false;
                 foreach (string file in matchedSize)
                 {
@@ -158,7 +158,7 @@ namespace EPPlusTest
                 var selectorCompound = CreateFileSelector("name = *.txt and size < 1k");
                 var matchedCompound = SelectFiles(selectorCompound, tempDir, false);
                 Assert.AreEqual(2, matchedCompound.Count);
-                
+
                 bool foundTxtC = false, foundSpaceC = false;
                 foreach (string file in matchedCompound)
                 {

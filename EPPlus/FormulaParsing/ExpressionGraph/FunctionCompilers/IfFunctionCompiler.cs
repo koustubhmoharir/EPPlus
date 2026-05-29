@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -57,7 +57,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph.FunctionCompilers
         public override CompileResult Compile(IEnumerable<Expression> children, ParsingContext context)
         {
             // 2 is allowed, Excel returns FALSE if false is the outcome of the expression
-            if(children.Count() < 2) throw new ExcelErrorValueException(eErrorType.Value);
+            if (children.Count() < 2) throw new ExcelErrorValueException(eErrorType.Value);
             var args = new List<FunctionArgument>();
             Function.BeforeInvoke(context);
             var firstChild = children.ElementAt(0);
@@ -68,26 +68,26 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph.FunctionCompilers
             {
                 v = ((ExcelDataProvider.INameInfo)v).Value;
             }
-            
+
             if (v is ExcelDataProvider.IRangeInfo)
             {
-                var r=((ExcelDataProvider.IRangeInfo)v);
-                if(r.GetNCells()>1)
+                var r = ((ExcelDataProvider.IRangeInfo)v);
+                if (r.GetNCells() > 1)
                 {
-                    throw(new ArgumentException("Logical can't be more than one cell"));
+                    throw (new ArgumentException("Logical can't be more than one cell"));
                 }
                 v = r.GetOffset(0, 0);
             }
             bool boolVal;
-            if(v is bool)
+            if (v is bool)
             {
                 boolVal = (bool)v;
             }
-            else if(!Utils.ConvertUtil.TryParseBooleanString(v, out boolVal))
+            else if (!Utils.ConvertUtil.TryParseBooleanString(v, out boolVal))
             {
-                if(OfficeOpenXml.Utils.ConvertUtil.IsNumeric(v))
+                if (OfficeOpenXml.Utils.ConvertUtil.IsNumeric(v))
                 {
-                    boolVal = OfficeOpenXml.Utils.ConvertUtil.GetValueDouble(v)!=0;
+                    boolVal = OfficeOpenXml.Utils.ConvertUtil.GetValueDouble(v) != 0;
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph.FunctionCompilers
                 }
             }
             /****  End Handle names and ranges ****/
-            
+
             args.Add(new FunctionArgument(boolVal));
             if (boolVal)
             {

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -42,7 +42,7 @@ namespace OfficeOpenXml.Drawing.Vml
     public class ExcelVmlDrawingPosition : XmlHelper
     {
         int _startPos;
-        internal ExcelVmlDrawingPosition(XmlNamespaceManager ns, XmlNode topNode, int startPos) : 
+        internal ExcelVmlDrawingPosition(XmlNamespaceManager ns, XmlNode topNode, int startPos) :
             base(ns, topNode)
         {
             _startPos = startPos;
@@ -59,7 +59,7 @@ namespace OfficeOpenXml.Drawing.Vml
             set
             {
                 SetNumber(2, value);
-            } 
+            }
         }
         /// <summary>
         /// Row offset in pixels. Zero based
@@ -115,7 +115,7 @@ namespace OfficeOpenXml.Drawing.Vml
             {
                 throw (new Exception("Anchor element is invalid in vmlDrawing"));
             }
-            SetXmlNodeString("x:Anchor", string.Join(",",numbers));
+            SetXmlNodeString("x:Anchor", string.Join(",", numbers));
         }
 
         private int GetNumber(int pos)
@@ -130,7 +130,7 @@ namespace OfficeOpenXml.Drawing.Vml
                     return ret;
                 }
             }
-            throw(new Exception("Anchor element is invalid in vmlDrawing"));
+            throw (new Exception("Anchor element is invalid in vmlDrawing"));
         }
     }
 }

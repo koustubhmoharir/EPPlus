@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -52,7 +52,7 @@ namespace OfficeOpenXml
         {
             //_commentHelper = new XmlHelper(ns, commentTopNode);
             _commentHelper = XmlHelperFactory.Create(ns, commentTopNode);
-            var textElem=commentTopNode.SelectSingleNode("d:text", ns);
+            var textElem = commentTopNode.SelectSingleNode("d:text", ns);
             if (textElem == null)
             {
                 textElem = commentTopNode.OwnerDocument.CreateElement("text", ExcelPackage.schemaMain);
@@ -64,7 +64,7 @@ namespace OfficeOpenXml
             }
 
             TopNode = cell.Worksheet.VmlDrawingsComments[ExcelCellBase.GetCellID(cell.Worksheet.SheetID, cell.Start.Row, cell.Start.Column)].TopNode;
-            RichText = new ExcelRichTextCollection(ns,textElem);
+            RichText = new ExcelRichTextCollection(ns, textElem);
             var tNode = textElem.SelectSingleNode("d:t", ns);
             if (tNode != null)
             {
@@ -81,7 +81,7 @@ namespace OfficeOpenXml
             get
             {
                 int authorRef = _commentHelper.GetXmlNodeInt("@authorId");
-                return _commentHelper.TopNode.OwnerDocument.SelectSingleNode(string.Format("{0}[{1}]", AUTHOR_PATH, authorRef+1), _commentHelper.NameSpaceManager).InnerText;
+                return _commentHelper.TopNode.OwnerDocument.SelectSingleNode(string.Format("{0}[{1}]", AUTHOR_PATH, authorRef + 1), _commentHelper.NameSpaceManager).InnerText;
             }
             set
             {
@@ -117,7 +117,7 @@ namespace OfficeOpenXml
         {
             get
             {
-                if(!string.IsNullOrEmpty(RichText.Text)) return RichText.Text;
+                if (!string.IsNullOrEmpty(RichText.Text)) return RichText.Text;
                 return _text;
             }
             set
@@ -142,23 +142,23 @@ namespace OfficeOpenXml
         /// <summary>
         /// Richtext collection
         /// </summary>
-        public ExcelRichTextCollection RichText 
-        { 
-           get; 
-           set; 
+        public ExcelRichTextCollection RichText
+        {
+            get;
+            set;
         }
 
         /// <summary>
         /// Reference
         /// </summary>
         internal string Reference
-		{
-			get { return _commentHelper.GetXmlNodeString("@ref"); }
+        {
+            get { return _commentHelper.GetXmlNodeString("@ref"); }
             set
             {
                 var a = new ExcelAddressBase(value);
                 var rows = a._fromRow - Range._fromRow;
-                var cols= a._fromCol - Range._fromCol;
+                var cols = a._fromCol - Range._fromCol;
                 Range.Address = value;
                 _commentHelper.SetXmlNodeString("@ref", value);
 
@@ -172,5 +172,5 @@ namespace OfficeOpenXml
                 Column = Range._fromCol - 1;
             }
         }
-	}
+    }
 }

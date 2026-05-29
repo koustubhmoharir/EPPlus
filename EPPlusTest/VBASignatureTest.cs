@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
@@ -18,7 +18,7 @@ namespace EPPlusTest
             // to create one or skip if not possible.
             // Actually, we can try to create a basic X509Certificate2 if possible, 
             // but EPPlus expects one from a store usually.
-            
+
             // For now, I'll just check if the Verifier property type is correct and it can decode.
             using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
             {

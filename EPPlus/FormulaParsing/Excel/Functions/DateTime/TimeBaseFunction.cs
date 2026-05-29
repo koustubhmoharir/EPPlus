@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -57,7 +57,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime
 
         protected double SecondsInADay
         {
-            get{ return 24 * 60 * 60; }
+            get { return 24 * 60 * 60; }
         }
 
         protected double GetTimeSerialNumber(double seconds)

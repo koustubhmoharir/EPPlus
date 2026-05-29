@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -53,7 +53,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
             _worksheet.Cells["A1"].Value = "Apple";
             _worksheet.Cells["A2"].Value = "Banana";
             _worksheet.Cells["A3"].Value = "Cherry";
-            
+
             _worksheet.Cells["B1"].Formula = "MATCH(\"Banana\", A1:A3, 0)";
             _worksheet.Calculate();
             Assert.AreEqual(2, _worksheet.Cells["B1"].Value);
@@ -65,7 +65,7 @@ namespace EPPlusTest.FormulaParsing.IntegrationTests.BuiltInFunctions
             _worksheet.Cells["A1"].Value = "Apple";
             _worksheet.Cells["A2"].Value = "Banana";
             _worksheet.Cells["A3"].Value = "Cherry";
-            
+
             _worksheet.Cells["B1"].Formula = "MATCH(\"Cherry\", \"A1:A3\", 0)";
             _worksheet.Calculate();
             Assert.AreEqual(3, _worksheet.Cells["B1"].Value);

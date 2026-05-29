@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -40,7 +40,7 @@ using OfficeOpenXml.FormulaParsing;
 
 namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
 {
-    public class ExpressionGraphBuilder :IExpressionGraphBuilder
+    public class ExpressionGraphBuilder : IExpressionGraphBuilder
     {
         private readonly ExpressionGraph _graph = new ExpressionGraph();
         private readonly IExpressionFactory _expressionFactory;
@@ -101,7 +101,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
                 {
                     break;
                 }
-                else if(token.TokenType == TokenType.WorksheetName)
+                else if (token.TokenType == TokenType.WorksheetName)
                 {
                     var sb = new StringBuilder();
                     sb.Append(tokens[_tokenIndex++].Value);
@@ -115,7 +115,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
                 {
                     _negateNextExpression = true;
                 }
-                else if(token.TokenType == TokenType.Percent)
+                else if (token.TokenType == TokenType.Percent)
                 {
                     SetOperatorOnExpression(parent, Operator.Percent);
                     if (parent == null)
@@ -153,7 +153,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
         private void CreateAndAppendExpression(ref Expression parent, Token token)
         {
             if (IsWaste(token)) return;
-            if (parent != null && 
+            if (parent != null &&
                 (token.TokenType == TokenType.Comma || token.TokenType == TokenType.SemiColon))
             {
                 parent = parent.PrepareForNextChild();
@@ -230,7 +230,7 @@ namespace OfficeOpenXml.FormulaParsing.ExpressionGraph
                     parent.AddChild(newGroupExpression);
                     BuildUp(tokens, newGroupExpression);
                 }
-                 BuildUp(tokens, parent);
+                BuildUp(tokens, parent);
             }
         }
 

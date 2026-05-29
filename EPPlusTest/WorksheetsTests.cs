@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
@@ -6,105 +6,105 @@ using System.Reflection;
 
 namespace EPPlusTest
 {
-	[TestClass]
-	public class WorksheetsTests
-	{
-		private ExcelPackage package;
-		private ExcelWorkbook workbook;
+    [TestClass]
+    public class WorksheetsTests
+    {
+        private ExcelPackage package;
+        private ExcelWorkbook workbook;
 
-		[TestInitialize]
-		public void TestInitialize()
-		{
-			package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
-			workbook = package.Workbook;
-			workbook.Worksheets.Add("NEW1");
-		}
-
-		[TestMethod]
-		public void ConfirmFileStructure()
-		{
-			Assert.IsNotNull(package, "Package not created");
-			Assert.IsNotNull(workbook, "No workbook found");
-		}
-
-		[TestMethod]
-		public void ShouldBeAbleToDeleteAndThenAdd()
-		{
-			workbook.Worksheets.Add("NEW2");
-			workbook.Worksheets.Delete(1);
-			workbook.Worksheets.Add("NEW3");
-		}
-
-		[TestMethod]
-		public void DeleteByNameWhereWorkSheetExists()
-		{
-		    workbook.Worksheets.Add("NEW2");
-			workbook.Worksheets.Delete("NEW2");
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
+            workbook = package.Workbook;
+            workbook.Worksheets.Add("NEW1");
         }
 
-		[TestMethod, ExpectedException(typeof(ArgumentException))]
-		public void DeleteByNameWhereWorkSheetDoesNotExist()
-		{
-			workbook.Worksheets.Add("NEW2");
-			workbook.Worksheets.Delete("NEW3");
-		}
+        [TestMethod]
+        public void ConfirmFileStructure()
+        {
+            Assert.IsNotNull(package, "Package not created");
+            Assert.IsNotNull(workbook, "No workbook found");
+        }
 
-		[TestMethod]
-		public void MoveBeforeByNameWhereWorkSheetExists()
-		{
-			workbook.Worksheets.Add("NEW2");
-			workbook.Worksheets.Add("NEW3");
-			workbook.Worksheets.Add("NEW4");
-			workbook.Worksheets.Add("NEW5");
+        [TestMethod]
+        public void ShouldBeAbleToDeleteAndThenAdd()
+        {
+            workbook.Worksheets.Add("NEW2");
+            workbook.Worksheets.Delete(1);
+            workbook.Worksheets.Add("NEW3");
+        }
 
-			workbook.Worksheets.MoveBefore("NEW4", "NEW2");
+        [TestMethod]
+        public void DeleteByNameWhereWorkSheetExists()
+        {
+            workbook.Worksheets.Add("NEW2");
+            workbook.Worksheets.Delete("NEW2");
+        }
 
-			CompareOrderOfWorksheetsAfterSaving(package);
-		}
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public void DeleteByNameWhereWorkSheetDoesNotExist()
+        {
+            workbook.Worksheets.Add("NEW2");
+            workbook.Worksheets.Delete("NEW3");
+        }
 
-		[TestMethod]
-		public void MoveAfterByNameWhereWorkSheetExists()
-		{
-			workbook.Worksheets.Add("NEW2");
-			workbook.Worksheets.Add("NEW3");
-			workbook.Worksheets.Add("NEW4");
-			workbook.Worksheets.Add("NEW5");
+        [TestMethod]
+        public void MoveBeforeByNameWhereWorkSheetExists()
+        {
+            workbook.Worksheets.Add("NEW2");
+            workbook.Worksheets.Add("NEW3");
+            workbook.Worksheets.Add("NEW4");
+            workbook.Worksheets.Add("NEW5");
 
-			workbook.Worksheets.MoveAfter("NEW4", "NEW2");
+            workbook.Worksheets.MoveBefore("NEW4", "NEW2");
 
-			CompareOrderOfWorksheetsAfterSaving(package);
-		}
+            CompareOrderOfWorksheetsAfterSaving(package);
+        }
 
-		[TestMethod]
-		public void MoveBeforeByPositionWhereWorkSheetExists()
-		{
-			workbook.Worksheets.Add("NEW2");
-			workbook.Worksheets.Add("NEW3");
-			workbook.Worksheets.Add("NEW4");
-			workbook.Worksheets.Add("NEW5");
+        [TestMethod]
+        public void MoveAfterByNameWhereWorkSheetExists()
+        {
+            workbook.Worksheets.Add("NEW2");
+            workbook.Worksheets.Add("NEW3");
+            workbook.Worksheets.Add("NEW4");
+            workbook.Worksheets.Add("NEW5");
 
-			workbook.Worksheets.MoveBefore(4, 2);
+            workbook.Worksheets.MoveAfter("NEW4", "NEW2");
 
-			CompareOrderOfWorksheetsAfterSaving(package);
-		}
+            CompareOrderOfWorksheetsAfterSaving(package);
+        }
 
-		[TestMethod]
-		public void MoveAfterByPositionWhereWorkSheetExists()
-		{
-			workbook.Worksheets.Add("NEW2");
-			workbook.Worksheets.Add("NEW3");
-			workbook.Worksheets.Add("NEW4");
-			workbook.Worksheets.Add("NEW5");
+        [TestMethod]
+        public void MoveBeforeByPositionWhereWorkSheetExists()
+        {
+            workbook.Worksheets.Add("NEW2");
+            workbook.Worksheets.Add("NEW3");
+            workbook.Worksheets.Add("NEW4");
+            workbook.Worksheets.Add("NEW5");
 
-			workbook.Worksheets.MoveAfter(4, 2);
+            workbook.Worksheets.MoveBefore(4, 2);
 
-			CompareOrderOfWorksheetsAfterSaving(package);
-		}
+            CompareOrderOfWorksheetsAfterSaving(package);
+        }
+
+        [TestMethod]
+        public void MoveAfterByPositionWhereWorkSheetExists()
+        {
+            workbook.Worksheets.Add("NEW2");
+            workbook.Worksheets.Add("NEW3");
+            workbook.Worksheets.Add("NEW4");
+            workbook.Worksheets.Add("NEW5");
+
+            workbook.Worksheets.MoveAfter(4, 2);
+
+            CompareOrderOfWorksheetsAfterSaving(package);
+        }
         #region Delete Column with Save Tests
 
         private const string OutputDirectory = @"d:\temp\";
 
-        [TestMethod,Ignore]
+        [TestMethod, Ignore]
         public void DeleteFirstColumnInRangeColumnShouldBeDeleted()
         {
             // Arrange
@@ -247,7 +247,7 @@ namespace EPPlusTest
         [TestMethod]
         public void RangeClearMethodShouldNotClearSurroundingCells()
         {
-            var wks  = workbook.Worksheets.Add("test");
+            var wks = workbook.Worksheets.Add("test");
             wks.Cells[2, 2].Value = "something";
             wks.Cells[2, 3].Value = "something";
 
@@ -259,75 +259,75 @@ namespace EPPlusTest
         }
 
         private static void CompareOrderOfWorksheetsAfterSaving(ExcelPackage editedPackage)
-		{
-			var packageStream = new MemoryStream();
-			editedPackage.SaveAs(packageStream);
+        {
+            var packageStream = new MemoryStream();
+            editedPackage.SaveAs(packageStream);
 
-			var newPackage = new ExcelPackage(packageStream, EPPlusTest.TempFolderHelper.Create());
+            var newPackage = new ExcelPackage(packageStream, EPPlusTest.TempFolderHelper.Create());
             newPackage.Compatibility.IsWorksheets1Based = true;
             var positionId = 1;
-			foreach (var worksheet in editedPackage.Workbook.Worksheets)
-			{
-				Assert.AreEqual(worksheet.Name, newPackage.Workbook.Worksheets[positionId].Name, "Worksheets are not in the same order");
-				positionId++;
-			}
-		}
+            foreach (var worksheet in editedPackage.Workbook.Worksheets)
+            {
+                Assert.AreEqual(worksheet.Name, newPackage.Workbook.Worksheets[positionId].Name, "Worksheets are not in the same order");
+                positionId++;
+            }
+        }
 
-		[TestMethod]
-		public void TestTableCalculatedColumnFormulaTranslation()
-		{
-			using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
-			{
-				var ws = package.Workbook.Worksheets.Add("Sheet1");
-				ws.Cells["A1"].Value = "ColA";
-				ws.Cells["B1"].Value = "ColB";
-				ws.Cells["A2"].Value = 10;
-				ws.Cells["A3"].Value = 20;
+        [TestMethod]
+        public void TestTableCalculatedColumnFormulaTranslation()
+        {
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
+            {
+                var ws = package.Workbook.Worksheets.Add("Sheet1");
+                ws.Cells["A1"].Value = "ColA";
+                ws.Cells["B1"].Value = "ColB";
+                ws.Cells["A2"].Value = 10;
+                ws.Cells["A3"].Value = 20;
 
-				var table = ws.Tables.Add(ws.Cells["A1:B3"], "Table1");
-				table.Columns[1].CalculatedColumnFormula = "A2*2";
+                var table = ws.Tables.Add(ws.Cells["A1:B3"], "Table1");
+                table.Columns[1].CalculatedColumnFormula = "A2*2";
 
-				using (var ms = new MemoryStream())
-				{
-					package.SaveAs(ms);
-				}
+                using (var ms = new MemoryStream())
+                {
+                    package.SaveAs(ms);
+                }
 
 #if Core
-				// On dotnetport (.NET 9), table calculated column formulas are translated (shifted relative to row)
-				Assert.AreEqual("A2*2", ws.Cells["B2"].Formula);
-				Assert.AreEqual("A3*2", ws.Cells["B3"].Formula);
+                // On dotnetport (.NET 9), table calculated column formulas are translated (shifted relative to row)
+                Assert.AreEqual("A2*2", ws.Cells["B2"].Formula);
+                Assert.AreEqual("A3*2", ws.Cells["B3"].Formula);
 #else
 				// On stable (Mono), there is no formula translation (each row gets the exact formula assigned)
 				Assert.AreEqual("A2*2", ws.Cells["B2"].Formula);
 				Assert.AreEqual("A2*2", ws.Cells["B3"].Formula);
 #endif
-			}
-		}
+            }
+        }
 
-		[TestMethod]
-		public void TestVmlCommentsPartCleanup()
-		{
-			using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
-			{
-				var ws = package.Workbook.Worksheets.Add("Sheet1");
-				ws.Cells["A1"].AddComment("Comment 1", "Author");
+        [TestMethod]
+        public void TestVmlCommentsPartCleanup()
+        {
+            using (var package = new ExcelPackage(EPPlusTest.TempFolderHelper.Create()))
+            {
+                var ws = package.Workbook.Worksheets.Add("Sheet1");
+                ws.Cells["A1"].AddComment("Comment 1", "Author");
 
-				using (var ms = new MemoryStream())
-				{
-					package.SaveAs(ms);
-				}
+                using (var ms = new MemoryStream())
+                {
+                    package.SaveAs(ms);
+                }
 
-				Assert.AreEqual(1, ws.Comments.Count);
+                Assert.AreEqual(1, ws.Comments.Count);
 
-				ws.Comments.RemoveAt(0);
+                ws.Comments.RemoveAt(0);
 
-				using (var ms = new MemoryStream())
-				{
-					package.SaveAs(ms);
-				}
+                using (var ms = new MemoryStream())
+                {
+                    package.SaveAs(ms);
+                }
 
-				Assert.AreEqual(0, ws.Comments.Count);
-			}
-		}
-	}
+                Assert.AreEqual(0, ws.Comments.Count);
+            }
+        }
+    }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,7 +35,7 @@ namespace EPPlusTest.FormulaParsing
             s1.Cells["C4"].Value = 8;
 
             _sheet = s1;
-            _sheet2 = _package.Workbook.Worksheets.Add("test2",s1);
+            _sheet2 = _package.Workbook.Worksheets.Add("test2", s1);
         }
 
         [TestCleanup]
@@ -51,7 +51,7 @@ namespace EPPlusTest.FormulaParsing
             _sheet.Cells[5, 1].FormulaR1C1 = fR1C1;
             string f = _sheet.Cells[5, 1].Formula;
             _sheet.Cells[5, 1].Formula = f;
-            Assert.AreEqual(fR1C1, _sheet.Cells[5,1].FormulaR1C1);
+            Assert.AreEqual(fR1C1, _sheet.Cells[5, 1].FormulaR1C1);
         }
         [TestMethod]
         public void C()
@@ -93,7 +93,7 @@ namespace EPPlusTest.FormulaParsing
             string fR1C1 = "SUM(R2)";
             _sheet.Cells[5, 3].FormulaR1C1 = fR1C1;
             string f = _sheet.Cells[5, 3].Formula;
-            Assert.AreEqual("SUM($2:$2)",f);
+            Assert.AreEqual("SUM($2:$2)", f);
 
             fR1C1 = "SUM(TEST2!R2)";
             _sheet.Cells[5, 3].FormulaR1C1 = fR1C1;

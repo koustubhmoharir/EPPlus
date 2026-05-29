@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing;
 using System;
@@ -24,7 +24,7 @@ namespace EPPlusTest.FormulaParsing
 
                 var provider = new EpplusExcelDataProvider(package);
                 var range = provider.GetRange("Sheet1", 2, 1, "Table1[#This Row]");
-                
+
                 Assert.IsNotNull(range);
                 Assert.AreEqual(2, range.Address.Start.Row);
                 Assert.AreEqual(2, range.Address.End.Row);
@@ -48,7 +48,7 @@ namespace EPPlusTest.FormulaParsing
 
                 var provider = new EpplusExcelDataProvider(package);
                 var range = provider.GetRange("Sheet1", 2, 1, "Table1[#All]");
-                
+
                 Assert.IsNotNull(range);
                 Assert.AreEqual(1, range.Address.Start.Row);
                 Assert.AreEqual(4, range.Address.End.Row);
@@ -91,7 +91,7 @@ namespace EPPlusTest.FormulaParsing
 
                 var provider = new EpplusExcelDataProvider(package);
                 var range = provider.GetRange("Sheet1", 2, 1, "Table1[#Headers]");
-                
+
                 Assert.IsNotNull(range);
                 Assert.AreEqual(1, range.Address.Start.Row);
                 Assert.AreEqual(1, range.Address.End.Row);
@@ -113,7 +113,7 @@ namespace EPPlusTest.FormulaParsing
 
                 var provider = new EpplusExcelDataProvider(package);
                 var range = provider.GetRange("Sheet1", 2, 1, "Table1[#Data]");
-                
+
                 Assert.IsNotNull(range);
                 Assert.AreEqual(2, range.Address.Start.Row);
                 Assert.AreEqual(3, range.Address.End.Row);
@@ -134,7 +134,7 @@ namespace EPPlusTest.FormulaParsing
 
                 var provider = new EpplusExcelDataProvider(package);
                 var range = provider.GetRange("Sheet1", 2, 1, "Table1[#Totals]");
-                
+
                 Assert.IsNotNull(range);
                 Assert.AreEqual(3, range.Address.Start.Row);
                 Assert.AreEqual(3, range.Address.End.Row);
@@ -152,7 +152,7 @@ namespace EPPlusTest.FormulaParsing
 
                 var provider = new EpplusExcelDataProvider(package);
                 var range = provider.GetRange("Sheet1", 1, 1, "B1:B2");
-                
+
                 Assert.IsNotNull(range);
                 Assert.AreEqual(1, range.Address.Start.Row);
                 Assert.AreEqual(2, range.Address.End.Row);

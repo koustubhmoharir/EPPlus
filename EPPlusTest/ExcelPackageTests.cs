@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,6 @@ namespace EPPlusTest
     [TestClass]
     public class ExcelPackageTests
     {
-        
+
     }
 }

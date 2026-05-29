@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -53,13 +53,13 @@ namespace OfficeOpenXml.FormulaParsing.LexicalAnalysis
         }
 
         public bool IsNegated { get; private set; }
-        
+
         public void Negate()
         {
 
             if (
-                TokenType == TokenType.Decimal 
-                || 
+                TokenType == TokenType.Decimal
+                ||
                 TokenType == TokenType.Integer
                 ||
                 TokenType == TokenType.ExcelAddress)

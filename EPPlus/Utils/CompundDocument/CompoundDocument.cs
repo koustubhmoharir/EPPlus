@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -135,15 +135,15 @@ namespace OfficeOpenXml.Utils.CompundDocument
 
         private void GetStorageAndStreams(StoragePart storage, CompoundDocumentItem parent)
         {
-            foreach(var item in parent.Children)
+            foreach (var item in parent.Children)
             {
-                if(item.ObjectType==1)      //Substorage
+                if (item.ObjectType == 1)      //Substorage
                 {
                     var part = new StoragePart();
                     storage.SubStorage.Add(item.Name, part);
                     GetStorageAndStreams(part, item);
                 }
-                else if(item.ObjectType==2) //Stream
+                else if (item.ObjectType == 2) //Stream
                 {
                     storage.DataStreams.Add(item.Name, item.Stream);
                 }
@@ -165,7 +165,7 @@ namespace OfficeOpenXml.Utils.CompundDocument
 
         private void WriteStorageAndStreams(StoragePart storage, CompoundDocumentItem parent)
         {
-            foreach(var item in storage.SubStorage)
+            foreach (var item in storage.SubStorage)
             {
                 var c = new CompoundDocumentItem() { Name = item.Key, ObjectType = 1, Stream = null, StreamSize = 0, Parent = parent };
                 parent.Children.Add(c);

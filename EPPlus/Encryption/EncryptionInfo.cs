@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -52,7 +52,7 @@ namespace OfficeOpenXml.Encryption
             {
                 ret = new EncryptionInfoBinary();
             }
-            else if (majorVersion == 4 && minorVersion==4)
+            else if (majorVersion == 4 && minorVersion == 4)
             {
                 ret = new EncryptionInfoAgile();
             }
@@ -93,7 +93,7 @@ namespace OfficeOpenXml.Encryption
         /// </summary>
         TRIPLE_DES,
         /// 3DES_112 MUST conform to the [RFC1851] algorithm. 
-        TRIPLE_DES_112        
+        TRIPLE_DES_112
     }
     internal enum eChainingMode
     {
@@ -214,7 +214,7 @@ namespace OfficeOpenXml.Encryption
                     default:
                         try
                         {
-                            return (eHashAlogorithm)Enum.Parse(typeof(eHashAlogorithm),v);
+                            return (eHashAlogorithm)Enum.Parse(typeof(eHashAlogorithm), v);
                         }
                         catch
                         {
@@ -233,7 +233,7 @@ namespace OfficeOpenXml.Encryption
                         return "RIPEMD-160";
                     case eHashAlogorithm.SHA1:
                         return "SHA-1";
-                    default: 
+                    default:
                         return value.ToString();
                 }
             }
@@ -241,7 +241,7 @@ namespace OfficeOpenXml.Encryption
             {
                 get
                 {
-                    var v=GetXmlNodeString("@cipherChaining");
+                    var v = GetXmlNodeString("@cipherChaining");
                     try
                     {
                         return (eChainingMode)Enum.Parse(typeof(eChainingMode), v);
@@ -295,7 +295,7 @@ namespace OfficeOpenXml.Encryption
                     case eCipherAlgorithm.TRIPLE_DES:
                         return "3DES";
                     case eCipherAlgorithm.TRIPLE_DES_112:
-                        return "3DES_112";                    
+                        return "3DES_112";
                     default:
                         return alg.ToString();
                 }
@@ -466,7 +466,7 @@ namespace OfficeOpenXml.Encryption
                       <p:encryptedKey spinCount="100000" saltSize="16" blockSize="16" keyBits="256" hashSize="64" cipherAlgorithm="AES" cipherChaining="ChainingModeCBC" hashAlgorithm="SHA512" saltValue="u2BNFAuHYn3M/WRja3/uPg==" encryptedVerifierHashInput="M0V+fRolJMRgFyI9w+AVxQ==" encryptedVerifierHashValue="V/6l9pFH7AaXFqEbsnFBfHe7gMOqFeRwaNMjc7D3LNdw6KgZzOOQlt5sE8/oG7GPVBDGfoQMTxjQydVPVy4qng==" encryptedKeyValue="B0/rbSQRiIKG5CQDH6AKYSybdXzxgKAfX1f+S5k7mNE=" />
                    </keyEncryptor></keyEncryptors></encryption>
         */
-        
+
         /***
          * <?xml version="1.0" encoding="UTF-8" standalone="true"?>
             <encryption xmlns:c="http://schemas.microsoft.com/office/2006/keyEncryptor/certificate" xmlns:p="http://schemas.microsoft.com/office/2006/keyEncryptor/password" xmlns="http://schemas.microsoft.com/office/2006/encryption">
@@ -487,7 +487,7 @@ namespace OfficeOpenXml.Encryption
             private set;
         }
 
-        internal XmlDocument Xml {get;set;}
+        internal XmlDocument Xml { get; set; }
         internal override void Read(byte[] data)
         {
             var byXml = new byte[data.Length - 8];

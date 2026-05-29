@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -86,7 +86,7 @@ namespace OfficeOpenXml.FormulaParsing.ExcelUtilities
                 return false;
             }
 
-            if(ExcelCellBase.IsValidAddress(name))
+            if (ExcelCellBase.IsValidAddress(name))
             {
                 return false;
             }
@@ -107,7 +107,7 @@ namespace OfficeOpenXml.FormulaParsing.ExcelUtilities
                 name = "_" + name.Substring(1);
             }
 
-            name=NameInvalidChars.Aggregate(name, (c1, c2) => c1.Replace(c2, '_'));
+            name = NameInvalidChars.Aggregate(name, (c1, c2) => c1.Replace(c2, '_'));
             return name;
         }
     }

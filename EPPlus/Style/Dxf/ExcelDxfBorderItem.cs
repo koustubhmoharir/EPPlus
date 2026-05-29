@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +11,9 @@ namespace OfficeOpenXml.Style.Dxf
         internal ExcelDxfBorderItem(ExcelStyles styles) :
             base(styles)
         {
-            Color=new ExcelDxfColor(styles);
+            Color = new ExcelDxfColor(styles);
         }
-        public ExcelBorderStyle? Style { get; set;}
+        public ExcelBorderStyle? Style { get; set; }
         public ExcelDxfColor Color { get; internal set; }
 
         protected internal override string Id
@@ -25,13 +25,13 @@ namespace OfficeOpenXml.Style.Dxf
         }
 
         protected internal override void CreateNodes(XmlHelper helper, string path)
-        {            
+        {
             SetValueEnum(helper, path + "/@style", Style);
             SetValueColor(helper, path + "/d:color", Color);
         }
         protected internal override bool HasValue
         {
-            get 
+            get
             {
                 return Style != null || Color.HasValue;
             }

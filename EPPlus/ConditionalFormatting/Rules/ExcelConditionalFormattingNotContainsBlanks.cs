@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -38,87 +38,87 @@ using OfficeOpenXml.ConditionalFormatting.Contracts;
 
 namespace OfficeOpenXml.ConditionalFormatting
 {
-  /// <summary>
-  /// ExcelConditionalFormattingNotContainsBlanks
-  /// </summary>
-  public class ExcelConditionalFormattingNotContainsBlanks
-    : ExcelConditionalFormattingRule,
-    IExcelConditionalFormattingNotContainsBlanks
-  {
-    /****************************************************************************************/
-
-    #region Constructors
     /// <summary>
-    /// 
+    /// ExcelConditionalFormattingNotContainsBlanks
     /// </summary>
-    /// <param name="address"></param>
-    /// <param name="priority"></param>
-    /// <param name="worksheet"></param>
-    /// <param name="itemElementNode"></param>
-    /// <param name="namespaceManager"></param>
-    internal ExcelConditionalFormattingNotContainsBlanks(
-      ExcelAddress address,
-      int priority,
-      ExcelWorksheet worksheet,
-      XmlNode itemElementNode,
-      XmlNamespaceManager namespaceManager)
-      : base(
-        eExcelConditionalFormattingRuleType.NotContainsBlanks,
-        address,
-        priority,
-        worksheet,
-        itemElementNode,
-        (namespaceManager == null) ? worksheet.NameSpaceManager : namespaceManager)
+    public class ExcelConditionalFormattingNotContainsBlanks
+      : ExcelConditionalFormattingRule,
+      IExcelConditionalFormattingNotContainsBlanks
     {
-        if (itemElementNode==null) //Set default values and create attributes if needed
+        /****************************************************************************************/
+
+        #region Constructors
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="priority"></param>
+        /// <param name="worksheet"></param>
+        /// <param name="itemElementNode"></param>
+        /// <param name="namespaceManager"></param>
+        internal ExcelConditionalFormattingNotContainsBlanks(
+          ExcelAddress address,
+          int priority,
+          ExcelWorksheet worksheet,
+          XmlNode itemElementNode,
+          XmlNamespaceManager namespaceManager)
+          : base(
+            eExcelConditionalFormattingRuleType.NotContainsBlanks,
+            address,
+            priority,
+            worksheet,
+            itemElementNode,
+            (namespaceManager == null) ? worksheet.NameSpaceManager : namespaceManager)
         {
-            Formula = string.Format(
-              "LEN(TRIM({0}))>0",
-              Address.Start.Address);
+            if (itemElementNode == null) //Set default values and create attributes if needed
+            {
+                Formula = string.Format(
+                  "LEN(TRIM({0}))>0",
+                  Address.Start.Address);
+            }
         }
-    }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="priority"></param>
-    /// <param name="address"></param>
-    /// <param name="worksheet"></param>
-    /// <param name="itemElementNode"></param>
-    internal ExcelConditionalFormattingNotContainsBlanks(
-      ExcelAddress address,
-      int priority,
-      ExcelWorksheet worksheet,
-      XmlNode itemElementNode)
-      : this(
-        address,
-        priority,
-        worksheet,
-        itemElementNode,
-        null)
-    {
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <param name="address"></param>
+        /// <param name="worksheet"></param>
+        /// <param name="itemElementNode"></param>
+        internal ExcelConditionalFormattingNotContainsBlanks(
+          ExcelAddress address,
+          int priority,
+          ExcelWorksheet worksheet,
+          XmlNode itemElementNode)
+          : this(
+            address,
+            priority,
+            worksheet,
+            itemElementNode,
+            null)
+        {
+        }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="priority"></param>
-    /// <param name="address"></param>
-    /// <param name="worksheet"></param>
-    internal ExcelConditionalFormattingNotContainsBlanks(
-      ExcelAddress address,
-      int priority,
-      ExcelWorksheet worksheet)
-      : this(
-        address,
-        priority,
-        worksheet,
-        null,
-        null)
-    {
-    }
-    #endregion Constructors
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <param name="address"></param>
+        /// <param name="worksheet"></param>
+        internal ExcelConditionalFormattingNotContainsBlanks(
+          ExcelAddress address,
+          int priority,
+          ExcelWorksheet worksheet)
+          : this(
+            address,
+            priority,
+            worksheet,
+            null,
+            null)
+        {
+        }
+        #endregion Constructors
 
-    /****************************************************************************************/
-  }
+        /****************************************************************************************/
+    }
 }

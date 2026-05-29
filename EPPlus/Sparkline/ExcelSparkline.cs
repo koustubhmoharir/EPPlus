@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +14,7 @@ namespace OfficeOpenXml.Sparkline
         internal ExcelSparkline(XmlNamespaceManager nsm, XmlNode topNode) : base(nsm, topNode)
         {
             SchemaNodeOrder = new string[] { "f", "sqref" };
-        }   
+        }
         const string _fPath = "xm:f";
         /// <summary>
         /// The datarange
@@ -47,7 +47,7 @@ namespace OfficeOpenXml.Sparkline
         }
         public override string ToString()
         {
-            return Cell.Address + ", " +RangeAddress.Address;
+            return Cell.Address + ", " + RangeAddress.Address;
         }
     }
 }

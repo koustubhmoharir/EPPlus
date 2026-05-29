@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using System.Xml;
 using OfficeOpenXml.Style;
@@ -19,7 +19,7 @@ namespace EPPlusTest
                 cell.Style.QuotePrefix = true;
                 Assert.IsTrue(cell.Style.QuotePrefix);
 
-                p.Workbook.Styles.UpdateXml();                
+                p.Workbook.Styles.UpdateXml();
                 var nodes = p.Workbook.StylesXml.SelectNodes("//d:cellXfs/d:xf", p.Workbook.NameSpaceManager);
                 // Since the quotePrefix attribute is not part of the default style,
                 // a new one should be created and referenced.
@@ -81,22 +81,22 @@ namespace EPPlusTest
             {
                 var ws = p.Workbook.Worksheets.Add("ApplyTest");
                 var cell = ws.Cells["A1"];
-                
+
                 // Set protection
                 cell.Style.Locked = false;
-                
+
                 // Set alignment
                 cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                
+
                 p.Workbook.Styles.UpdateXml();
                 var nodes = p.Workbook.StylesXml.SelectNodes("//d:cellXfs/d:xf", p.Workbook.NameSpaceManager);
-                
+
                 Assert.IsTrue(nodes.Count > 0, "Should have at least one xf node");
-                
+
                 bool foundApplyProtection = false;
                 bool foundApplyAlignment = false;
 
-                foreach(System.Xml.XmlNode node in nodes)
+                foreach (System.Xml.XmlNode node in nodes)
                 {
                     if (node.Attributes["applyProtection"] != null && node.Attributes["applyProtection"].Value == "1")
                     {

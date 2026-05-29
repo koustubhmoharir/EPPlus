@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -54,21 +54,21 @@ namespace OfficeOpenXml.Style.XmlAccess
         internal ExcelColorXml(XmlNamespaceManager nsm, XmlNode topNode) :
             base(nsm, topNode)
         {
-            if(topNode==null)
+            if (topNode == null)
             {
-                _exists=false;
+                _exists = false;
             }
             else
             {
                 _exists = true;
                 _auto = GetXmlNodeBool("@auto");
                 _theme = GetXmlNodeString("@theme");
-                _tint = GetXmlNodeDecimalNull("@tint")??decimal.MinValue;
+                _tint = GetXmlNodeDecimalNull("@tint") ?? decimal.MinValue;
                 _rgb = GetXmlNodeString("@rgb");
                 _indexed = GetXmlNodeIntNull("@indexed") ?? int.MinValue;
             }
         }
-        
+
         internal override string Id
         {
             get
@@ -137,7 +137,7 @@ namespace OfficeOpenXml.Style.XmlAccess
             set
             {
                 _rgb = value;
-                _exists=true;
+                _exists = true;
                 _indexed = int.MinValue;
                 _auto = false;
             }
@@ -216,13 +216,13 @@ namespace OfficeOpenXml.Style.XmlAccess
 
         internal ExcelColorXml Copy()
         {
-            return new ExcelColorXml(NameSpaceManager) {_indexed=_indexed, _tint=_tint, _rgb=_rgb, _theme=_theme, _auto=_auto, _exists=_exists };
+            return new ExcelColorXml(NameSpaceManager) { _indexed = _indexed, _tint = _tint, _rgb = _rgb, _theme = _theme, _auto = _auto, _exists = _exists };
         }
 
         internal override XmlNode CreateXmlNode(XmlNode topNode)
         {
             TopNode = topNode;
-            if(_rgb!="")
+            if (_rgb != "")
             {
                 SetXmlNodeString("@rgb", _rgb);
             }

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -43,7 +43,7 @@ namespace OfficeOpenXml.Table.PivotTable
     /// </summary>
     public class ExcelPivotTableDataField : XmlHelper
     {
-        internal ExcelPivotTableDataField(XmlNamespaceManager ns, XmlNode topNode,ExcelPivotTableField field) :
+        internal ExcelPivotTableDataField(XmlNamespaceManager ns, XmlNode topNode, ExcelPivotTableField field) :
             base(ns, topNode)
         {
             if (topNode.Attributes.Count == 0)
@@ -52,7 +52,7 @@ namespace OfficeOpenXml.Table.PivotTable
                 BaseField = 0;
                 BaseItem = 0;
             }
-            
+
             Field = field;
         }
         /// <summary>
@@ -66,15 +66,15 @@ namespace OfficeOpenXml.Table.PivotTable
         /// <summary>
         /// The index of the datafield
         /// </summary>
-        public int Index 
-        { 
+        public int Index
+        {
             get
             {
                 return GetXmlNodeInt("@fld");
             }
             internal set
             {
-                SetXmlNodeString("@fld",value.ToString());
+                SetXmlNodeString("@fld", value.ToString());
             }
         }
         /// <summary>
@@ -173,8 +173,8 @@ namespace OfficeOpenXml.Table.PivotTable
         {
             get
             {
-                string s=GetXmlNodeString("@subtotal");
-                if(s=="")
+                string s = GetXmlNodeString("@subtotal");
+                if (s == "")
                 {
                     return DataFieldFunctions.None;
                 }
@@ -186,24 +186,24 @@ namespace OfficeOpenXml.Table.PivotTable
             set
             {
                 string v;
-                switch(value)
+                switch (value)
                 {
                     case DataFieldFunctions.None:
                         DeleteNode("@subtotal");
                         return;
                     case DataFieldFunctions.CountNums:
-                        v="CountNums";
+                        v = "CountNums";
                         break;
                     case DataFieldFunctions.StdDev:
-                        v="stdDev";
+                        v = "stdDev";
                         break;
                     case DataFieldFunctions.StdDevP:
-                        v="stdDevP";
+                        v = "stdDevP";
                         break;
                     default:
-                        v=value.ToString().ToLower(CultureInfo.InvariantCulture);
+                        v = value.ToString().ToLower(CultureInfo.InvariantCulture);
                         break;
-                }                
+                }
                 SetXmlNodeString("@subtotal", v);
             }
         }

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -37,22 +37,22 @@ using OfficeOpenXml.ConditionalFormatting;
 
 namespace OfficeOpenXml.ConditionalFormatting.Contracts
 {
-	/// <summary>
-	/// IExcelConditionalFormattingTwoColorScale
-	/// </summary>
-	public interface IExcelConditionalFormattingTwoColorScale
-		: IExcelConditionalFormattingColorScaleGroup
-	{
-		#region Public Properties
     /// <summary>
-    /// Two Color Scale Low Value
+    /// IExcelConditionalFormattingTwoColorScale
     /// </summary>
-    ExcelConditionalFormattingColorScaleValue LowValue { get; set; }
+    public interface IExcelConditionalFormattingTwoColorScale
+        : IExcelConditionalFormattingColorScaleGroup
+    {
+        #region Public Properties
+        /// <summary>
+        /// Two Color Scale Low Value
+        /// </summary>
+        ExcelConditionalFormattingColorScaleValue LowValue { get; set; }
 
-    /// <summary>
-    /// Two Color Scale High Value
-    /// </summary>
-    ExcelConditionalFormattingColorScaleValue HighValue { get; set; }
-    #endregion Public Properties
-	}
+        /// <summary>
+        /// Two Color Scale High Value
+        /// </summary>
+        ExcelConditionalFormattingColorScaleValue HighValue { get; set; }
+        #endregion Public Properties
+    }
 }

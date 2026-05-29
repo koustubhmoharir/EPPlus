@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -61,11 +61,11 @@ namespace EPPlusTest.FormulaParsing.Logging
             }
 
             var content = File.ReadAllText(_logFile);
-        #if (Core)
+#if (Core)
             Assert.IsTrue(content.Contains("initial content"), "Log file should have been appended in Core");
-        #else
+#else
             Assert.IsFalse(content.Contains("initial content"), "Log file should have been overwritten in stable");
-        #endif
+#endif
             Assert.IsTrue(content.Contains("new message"));
         }
     }

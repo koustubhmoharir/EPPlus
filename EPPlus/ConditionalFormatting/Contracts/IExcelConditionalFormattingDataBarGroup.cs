@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -36,13 +36,13 @@ using System.Text;
 using OfficeOpenXml.ConditionalFormatting;
 namespace OfficeOpenXml.ConditionalFormatting.Contracts
 {
-	/// <summary>
-	/// IExcelConditionalFormattingDataBar
-	/// </summary>
-	public interface IExcelConditionalFormattingDataBarGroup
+    /// <summary>
+    /// IExcelConditionalFormattingDataBar
+    /// </summary>
+    public interface IExcelConditionalFormattingDataBarGroup
         : IExcelConditionalFormattingRule
-	{
-		#region Public Properties
+    {
+        #region Public Properties
         /// <summary>
         /// ShowValue
         /// </summary>
@@ -50,7 +50,7 @@ namespace OfficeOpenXml.ConditionalFormatting.Contracts
         /// <summary>
         /// Databar Low Value
         /// </summary>
-        ExcelConditionalFormattingIconDataBarValue LowValue { get;  }
+        ExcelConditionalFormattingIconDataBarValue LowValue { get; }
 
         /// <summary>
         /// Databar High Value
@@ -59,7 +59,7 @@ namespace OfficeOpenXml.ConditionalFormatting.Contracts
         /// <summary>
         /// The color of the databar
         /// </summary>
-        OfficeOpenXml.Style.ExcelColorValue Color { get; set;}
+        OfficeOpenXml.Style.ExcelColorValue Color { get; set; }
         #endregion Public Properties
-	}
+    }
 }

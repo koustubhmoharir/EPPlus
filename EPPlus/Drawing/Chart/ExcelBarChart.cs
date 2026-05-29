@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -70,7 +70,7 @@ namespace OfficeOpenXml.Drawing.Chart
             SetChartNodeText(chartNode.Name);
         }
 
-        internal ExcelBarChart(ExcelChart topChart, XmlNode chartNode) : 
+        internal ExcelBarChart(ExcelChart topChart, XmlNode chartNode) :
             base(topChart, chartNode)
         {
             SetChartNodeText(chartNode.Name);
@@ -80,7 +80,7 @@ namespace OfficeOpenXml.Drawing.Chart
         //string _chartTopPath="c:chartSpace/c:chart/c:plotArea/{0}";
         private void SetChartNodeText(string chartNodeText)
         {
-            if(string.IsNullOrEmpty(chartNodeText))
+            if (string.IsNullOrEmpty(chartNodeText))
             {
                 chartNodeText = GetChartNodeText();
             }
@@ -351,7 +351,7 @@ namespace OfficeOpenXml.Drawing.Chart
             if (name == "bar3DChart")
             {
                 #region "Bar Shape"
-                if (this.Shape==eShape.Box)
+                if (this.Shape == eShape.Box)
                 {
                     if (this.Direction == eDirection.Bar)
                     {

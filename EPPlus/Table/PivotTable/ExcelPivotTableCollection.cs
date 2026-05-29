@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -43,12 +43,12 @@ namespace OfficeOpenXml.Table.PivotTable
     {
         List<ExcelPivotTable> _pivotTables = new List<ExcelPivotTable>();
         internal Dictionary<string, int> _pivotTableNames = new Dictionary<string, int>();
-        ExcelWorksheet _ws;        
+        ExcelWorksheet _ws;
         internal ExcelPivotTableCollection(ExcelWorksheet ws)
         {
             var pck = ws._package.Package;
-            _ws = ws;            
-            foreach(var rel in ws.Part.GetRelationships())
+            _ws = ws;
+            foreach (var rel in ws.Part.GetRelationships())
             {
                 if (rel.RelationshipType == ExcelPackage.schemaRelationships + "/pivotTable")
                 {
@@ -84,7 +84,7 @@ namespace OfficeOpenXml.Table.PivotTable
             }
             if (Range.WorkSheet != _ws.Name)
             {
-                throw(new Exception("The Range must be in the current worksheet"));
+                throw (new Exception("The Range must be in the current worksheet"));
             }
             else if (_ws.Workbook.ExistsTableName(Name))
             {
@@ -97,7 +97,7 @@ namespace OfficeOpenXml.Table.PivotTable
                     throw (new ArgumentException(string.Format("Table range collides with table {0}", t.Name)));
                 }
             }
-            
+
             return Add(new ExcelPivotTable(_ws, Range, Source, Name, _ws.Workbook._nextPivotTableID++));
         }
 

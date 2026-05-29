@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,9 +9,9 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Math
     public class Rank : ExcelFunction
     {
         bool _isAvg;
-        public Rank(bool isAvg=false)
+        public Rank(bool isAvg = false)
         {
-            _isAvg=isAvg;
+            _isAvg = isAvg;
         }
         public override CompileResult Execute(IEnumerable<FunctionArgument> arguments, ParsingContext context)
         {
@@ -37,8 +37,8 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Math
             double ix;
             if (asc)
             {
-                ix = l.IndexOf(number)+1;
-                if(_isAvg)
+                ix = l.IndexOf(number) + 1;
+                if (_isAvg)
                 {
                     int st = Convert.ToInt32(ix);
                     while (l.Count > st && l[st] == number) st++;
@@ -50,13 +50,13 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Math
                 ix = l.LastIndexOf(number);
                 if (_isAvg)
                 {
-                    int st = Convert.ToInt32(ix)-1;
+                    int st = Convert.ToInt32(ix) - 1;
                     while (0 <= st && l[st] == number) st--;
-                    if (st+1 < ix) ix = ix - ((ix - st - 1) / 2D);
+                    if (st + 1 < ix) ix = ix - ((ix - st - 1) / 2D);
                 }
                 ix = l.Count - ix;
             }
-            if (ix <= 0 || ix>l.Count)
+            if (ix <= 0 || ix > l.Count)
             {
                 return new CompileResult(ExcelErrorValue.Create(eErrorType.NA), DataType.ExcelError);
             }

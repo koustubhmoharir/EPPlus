@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -39,7 +39,7 @@ namespace OfficeOpenXml.FormulaParsing.Exceptions
     public class UnrecognizedTokenException : Exception
     {
         public UnrecognizedTokenException(Token token)
-            : base( "Unrecognized token: " + token.Value)
+            : base("Unrecognized token: " + token.Value)
         {
 
         }

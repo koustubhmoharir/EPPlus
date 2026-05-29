@@ -1,4 +1,4 @@
-﻿using EPPlusTest.FormulaParsing.TestHelpers;
+using EPPlusTest.FormulaParsing.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing;

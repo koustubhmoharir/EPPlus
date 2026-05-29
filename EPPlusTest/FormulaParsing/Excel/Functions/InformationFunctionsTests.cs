@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +26,7 @@ namespace EPPlusTest.Excel.Functions
         public void IsBlankShouldReturnTrueIfFirstArgIsNull()
         {
             var func = new IsBlank();
-            var args = FunctionsHelper.CreateArgs(new object[]{null});
+            var args = FunctionsHelper.CreateArgs(new object[] { null });
             var result = func.Execute(args, _context);
             Assert.IsTrue((bool)result.Result);
         }

@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -83,7 +83,7 @@ namespace OfficeOpenXml.Packaging
         }
         Dictionary<string, ZipPackagePart> Parts = new Dictionary<string, ZipPackagePart>(StringComparer.OrdinalIgnoreCase);
         internal Dictionary<string, ContentType> _contentTypes = new Dictionary<string, ContentType>(StringComparer.OrdinalIgnoreCase);
-        internal char _dirSeparator='/';
+        internal char _dirSeparator = '/';
         internal ZipPackage(string tempFolder = null)
         {
             this.tempFolder = tempFolder;
@@ -107,11 +107,11 @@ namespace OfficeOpenXml.Packaging
             else
             {
                 var rels = new Dictionary<string, string>();
-                stream.Seek(0, SeekOrigin.Begin);                
+                stream.Seek(0, SeekOrigin.Begin);
                 using (ZipInputStream zip = new ZipInputStream(stream))
                 {
                     var e = zip.GetNextEntry();
-                    if(e==null)
+                    if (e == null)
                     {
                         throw (new InvalidDataException("The file is not an valid Package file. If the file is encrypted, please supply the password in the constructor."));
                     }
@@ -149,7 +149,7 @@ namespace OfficeOpenXml.Packaging
                                     rels.Add(GetUriKey(e.FileName), Encoding.UTF8.GetString(b));
                                 }
                                 else
-                                {                                    
+                                {
                                     var part = new ZipPackagePart(this, e);
                                     var fs = part.GetStream(FileMode.Create, FileAccess.Write);
                                     ExcelPackage.CopyStream(zip, fs);
@@ -215,7 +215,7 @@ namespace OfficeOpenXml.Packaging
             }
         }
 
-#region Methods
+        #region Methods
         internal ZipPackagePart CreatePart(Uri partUri, string contentType)
         {
             return CreatePart(partUri, contentType, CompressionLevel.Default);
@@ -236,7 +236,7 @@ namespace OfficeOpenXml.Packaging
         {
             if (PartExists(partUri))
             {
-                return Parts.Single(x => x.Key.Equals(GetUriKey(partUri.OriginalString),StringComparison.OrdinalIgnoreCase)).Value;
+                return Parts.Single(x => x.Key.Equals(GetUriKey(partUri.OriginalString), StringComparison.OrdinalIgnoreCase)).Value;
             }
             else
             {
@@ -259,18 +259,18 @@ namespace OfficeOpenXml.Packaging
             return Parts.ContainsKey(uriKey);
             //return Parts.Keys.Any(x => x.Equals(uriKey, StringComparison.OrdinalIgnoreCase));
         }
-#endregion
+        #endregion
 
         internal void DeletePart(Uri Uri)
         {
-            var delList=new List<object[]>(); 
+            var delList = new List<object[]>();
             foreach (var p in Parts.Values)
             {
                 foreach (var r in p.GetRelationships())
                 {
                     if (UriHelper.ResolvePartUri(p.Uri, r.TargetUri).OriginalString.Equals(Uri.OriginalString, StringComparison.OrdinalIgnoreCase))
-                    {                        
-                        delList.Add(new object[]{r.Id, p});
+                    {
+                        delList.Add(new object[] { r.Id, p });
                     }
                 }
             }
@@ -283,25 +283,25 @@ namespace OfficeOpenXml.Packaging
             {
                 rels.Remove(rels.First().Id);
             }
-            rels=null;
+            rels = null;
             _contentTypes.Remove(GetUriKey(Uri.OriginalString));
             //remove all relations
             Parts.Remove(GetUriKey(Uri.OriginalString));
-            
+
         }
         internal void Save(Stream stream)
         {
             var enc = Encoding.UTF8;
             ZipOutputStream os = new ZipOutputStream(stream, true);
-            os.CompressionLevel = (OfficeOpenXml.Packaging.Ionic.Zlib.CompressionLevel)_compression;            
+            os.CompressionLevel = (OfficeOpenXml.Packaging.Ionic.Zlib.CompressionLevel)_compression;
             /**** ContentType****/
             var entry = os.PutNextEntry("[Content_Types].xml");
             byte[] b = enc.GetBytes(GetContentTypeXml());
             os.Write(b, 0, b.Length);
             /**** Top Rels ****/
             _rels.WriteZip(os, $"_rels/.rels");
-            ZipPackagePart ssPart=null;
-            foreach(var part in Parts.Values)
+            ZipPackagePart ssPart = null;
+            foreach (var part in Parts.Values)
             {
                 if (part.ContentType != ExcelPackage.contentTypeSharedString)
                 {
@@ -318,10 +318,10 @@ namespace OfficeOpenXml.Packaging
                 ssPart.WriteZip(os);
             }
             os.Flush();
-            
+
             os.Close();
-            os.Dispose();  
-            
+            os.Dispose();
+
             //return ms;
         }
 
@@ -359,8 +359,8 @@ namespace OfficeOpenXml.Packaging
             Parts.Clear();
         }
         CompressionLevel _compression = CompressionLevel.Default;
-        public CompressionLevel Compression 
-        { 
+        public CompressionLevel Compression
+        {
             get
             {
                 return _compression;

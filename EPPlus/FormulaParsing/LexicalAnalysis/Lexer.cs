@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -40,7 +40,7 @@ namespace OfficeOpenXml.FormulaParsing.LexicalAnalysis
     public class Lexer : ILexer
     {
         public Lexer(FunctionRepository functionRepository, INameValueProvider nameValueProvider)
-            :this(new SourceCodeTokenizer(functionRepository, nameValueProvider), new SyntacticAnalyzer())
+            : this(new SourceCodeTokenizer(functionRepository, nameValueProvider), new SyntacticAnalyzer())
         {
 
         }

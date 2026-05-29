@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -73,8 +73,8 @@ namespace OfficeOpenXml.Sparkline
         ExcelWorksheet _ws;
         internal ExcelSparklineGroup(XmlNamespaceManager ns, XmlElement topNode, ExcelWorksheet ws) : base(ns, topNode)
         {
-            SchemaNodeOrder = new string[]{"colorSeries","colorNegative","colorAxis","colorMarkers","colorFirst","colorLast","colorHigh","colorLow","f","sparklines"};
-            Sparklines = new ExcelSparklineCollection(this);    
+            SchemaNodeOrder = new string[] { "colorSeries", "colorNegative", "colorAxis", "colorMarkers", "colorFirst", "colorLast", "colorHigh", "colorLow", "f", "sparklines" };
+            Sparklines = new ExcelSparklineCollection(this);
             _ws = ws;
         }
         /// <summary>
@@ -100,7 +100,7 @@ namespace OfficeOpenXml.Sparkline
             }
             set
             {
-                if(value==null)
+                if (value == null)
                 {
                     RemoveDateAxis();
                     return;
@@ -130,7 +130,7 @@ namespace OfficeOpenXml.Sparkline
         {
             get
             {
-                if(Sparklines.Count==0)
+                if (Sparklines.Count == 0)
                 {
                     return null;
                 }
@@ -161,7 +161,7 @@ namespace OfficeOpenXml.Sparkline
         /// <summary>
         /// The Sparklines for the sparklinegroup
         /// </summary>
-        public ExcelSparklineCollection Sparklines { get; internal set; }        
+        public ExcelSparklineCollection Sparklines { get; internal set; }
         #region Boolean settings
         const string _dateAxisPath = "@dateAxis";
         internal bool DateAxis
@@ -265,7 +265,7 @@ namespace OfficeOpenXml.Sparkline
             set
             {
                 SetXmlNodeBool(_negativePath, value);
-            }                
+            }
         }
 
 
@@ -299,7 +299,7 @@ namespace OfficeOpenXml.Sparkline
         {
             get
             {
-                return GetXmlNodeDoubleNull(lineWidthPath)??0.75;
+                return GetXmlNodeDoubleNull(lineWidthPath) ?? 0.75;
             }
             set
             {
@@ -311,8 +311,8 @@ namespace OfficeOpenXml.Sparkline
         {
             get
             {
-                var s=GetXmlNodeString(_dispBlanksAsPath);
-                if(string.IsNullOrEmpty(s))
+                var s = GetXmlNodeString(_dispBlanksAsPath);
+                if (string.IsNullOrEmpty(s))
                 {
                     return eDispBlanksAs.Zero;
                 }
@@ -335,7 +335,7 @@ namespace OfficeOpenXml.Sparkline
             get
             {
                 var type = GetXmlNodeString(_typePath);
-                if(string.IsNullOrEmpty(type))
+                if (string.IsNullOrEmpty(type))
                 {
                     return eSparklineType.Line;
                 }
@@ -350,7 +350,7 @@ namespace OfficeOpenXml.Sparkline
             }
         }
         #region Colors
-        const string _colorSeriesPath= "x14:colorSeries";
+        const string _colorSeriesPath = "x14:colorSeries";
         /// <summary>
         /// Sparkline color
         /// </summary>
@@ -407,7 +407,7 @@ namespace OfficeOpenXml.Sparkline
                 return new ExcelSparklineColor(NameSpaceManager, TopNode.SelectSingleNode(_colorFirstPath, NameSpaceManager));
             }
         }
-        const string _colorLastPath = "x14:colorLast"; 
+        const string _colorLastPath = "x14:colorLast";
         public ExcelSparklineColor ColorLast
         {
             get
@@ -469,7 +469,7 @@ namespace OfficeOpenXml.Sparkline
             get
             {
                 var s = GetXmlNodeString(_minAxisTypePath);
-                if(string.IsNullOrEmpty(s))
+                if (string.IsNullOrEmpty(s))
                 {
                     return eSparklineAxisMinMax.Individual;
                 }
@@ -508,7 +508,7 @@ namespace OfficeOpenXml.Sparkline
             }
             set
             {
-                if(value==eSparklineAxisMinMax.Custom)
+                if (value == eSparklineAxisMinMax.Custom)
                 {
                     ManualMax = 0;
                 }
@@ -525,7 +525,7 @@ namespace OfficeOpenXml.Sparkline
 
             get
             {
-                return GetXmlNodeBool(_rightToLeftPath,false);
+                return GetXmlNodeBool(_rightToLeftPath, false);
             }
             set
             {

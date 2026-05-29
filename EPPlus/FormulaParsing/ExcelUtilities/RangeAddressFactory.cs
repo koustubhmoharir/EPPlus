@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -46,8 +46,8 @@ namespace OfficeOpenXml.FormulaParsing.ExcelUtilities
         public RangeAddressFactory(ExcelDataProvider excelDataProvider)
             : this(excelDataProvider, new AddressTranslator(excelDataProvider), new IndexToAddressTranslator(excelDataProvider, ExcelReferenceType.RelativeRowAndColumn))
         {
-           
-            
+
+
         }
 
         public RangeAddressFactory(ExcelDataProvider excelDataProvider, AddressTranslator addressTranslator, IndexToAddressTranslator indexToAddressTranslator)
@@ -88,7 +88,7 @@ namespace OfficeOpenXml.FormulaParsing.ExcelUtilities
         {
             Require.That(address).Named("range").IsNotNullOrEmpty();
             //var addressInfo = ExcelAddressInfo.Parse(address);
-            var adr = new ExcelAddressBase(address);  
+            var adr = new ExcelAddressBase(address);
             var sheet = string.IsNullOrEmpty(adr.WorkSheet) ? worksheetName : adr.WorkSheet;
             var dim = _excelDataProvider.GetDimensionEnd(sheet);
             var rangeAddress = new RangeAddress()
@@ -122,7 +122,7 @@ namespace OfficeOpenXml.FormulaParsing.ExcelUtilities
                 var a = _excelDataProvider.GetRange(adr.WorkSheet, range).Address;
                 //Convert the Table-style Address to an A1C1 address
                 adr = new ExcelAddressBase(a._fromRow, a._fromCol, a._toRow, a._toCol);
-                adr._ws = a._ws;                
+                adr._ws = a._ws;
             }
             var rangeAddress = new RangeAddress()
             {
@@ -133,7 +133,7 @@ namespace OfficeOpenXml.FormulaParsing.ExcelUtilities
                 ToRow = adr._toRow,
                 ToCol = adr._toCol
             };
-           
+
             //if (addressInfo.IsMultipleCells)
             //{
             //    HandleMultipleCellAddress(rangeAddress, addressInfo);

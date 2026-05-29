@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -193,23 +193,23 @@ namespace OfficeOpenXml.Utils.CompundDocument
         /// <returns></returns>
         public int CompareTo(CompoundDocumentItem other)
         {
-            if(Name.Length < other.Name.Length)
+            if (Name.Length < other.Name.Length)
             {
                 return -1;
             }
-            else if(Name.Length > other.Name.Length)
+            else if (Name.Length > other.Name.Length)
             {
                 return 1;
             }
             var n1 = Name.ToUpperInvariant();
             var n2 = other.Name.ToUpperInvariant();
-            for (int i=0;i<n1.Length;i++)
+            for (int i = 0; i < n1.Length; i++)
             {
-                if(n1[i] < n2[i])
+                if (n1[i] < n2[i])
                 {
                     return -1;
                 }
-                else if(n1[i] > n2[i])
+                else if (n1[i] > n2[i])
                 {
                     return 1;
                 }

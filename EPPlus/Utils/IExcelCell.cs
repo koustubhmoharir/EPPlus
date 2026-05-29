@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -38,7 +38,7 @@ namespace OfficeOpenXml.Style
     internal interface IExcelCell
     {
         #region "public properties"
-        object Value {get;set;}
+        object Value { get; set; }
         string StyleName { get; }
         int StyleID { get; set; }
         ExcelStyle Style { get; }

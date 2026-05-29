@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using System.IO;
@@ -10,8 +10,8 @@ namespace EPPlusTest
     public abstract class TestBase
     {
         protected ExcelPackage _pck;
-        protected string _clipartPath="";
-        protected string _worksheetPath= Path.Combine(Path.GetTempPath(), "EPPlus", "Testoutput");
+        protected string _clipartPath = "";
+        protected string _worksheetPath = Path.Combine(Path.GetTempPath(), "EPPlus", "Testoutput");
         protected string _testInputPath = Path.Combine(Path.GetTempPath(), "EPPlus", "workbooks");
         public TestContext TestContext { get; set; }
 
@@ -52,7 +52,7 @@ namespace EPPlusTest
             _worksheetPath += Path.DirectorySeparatorChar;
             _testInputPath += Path.DirectorySeparatorChar;
 
-            if(Environment.GetEnvironmentVariable("EPPlusTestInputPath")!=null)
+            if (Environment.GetEnvironmentVariable("EPPlusTestInputPath") != null)
             {
                 _testInputPath = Environment.GetEnvironmentVariable("EPPlusTestInputPath");
             }
@@ -82,10 +82,10 @@ namespace EPPlusTest
             _pck = new ExcelPackage(EPPlusTest.TempFolderHelper.Create());
         }
 
-        protected ExcelPackage OpenPackage(string name, bool delete=false)
+        protected ExcelPackage OpenPackage(string name, bool delete = false)
         {
             var fi = new FileInfo(_worksheetPath + name);
-            if(delete && fi.Exists)
+            if (delete && fi.Exists)
             {
                 fi.Delete();
             }

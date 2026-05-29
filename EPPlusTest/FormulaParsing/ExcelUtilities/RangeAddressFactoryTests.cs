@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -120,7 +120,7 @@ namespace EPPlusTest.ExcelUtilities
 
             var factory = new RangeAddressFactory(provider);
             var address = factory.Create("Table1[Column1]");
-            
+
             Assert.AreEqual(10, address.FromRow);
             Assert.AreEqual(5, address.FromCol);
             Assert.AreEqual(20, address.ToRow);

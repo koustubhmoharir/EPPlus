@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +31,7 @@ namespace EPPlusTest.DataValidation.Formulas
 
             // Act
             var formula = new ExcelDataValidationTime(_sheet, "A1", ExcelDataValidationType.Time, _dataValidationNode, _namespaceManager);
-            
+
             // Assert
             Assert.AreEqual(time.Hour, formula.Formula.Value.Hour);
         }

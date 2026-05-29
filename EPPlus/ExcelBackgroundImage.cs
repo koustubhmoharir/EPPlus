@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -53,7 +53,7 @@ namespace OfficeOpenXml
         /// <param name="nsm"></param>
         /// <param name="topNode">The topnode of the worksheet</param>
         /// <param name="workSheet">Worksheet reference</param>
-        internal  ExcelBackgroundImage(XmlNamespaceManager nsm, XmlNode topNode, ExcelWorksheet workSheet) :
+        internal ExcelBackgroundImage(XmlNamespaceManager nsm, XmlNode topNode, ExcelWorksheet workSheet) :
             base(nsm, topNode)
         {
             _workSheet = workSheet;

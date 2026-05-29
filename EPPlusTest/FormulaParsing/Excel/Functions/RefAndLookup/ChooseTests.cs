@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using EPPlusTest.FormulaParsing.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

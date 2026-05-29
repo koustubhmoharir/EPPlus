@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml.Packaging.Ionic.Zlib;
@@ -31,7 +31,7 @@ namespace EPPlusTest.Packaging.DotNetZip
                     {
                         resultMs.Write(buffer, 0, read);
                     }
-                    
+
                     byte[] result = resultMs.ToArray();
                     CollectionAssert.AreEqual(data, result);
                 }
@@ -58,7 +58,7 @@ namespace EPPlusTest.Packaging.DotNetZip
             var pdos = new ParallelDeflateOutputStream(ms, false);
             pdos.Write(new byte[] { 1, 2, 3 }, 0, 3);
             pdos.Close();
-            
+
             // ms should be closed
             try
             {

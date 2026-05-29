@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -64,7 +64,7 @@ namespace EPPlusTest.Excel.Functions
             args = FunctionsHelper.CreateArgs(1234.56, -2);
             var result2 = func.Execute(args, _parsingContext);
             Assert.AreEqual(1200d, result2.Result);
-            
+
             // ROUND(1250, -2) -> 1300
             args = FunctionsHelper.CreateArgs(1250, -2);
             var result3 = func.Execute(args, _parsingContext);

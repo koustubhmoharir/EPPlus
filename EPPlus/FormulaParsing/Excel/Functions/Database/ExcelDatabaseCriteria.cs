@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,7 +39,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Database
         private readonly int _toCol;
         private readonly string _worksheet;
         private readonly int _fieldRow;
-        private readonly Dictionary<ExcelDatabaseCriteriaField, object> _criterias = new Dictionary<ExcelDatabaseCriteriaField, object>(); 
+        private readonly Dictionary<ExcelDatabaseCriteriaField, object> _criterias = new Dictionary<ExcelDatabaseCriteriaField, object>();
 
         public ExcelDatabaseCriteria(ExcelDataProvider dataProvider, string range)
         {
@@ -60,14 +60,14 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Database
                 var val = _dataProvider.GetCellValue(_worksheet, _fieldRow + 1, x);
                 if (fieldObj != null && val != null)
                 {
-                    if(fieldObj is string)
-                    { 
+                    if (fieldObj is string)
+                    {
                         var field = new ExcelDatabaseCriteriaField(fieldObj.ToString().ToLower(CultureInfo.InvariantCulture));
                         _criterias.Add(field, val);
                     }
                     else if (ConvertUtil.IsNumeric(fieldObj))
                     {
-                        var field = new ExcelDatabaseCriteriaField((int) fieldObj);
+                        var field = new ExcelDatabaseCriteriaField((int)fieldObj);
                         _criterias.Add(field, val);
                     }
 

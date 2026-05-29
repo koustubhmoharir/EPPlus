@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -100,19 +100,19 @@ namespace OfficeOpenXml.Style
                     if (_gradient != null) _gradient = null;
                 }
                 return _backgroundColor;
-                
+
             }
         }
-        ExcelGradientFill _gradient=null;
+        ExcelGradientFill _gradient = null;
         /// <summary>
         /// Access to properties for gradient fill.
         /// </summary>
-        public ExcelGradientFill Gradient 
+        public ExcelGradientFill Gradient
         {
             get
             {
                 if (_gradient == null)
-                {                    
+                {
                     _gradient = new ExcelGradientFill(_styles, _ChangedEvent, _positionID, _address, Index);
                     _backgroundColor = null;
                     _patternColor = null;

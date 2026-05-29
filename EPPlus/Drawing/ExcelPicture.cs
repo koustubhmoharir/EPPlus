@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -300,7 +300,7 @@ namespace OfficeOpenXml.Drawing
             switch (extension.ToLower(CultureInfo.InvariantCulture))
             {
                 case ".bmp":
-                    return  "image/bmp";
+                    return "image/bmp";
                 case ".jpg":
                 case ".jpeg":
                     return "image/jpeg";
@@ -347,33 +347,33 @@ namespace OfficeOpenXml.Drawing
         private string PicStartXml()
         {
             StringBuilder xml = new StringBuilder();
-            
+
             xml.Append("<xdr:nvPicPr>");
-            
+
             if (_hyperlink == null)
             {
                 xml.AppendFormat("<xdr:cNvPr id=\"{0}\" descr=\"\" />", _id);
             }
             else
             {
-               HypRel = _drawings.Part.CreateRelationship(_hyperlink, Packaging.TargetMode.External, ExcelPackage.schemaHyperlink);
-               xml.AppendFormat("<xdr:cNvPr id=\"{0}\" descr=\"\">", _id);
-               if (HypRel != null)
-               {
-                   if (_hyperlink is ExcelHyperLink)
-                   {
-                       xml.AppendFormat("<a:hlinkClick xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" r:id=\"{0}\" tooltip=\"{1}\"/>",
-                         HypRel.Id, ((ExcelHyperLink)_hyperlink).ToolTip);
-                   }
-                   else
-                   {
-                       xml.AppendFormat("<a:hlinkClick xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" r:id=\"{0}\" />",
-                         HypRel.Id);
-                   }
-               }
-               xml.Append("</xdr:cNvPr>");
+                HypRel = _drawings.Part.CreateRelationship(_hyperlink, Packaging.TargetMode.External, ExcelPackage.schemaHyperlink);
+                xml.AppendFormat("<xdr:cNvPr id=\"{0}\" descr=\"\">", _id);
+                if (HypRel != null)
+                {
+                    if (_hyperlink is ExcelHyperLink)
+                    {
+                        xml.AppendFormat("<a:hlinkClick xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" r:id=\"{0}\" tooltip=\"{1}\"/>",
+                          HypRel.Id, ((ExcelHyperLink)_hyperlink).ToolTip);
+                    }
+                    else
+                    {
+                        xml.AppendFormat("<a:hlinkClick xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" r:id=\"{0}\" />",
+                          HypRel.Id);
+                    }
+                }
+                xml.Append("</xdr:cNvPr>");
             }
-           
+
             xml.Append("<xdr:cNvPicPr><a:picLocks noChangeAspect=\"1\" /></xdr:cNvPicPr></xdr:nvPicPr><xdr:blipFill><a:blip xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" r:embed=\"\" cstate=\"print\" /><a:stretch><a:fillRect /> </a:stretch> </xdr:blipFill> <xdr:spPr> <a:xfrm> <a:off x=\"0\" y=\"0\" />  <a:ext cx=\"0\" cy=\"0\" /> </a:xfrm> <a:prstGeom prst=\"rect\"> <a:avLst /> </a:prstGeom> </xdr:spPr>");
 
             return xml.ToString();
@@ -416,7 +416,7 @@ namespace OfficeOpenXml.Drawing
             }
         }
         internal Uri UriPic { get; set; }
-        internal Packaging.ZipPackageRelationship RelPic {get; set;}
+        internal Packaging.ZipPackageRelationship RelPic { get; set; }
         internal Packaging.ZipPackageRelationship HypRel { get; set; }
         internal Packaging.ZipPackagePart Part;
 
@@ -461,10 +461,10 @@ namespace OfficeOpenXml.Drawing
         /// </summary>
         public Uri Hyperlink
         {
-           get
-           {
-              return _hyperlink;
-           }
+            get
+            {
+                return _hyperlink;
+            }
         }
         internal override void DeleteMe()
         {

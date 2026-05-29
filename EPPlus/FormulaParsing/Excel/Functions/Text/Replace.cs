@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2011  Jan Källman
+/* Copyright (C) 2011  Jan Källman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,7 +52,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions.Text
 
         private string GetLastPart(string text, int startPos, int nCharactersToReplace)
         {
-            int startIx = startPos -1;
+            int startIx = startPos - 1;
             startIx += nCharactersToReplace;
             return text.Substring(startIx, text.Length - startIx);
         }

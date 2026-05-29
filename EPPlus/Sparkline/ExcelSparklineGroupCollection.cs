@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -63,7 +63,7 @@ namespace OfficeOpenXml.Sparkline
             get
             {
                 return _lst.Count;
-            }            
+            }
         }
         /// <summary>
         /// Adds a new sparklinegroup to the collection
@@ -74,13 +74,13 @@ namespace OfficeOpenXml.Sparkline
         /// <returns></returns>
         public ExcelSparklineGroup Add(eSparklineType type, ExcelAddressBase locationRange, ExcelAddressBase dataRange)
         {
-            if(locationRange.Rows==1)
+            if (locationRange.Rows == 1)
             {
-                if(locationRange.Columns==dataRange.Rows)
+                if (locationRange.Columns == dataRange.Rows)
                 {
                     return AddGroup(type, locationRange, dataRange, true);
                 }
-                else if(locationRange.Columns== dataRange.Columns)
+                else if (locationRange.Columns == dataRange.Columns)
                 {
                     return AddGroup(type, locationRange, dataRange, false);
                 }
@@ -89,13 +89,13 @@ namespace OfficeOpenXml.Sparkline
                     throw (new ArgumentException("dataRange is not valid. dataRange columns or rows must match number of rows in locationRange"));
                 }
             }
-            else if(locationRange.Columns==1)
+            else if (locationRange.Columns == 1)
             {
-                if (locationRange.Rows== dataRange.Columns)
+                if (locationRange.Rows == dataRange.Columns)
                 {
                     return AddGroup(type, locationRange, dataRange, false);
                 }
-                else if (locationRange.Rows== dataRange.Rows)
+                else if (locationRange.Rows == dataRange.Rows)
                 {
                     return AddGroup(type, locationRange, dataRange, true);
                 }
@@ -122,16 +122,16 @@ namespace OfficeOpenXml.Sparkline
             var drToRow = isRows ? dataRange._fromRow : dataRange._toRow;
             var drToCol = isRows ? dataRange._toCol : dataRange._fromCol;
 
-            var cells = (locationRange._fromRow==locationRange._toRow ? locationRange._toCol - locationRange._fromCol: locationRange._toRow- locationRange._fromRow)+1;
+            var cells = (locationRange._fromRow == locationRange._toRow ? locationRange._toCol - locationRange._fromCol : locationRange._toRow - locationRange._fromRow) + 1;
             var cell = 0;
 
-            while (cell<cells)
+            while (cell < cells)
             {
                 var f = new ExcelCellAddress(row, col);
                 var sqref = new ExcelAddressBase(dataRange.WorkSheet, drFromRow, drFromCol, drToRow, drToCol);
                 group.Sparklines.Add(f, dataRange.WorkSheet, sqref);
                 cell++;
-                if(locationRange._fromRow == locationRange._toRow)
+                if (locationRange._fromRow == locationRange._toRow)
                 {
                     col++;
                 }
@@ -139,7 +139,7 @@ namespace OfficeOpenXml.Sparkline
                 {
                     row++;
                 }
-                if(isRows)
+                if (isRows)
                 {
                     drFromRow++;
                     drToRow++;
@@ -175,7 +175,7 @@ namespace OfficeOpenXml.Sparkline
             }
             var parent = xh.CreateNode(_topSearchPath);
 
-            var topNode = _ws.WorksheetXml.CreateElement("x14","sparklineGroup", ExcelPackage.schemaMainX14);
+            var topNode = _ws.WorksheetXml.CreateElement("x14", "sparklineGroup", ExcelPackage.schemaMainX14);
             topNode.SetAttribute("xmlns:xm", ExcelPackage.schemaMainXm);
             topNode.SetAttribute("uid", ExcelPackage.schemaXr2, $"{{{Guid.NewGuid().ToString()}}}");
             parent.AppendChild(topNode);
@@ -185,7 +185,7 @@ namespace OfficeOpenXml.Sparkline
 
         private void LoadSparklines()
         {
-            var grps=_ws.WorksheetXml.SelectNodes(_topPath + "/x14:sparklineGroup", _ws.NameSpaceManager);
+            var grps = _ws.WorksheetXml.SelectNodes(_topPath + "/x14:sparklineGroup", _ws.NameSpaceManager);
             foreach (XmlElement grp in grps)
             {
                 _lst.Add(new ExcelSparklineGroup(_ws.NameSpaceManager, grp, _ws));

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
@@ -64,13 +64,13 @@ namespace EPPlusTest.Drawing.Chart
             using (var stream = new MemoryStream())
             {
                 _package.SaveAs(stream);
-                
+
                 stream.Position = 0;
                 using (var loadedPackage = new ExcelPackage(stream, EPPlusTest.TempFolderHelper.Create()))
                 {
                     var loadedWorksheet = loadedPackage.Workbook.Worksheets["TestSheet"];
                     Assert.AreEqual(1, loadedWorksheet.Drawings.Count);
-                    
+
                     var loadedChart = loadedWorksheet.Drawings[0] as ExcelChart;
                     Assert.IsNotNull(loadedChart);
                     Assert.IsTrue(loadedChart.RoundedCorners, "RoundedCorners should persist after saving and loading");
@@ -86,14 +86,14 @@ namespace EPPlusTest.Drawing.Chart
             wsSource.Cells["A1"].Value = "Col1";
             wsSource.Cells["A2"].Value = 1;
             wsSource.Cells["A3"].Value = 2;
-            
+
             var wsPivot = _package.Workbook.Worksheets.Add("Pivot");
             var pivotTable = wsPivot.PivotTables.Add(wsPivot.Cells["A1"], wsSource.Cells["A1:A3"], "Pivot1");
-            
+
             var chart = _worksheet.Drawings.AddChart("PivotChart", eChartType.ColumnClustered, pivotTable);
             Assert.IsNotNull(chart.PivotTableSource);
             Assert.AreEqual(pivotTable.Name, chart.PivotTableSource.Name);
-            
+
             using (var stream = new MemoryStream())
             {
                 _package.SaveAs(stream);
@@ -146,7 +146,7 @@ namespace EPPlusTest.Drawing.Chart
             // In dotnetport/Core, creating drawing when part already exists loop-checks and succeeds by creating a unique URI drawing2.xml
             var drawingUri = new Uri("/xl/drawings/drawing1.xml", UriKind.Relative);
             _package.Package.CreatePart(drawingUri, "application/vnd.openxmlformats-officedocument.drawing+xml");
-            
+
             var chart = _worksheet.Drawings.AddChart("Chart1", eChartType.ColumnClustered);
             Assert.IsNotNull(chart);
             Assert.AreEqual("/xl/drawings/drawing2.xml", _worksheet.Drawings.UriDrawing.OriginalString);
