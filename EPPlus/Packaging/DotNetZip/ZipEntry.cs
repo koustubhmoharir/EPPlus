@@ -57,9 +57,11 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             _CompressionLevel = Ionic.Zlib.CompressionLevel.Default;
             _Encryption = EncryptionAlgorithm.None;
             _Source = ZipEntrySource.None;
-            AlternateEncoding = System.Text.Encoding.GetEncoding("IBM437");
+            AlternateEncoding = SharedUtilities.IBM437Encoding;
             AlternateEncodingUsage = ZipOption.Never;
         }
+
+        public static System.Text.Encoding DefaultEncoding => SharedUtilities.IBM437Encoding;
 
         /// <summary>
         ///   The time and date at which the file indicated by the <c>ZipEntry</c> was
@@ -2729,8 +2731,6 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         private bool _skippedDuringSave;
         private UInt32 _diskNumber;
 
-        private static System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("IBM437");
-        //private System.Text.Encoding _provisionalAlternateEncoding = System.Text.Encoding.GetEncoding("IBM437");
         private System.Text.Encoding _actualEncoding;
 
         internal ZipContainer _container;

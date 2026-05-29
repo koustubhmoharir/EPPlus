@@ -33,6 +33,11 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
     /// </summary>
     internal static class SharedUtilities
     {
+        static SharedUtilities()
+        {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            IBM437Encoding = System.Text.Encoding.GetEncoding("IBM437");
+        }
         /// private null constructor
         //private SharedUtilities() { }
 
@@ -158,8 +163,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         }
 
 
-        static System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("IBM437");
-        static System.Text.Encoding utf8 = System.Text.Encoding.GetEncoding("UTF-8");
+        internal static readonly System.Text.Encoding IBM437Encoding;
 
         internal static byte[] StringToByteArray(string value, System.Text.Encoding encoding)
         {
@@ -168,7 +172,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         }
         internal static byte[] StringToByteArray(string value)
         {
-            return StringToByteArray(value, ibm437);
+            return StringToByteArray(value, IBM437Encoding);
         }
 
         //internal static byte[] Utf8StringToByteArray(string value)
@@ -183,7 +187,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
         internal static string Utf8StringFromBuffer(byte[] buf)
         {
-            return StringFromBuffer(buf, utf8);
+            return StringFromBuffer(buf, System.Text.Encoding.UTF8);
         }
 
         internal static string StringFromBuffer(byte[] buf, System.Text.Encoding encoding)

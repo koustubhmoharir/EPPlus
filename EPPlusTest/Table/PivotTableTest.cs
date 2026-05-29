@@ -65,12 +65,7 @@ namespace EPPlusTest.Table
                 
                 var pivotTable = wsPivot.PivotTables.Add(wsPivot.Cells["A1"], wsSource.Cells["A1:A2"], "");
                 
-                // In stable it's PivotTable1, in dotnetport it's Pivottable1
-#if Core
-                Assert.AreEqual("Pivottable1", pivotTable.Name);
-#else
                 Assert.AreEqual("PivotTable1", pivotTable.Name);
-#endif
             }
         }
     }

@@ -156,29 +156,10 @@ namespace EPPlusTest.Packaging.DotNetZip
         [TestMethod]
         public void ZipSegmentedStream_99SegmentLimit()
         {
-            try
+            using (var stream = ForWriting(_baseFileName, 10))
             {
-                using (var stream = ForWriting(_baseFileName, 10))
-                {
-                    SetPrivateField(stream, "_currentDiskNumber", 98u);
-                    stream.Write(new byte[20], 0, 20); 
-                }
-#if Core
-                Assert.Fail("Should have thrown OverflowException on dotnetport");
-#endif
-            }
-            catch (Exception ex)
-            {
-                if (ex.GetType().Name == "OverflowException" || (ex.InnerException != null && ex.InnerException.GetType().Name == "OverflowException"))
-                {
-#if !Core
-                    Assert.Fail("Should not have thrown OverflowException on stable");
-#endif
-                }
-                else
-                {
-                    throw;
-                }
+                SetPrivateField(stream, "_currentDiskNumber", 98u);
+                stream.Write(new byte[20], 0, 20);
             }
         }
 

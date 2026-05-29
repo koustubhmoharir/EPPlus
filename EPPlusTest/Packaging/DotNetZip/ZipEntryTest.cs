@@ -19,20 +19,11 @@ namespace EPPlusTest.Packaging.DotNetZip
             var entry = new ZipEntry();
 
             Assert.IsNotNull(entry.AlternateEncoding);
-#if Core
-            Assert.AreEqual(65001, entry.AlternateEncoding.CodePage);
-#else
             Assert.AreEqual(437, entry.AlternateEncoding.CodePage);
-#endif
             Assert.AreEqual(ZipOption.Never, entry.AlternateEncodingUsage);
-#if Core
-            Assert.IsNull(typeof(ZipEntry).GetProperty("DontEmitLastModified", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
-#else
             Assert.IsFalse(entry.DontEmitLastModified);
-#endif
         }
 
-        #if !Core
         [TestMethod]
         public void ZipEntry_DontEmitLastModified_RoundTrips()
         {
@@ -44,7 +35,6 @@ namespace EPPlusTest.Packaging.DotNetZip
             entry.DontEmitLastModified = false;
             Assert.IsFalse(entry.DontEmitLastModified);
         }
-        #endif
 
         [TestMethod]
         public void ZipEntry_TypeAttributes_ArePresent()
@@ -220,11 +210,7 @@ namespace EPPlusTest.Packaging.DotNetZip
         private static byte[] BuildCentralDirectoryEntryBytes(string fileName, string comment, bool segmented, uint diskNumber)
         {
             var entry = (ZipEntry)FormatterServices.GetUninitializedObject(typeof(ZipEntry));
-#if Core
-            SetAutoProperty(entry, "AlternateEncoding", System.Text.Encoding.GetEncoding("UTF-8"));
-#else
             SetAutoProperty(entry, "AlternateEncoding", System.Text.Encoding.GetEncoding("IBM437"));
-#endif
             SetAutoProperty(entry, "AlternateEncodingUsage", ZipOption.Never);
             SetPrivateField(entry, "_FileNameInArchive", fileName);
             SetPrivateField(entry, "_Comment", comment);

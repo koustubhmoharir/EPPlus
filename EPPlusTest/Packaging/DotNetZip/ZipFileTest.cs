@@ -23,24 +23,6 @@ namespace EPPlusTest.Packaging.DotNetZip
         [TestMethod]
         public void ZipFile_AddEntry_DuplicateCase_AllowedInStable()
         {
-#if Core
-            // In .NET Core (dotnetport), we unified the dictionary to be case-insensitive,
-            // so adding duplicate names with different casing is NOT allowed and throws ArgumentException.
-            var zf = CreateZipFile();
-            try
-            {
-                var addEntryMethod = zf.GetType().GetMethod("AddEntry", new[] { typeof(string), typeof(string) });
-                addEntryMethod.Invoke(zf, new object[] { "TEST.TXT", "content 1" });
-                
-                var ex = Assert.ThrowsException<TargetInvocationException>(() => 
-                    addEntryMethod.Invoke(zf, new object[] { "test.txt", "content 2" }));
-                Assert.IsInstanceOfType(ex.InnerException, typeof(ArgumentException));
-            }
-            finally
-            {
-                ((IDisposable)zf).Dispose();
-            }
-#else
             object zf = CreateZipFile();
             try
             {
@@ -72,7 +54,6 @@ namespace EPPlusTest.Packaging.DotNetZip
             {
                 ((IDisposable)zf).Dispose();
             }
-#endif
         }
 
         [TestMethod]

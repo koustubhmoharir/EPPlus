@@ -58,11 +58,7 @@ namespace EPPlusTest.Packaging.DotNetZip
             byte[] bytes = (byte[])InvokeMethod("StringToByteArray", testString);
             Assert.IsNotNull(bytes);
 
-#if Core
-            var expectedEncoding = Encoding.UTF8;
-#else
-            var expectedEncoding = Encoding.GetEncoding("IBM437");
-#endif
+            var expectedEncoding = OfficeOpenXml.Packaging.Ionic.Zip.ZipEntry.DefaultEncoding;
             byte[] expectedBytes = expectedEncoding.GetBytes(testString);
             CollectionAssert.AreEqual(expectedBytes, bytes);
         }

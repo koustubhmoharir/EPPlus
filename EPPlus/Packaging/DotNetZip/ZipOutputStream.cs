@@ -1022,7 +1022,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         {
             get
             {
-                return System.Text.Encoding.GetEncoding("IBM437");
+                return SharedUtilities.IBM437Encoding;
             }
         }
 
@@ -1616,7 +1616,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         private int _entryCount;
         private ZipOption _alternateEncodingUsage = ZipOption.Never;
         private System.Text.Encoding _alternateEncoding
-            = System.Text.Encoding.GetEncoding("IBM437"); // default = IBM437
+            = SharedUtilities.IBM437Encoding; // default = IBM437
 
         private bool _leaveUnderlyingStreamOpen;
         private bool _disposed;
