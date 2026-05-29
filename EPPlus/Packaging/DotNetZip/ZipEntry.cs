@@ -57,11 +57,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             _CompressionLevel = Ionic.Zlib.CompressionLevel.Default;
             _Encryption = EncryptionAlgorithm.None;
             _Source = ZipEntrySource.None;
-#if (Core)
-            AlternateEncoding = System.Text.Encoding.GetEncoding("UTF-8");
-#else
             AlternateEncoding = System.Text.Encoding.GetEncoding("IBM437");
-#endif
             AlternateEncodingUsage = ZipOption.Never;
         }
 
@@ -218,6 +214,17 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
                 _Mtime = Ionic.Zip.SharedUtilities.AdjustTime_Reverse(_LastModified).ToUniversalTime();
                 _metadataChanged = true;
             }
+        }
+
+        /// <summary>
+        /// Ability to set Last Modified DOS time to zero
+        /// (for using with EmitTimesInWindowsFormatWhenSaving+EmitTimesInUnixFormatWhenSaving setted to false)
+        /// some flasher hardware use as marker of first binary
+        /// </summary>
+        public bool DontEmitLastModified
+        {
+            get { return _dontEmitLastModified; }
+            set { _dontEmitLastModified = value; }
         }
 
 
@@ -2693,6 +2700,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 #endif
 
         internal DateTime _LastModified;
+        private bool _dontEmitLastModified;
         private DateTime _Mtime, _Atime, _Ctime;  // workitem 6878: NTFS quantities
         private bool _ntfsTimesAreSet;
         private bool _emitNtfsTimes = true;
@@ -2721,11 +2729,8 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         private bool _skippedDuringSave;
         private UInt32 _diskNumber;
 
-#if (Core)
-        private static System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("UTF-8");
-#else
         private static System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("IBM437");
-#endif
+        //private System.Text.Encoding _provisionalAlternateEncoding = System.Text.Encoding.GetEncoding("IBM437");
         private System.Text.Encoding _actualEncoding;
 
         internal ZipContainer _container;

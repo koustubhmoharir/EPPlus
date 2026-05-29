@@ -49,7 +49,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         private string _currentTempName;
         private uint _currentDiskNumber;
         private uint _maxDiskNumber;
-        private int _maxSegmentSize;
+        private long _maxSegmentSize;
         private System.IO.Stream _innerStream;
 
         // **Note regarding exceptions:
@@ -90,6 +90,11 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
 
         public static ZipSegmentedStream ForWriting(string name, int maxSegmentSize)
+        {
+            return ForWriting(name, (long)maxSegmentSize);
+        }
+
+        public static ZipSegmentedStream ForWriting(string name, long maxSegmentSize)
         {
             ZipSegmentedStream zss = new ZipSegmentedStream()
                 {
@@ -132,8 +137,6 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         /// </remarks>
         public static Stream ForUpdate(string name, uint diskNumber)
         {
-            if (diskNumber >= 99)
-                throw new ArgumentOutOfRangeException("diskNumber");
 
             string fname =
                 String.Format("{0}.z{1:D2}",
@@ -208,11 +211,6 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 
         private string _NameForSegment(uint diskNumber)
         {
-            if (diskNumber >= 99)
-            {
-                _exceptionPending = true;
-                throw new OverflowException("The number of zip segments would exceed 99.");
-            }
 
             return String.Format("{0}.z{1:D2}",
                                  Path.Combine(Path.GetDirectoryName(_baseName),
@@ -364,11 +362,22 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             {
                 while (_innerStream.Position + count > _maxSegmentSize)
                 {
-                    int c = unchecked(_maxSegmentSize - (int)_innerStream.Position);
-                    _innerStream.Write(buffer, offset, c);
+                    long c = _maxSegmentSize - _innerStream.Position;
+                    int cnt;
+                    if (c > buffer.Length)
+                    {
+                        cnt = buffer.Length;
+                    }
+                    else
+                    {
+                        cnt = (int)c;
+                    }
+
+                    _innerStream.Write(buffer, offset, cnt);
+
                     _SetWriteStream(1);
-                    count -= c;
-                    offset += c;
+                    count -= cnt;
+                    offset += cnt;
                 }
             }
 
@@ -380,8 +389,6 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         {
             // Console.WriteLine("***ZSS.Trunc to disk {0}", diskNumber);
             // Console.WriteLine("***ZSS.Trunc:  current disk {0}", CurrentSegment);
-            if (diskNumber >= 99)
-                throw new ArgumentOutOfRangeException("diskNumber");
 
             if (rwMode != RwMode.Write)
             {
@@ -431,7 +438,8 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
             {
                 try
                 {
-                    _currentTempName = SharedUtilities.InternalGetTempFileName();
+                    _currentTempName = Path.Combine(Path.GetDirectoryName(CurrentName),
+                                                    SharedUtilities.InternalGetTempFileName());
                     // move the .z0x file back to a temp name
                     File.Move(CurrentName, _currentTempName);
                     break; // workitem 12403

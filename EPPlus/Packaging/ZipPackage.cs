@@ -59,6 +59,16 @@ namespace OfficeOpenXml.Packaging
     /// </summary>
     public class ZipPackage : ZipPackageRelationshipBase, IDisposable
     {
+        private string tempFolder;
+        internal string TempFolder { get { return tempFolder; } }
+        public string GetTempFile()
+        {
+            if (tempFolder != null && !Directory.Exists(tempFolder))
+            {
+                Directory.CreateDirectory(tempFolder);
+            }
+            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
+        }
         internal class ContentType
         {
             internal string Name;
@@ -70,16 +80,6 @@ namespace OfficeOpenXml.Packaging
                 IsExtension = isExtension;
                 Match = match;
             }
-        }
-        private string tempFolder;
-        internal string TempFolder { get { return tempFolder; } }
-        public string GetTempFile()
-        {
-            if (tempFolder != null && !Directory.Exists(tempFolder))
-            {
-                Directory.CreateDirectory(tempFolder);
-            }
-            return Path.Combine(tempFolder ?? Path.GetTempPath(), Guid.NewGuid().ToString());
         }
         Dictionary<string, ZipPackagePart> Parts = new Dictionary<string, ZipPackagePart>(StringComparer.OrdinalIgnoreCase);
         internal Dictionary<string, ContentType> _contentTypes = new Dictionary<string, ContentType>(StringComparer.OrdinalIgnoreCase);
@@ -127,28 +127,32 @@ namespace OfficeOpenXml.Packaging
                     {
                         if (e.UncompressedSize > 0)
                         {
-                            var b = new byte[e.UncompressedSize];
-                            var size = zip.Read(b, 0, (int)e.UncompressedSize);
-                            if (e.FileName.Equals("[content_types].xml", StringComparison.OrdinalIgnoreCase))
+                            if (e.FileName.Equals("[content_types].xml", StringComparison.InvariantCultureIgnoreCase))
                             {
+                                var b = new byte[e.UncompressedSize];
+                                var size = zip.Read(b, 0, (int)e.UncompressedSize);
                                 AddContentTypes(Encoding.UTF8.GetString(b));
                                 hasContentTypeXml = true;
                             }
-                            else if (e.FileName.Equals($"_rels{_dirSeparator}.rels", StringComparison.OrdinalIgnoreCase)) 
+                            else if (e.FileName.Equals("_rels/.rels", StringComparison.InvariantCultureIgnoreCase))
                             {
+                                var b = new byte[e.UncompressedSize];
+                                var size = zip.Read(b, 0, (int)e.UncompressedSize);
                                 ReadRelation(Encoding.UTF8.GetString(b), "");
                             }
                             else
                             {
-                                if (e.FileName.EndsWith(".rels", StringComparison.OrdinalIgnoreCase))
+                                if (e.FileName.EndsWith(".rels", StringComparison.InvariantCultureIgnoreCase))
                                 {
+                                    var b = new byte[e.UncompressedSize];
+                                    var size = zip.Read(b, 0, (int)e.UncompressedSize);
                                     rels.Add(GetUriKey(e.FileName), Encoding.UTF8.GetString(b));
                                 }
                                 else
                                 {                                    
                                     var part = new ZipPackagePart(this, e);
                                     var fs = part.GetStream(FileMode.Create, FileAccess.Write);
-                                    fs.Write(b, 0, b.Length);
+                                    ExcelPackage.CopyStream(zip, fs);
                                     Parts.Add(GetUriKey(e.FileName), part);
                                 }
                             }

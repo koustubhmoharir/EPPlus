@@ -425,63 +425,62 @@ namespace OfficeOpenXml
                 }
             }
         }
+        private static System.Text.RegularExpressions.Regex nameRegex = new System.Text.RegularExpressions.Regex(@"(.*?)(\d+)$");
         private void CopyPivotTable(ExcelWorksheet Copy, ExcelWorksheet added)
         {
-            string prevName = "";
+            _pck.Workbook.ResetNextPivotCacheId();
+
             foreach (var tbl in Copy.PivotTables)
             {
-                string xml = tbl.PivotTableXml.OuterXml;
-
-                string name;
-                if(Copy.Workbook==added.Workbook || added.PivotTables._pivotTableNames.ContainsKey(tbl.Name))
+                string name = tbl.Name;
+                while (_pck.Workbook.ExistsPivotTableName(name))
                 {
-                    if (prevName == "")
-                    {
-                        name = added.PivotTables.GetNewTableName();
-                    }
+                    var match = nameRegex.Match(name);
+                    if (int.TryParse(match.Groups[2].Value, out int ix))
+                        ix++;
                     else
-                    {
-                        int ix = int.Parse(prevName.Substring(10)) + 1;
-                        name = string.Format("PivotTable{0}", ix);
-                        while (_pck.Workbook.ExistsPivotTableName(name))
-                        {
-                            name = string.Format("PivotTable{0}", ++ix);
-                        }
-                    }
+                        ix = 2;
+                    name = match.Groups[1].Value + ix.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 }
-                else
-                {
-                    name = tbl.Name;
-                }
-                prevName=name;
+                int Id = _pck.Workbook._nextPivotTableID++;
+                string cacheId = Id.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
                 XmlDocument xmlDoc = new XmlDocument();
                 //TODO: Fix save pivottable here
+                //Copy.Save();    //Save the worksheet first
+                string xml = tbl.PivotTableXml.OuterXml;
                 xmlDoc.LoadXml(xml);
+                //xmlDoc.SelectSingleNode("//d:table/@id", tbl.NameSpaceManager).Value = Id.ToString();
                 xmlDoc.SelectSingleNode("//d:pivotTableDefinition/@name", tbl.NameSpaceManager).Value = name;
-                var cacheId = tbl.CacheID;
-                if (!added.Workbook.ExistsPivotCache(tbl.CacheID, ref cacheId))
-                {
-                    xmlDoc.SelectSingleNode("//d:pivotTableDefinition/@cacheId", tbl.NameSpaceManager).Value = cacheId.ToString();
-
-                }
+                xmlDoc.SelectSingleNode("//d:pivotTableDefinition/@cacheId", tbl.NameSpaceManager).Value = cacheId;
                 xml = xmlDoc.OuterXml;
 
-                int Id = _pck.Workbook._nextPivotTableID++;
+
+                //var uriTbl = new Uri(string.Format("/xl/pivotTables/pivotTable{0}.xml", Id), UriKind.Relative);
                 var uriTbl = GetNewUri(_pck.Package, "/xl/pivotTables/pivotTable{0}.xml", ref Id);
-                if (_pck.Workbook._nextPivotTableID < Id) _pck.Workbook._nextPivotTableID = Id;
-                var partTbl = _pck.Package.CreatePart(uriTbl, ExcelPackage.schemaPivotTable , _pck.Compression);
+                var partTbl = _pck.Package.CreatePart(uriTbl, ExcelPackage.schemaPivotTable, _pck.Compression);
                 StreamWriter streamTbl = new StreamWriter(partTbl.GetStream(FileMode.Create, FileAccess.Write));
                 streamTbl.Write(xml);
+                //streamTbl.Close();
                 streamTbl.Flush();
 
                 xml = tbl.CacheDefinition.CacheDefinitionXml.OuterXml;
-                var uriCd = GetNewUri(_pck.Package, "/xl/pivotCache/pivotcachedefinition{0}.xml", ref Id);
+                xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(xml);
+                var node = xmlDoc.SelectSingleNode("d:pivotCacheDefinition/d:cacheSource/d:worksheetSource/@sheet", tbl.CacheDefinition.NameSpaceManager);
+                if (node != null && node.Value == Copy.Name)
+                    node.Value = added.Name;
+                xml = xmlDoc.OuterXml;
+                //var uriCd = new Uri(string.Format("/xl/pivotCache/pivotcachedefinition{0}.xml", Id), UriKind.Relative);
+                //while (_pck.Package.PartExists(uriCd))
+                //{
+                //    uriCd = new Uri(string.Format("/xl/pivotCache/pivotcachedefinition{0}.xml", ++Id), UriKind.Relative);
+                //}
+                var uriCd = GetNewUri(_pck.Package, "/xl/pivotCache/pivotCacheDefinition{0}.xml", ref Id);
                 var partCd = _pck.Package.CreatePart(uriCd, ExcelPackage.schemaPivotCacheDefinition, _pck.Compression);
                 StreamWriter streamCd = new StreamWriter(partCd.GetStream(FileMode.Create, FileAccess.Write));
                 streamCd.Write(xml);
                 streamCd.Flush();
-
-                added.Workbook.AddPivotTable(cacheId.ToString(), uriCd); 
 
                 xml = "<pivotCacheRecords xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" count=\"0\" />";
                 var uriRec = new Uri(string.Format("/xl/pivotCache/pivotCacheRecords{0}.xml", Id), UriKind.Relative);
@@ -498,9 +497,8 @@ namespace OfficeOpenXml
                 added.Part.CreateRelationship(UriHelper.ResolvePartUri(added.WorksheetUri, uriTbl), Packaging.TargetMode.Internal, ExcelPackage.schemaRelationships + "/pivotTable");
                 partTbl.CreateRelationship(UriHelper.ResolvePartUri(tbl.Relationship.SourceUri, uriCd), tbl.CacheDefinition.Relationship.TargetMode, tbl.CacheDefinition.Relationship.RelationshipType);
                 partCd.CreateRelationship(UriHelper.ResolvePartUri(uriCd, uriRec), Packaging.TargetMode.Internal, ExcelPackage.schemaRelationships + "/pivotCacheRecords");
-
+                _pck.Workbook.AddPivotTable(cacheId, uriCd);
             }
-            added._pivotTables = null;   //Reset collection so it's reloaded when accessing the collection next time.
         }
         private void CopyHeaderFooterPictures(ExcelWorksheet Copy, ExcelWorksheet added)
         {

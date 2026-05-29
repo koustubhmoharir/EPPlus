@@ -118,7 +118,7 @@ namespace OfficeOpenXml
 		internal ExcelNamedRangeCollection _names;
 		internal int _nextDrawingID = 0;
 		internal int _nextTableID = int.MinValue;
-        internal int _nextPivotTableID = int.MinValue;
+        internal int _nextPivotTableID = 0;
 		internal XmlNamespaceManager _namespaceManager;
         internal FormulaParser _formulaParser = null;
 	    internal FormulaParserManager _parserManager;
@@ -453,12 +453,64 @@ namespace OfficeOpenXml
                 }
                 return _vba;
             }
-        }
+		}
 
-        /// <summary>
-        /// Create an empty VBA project.
-        /// </summary>
-        public void CreateVBAProject()
+		/// <summary>
+		/// Returns the theme colors from the package
+		/// </summary>
+		public Color[] GetThemeColors()
+		{
+			try
+			{
+				foreach (var pair in _package.Package._contentTypes)
+				{
+					if (pair.Value.Name == "application/vnd.openxmlformats-officedocument.theme+xml")
+					{
+						var uri = _package.Package.GetUriKey(pair.Key);
+						var doc = _package.GetXmlFromUri(new Uri(uri, UriKind.Relative));
+						var nsm = _package.CreateDefaultNSM();
+						nsm.AddNamespace("a", ExcelPackage.schemaDrawings);
+						var clrScheme = doc.SelectSingleNode("a:theme/a:themeElements/a:clrScheme", nsm);
+						var colors = new Color[10];
+						colors[0] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:lt1", nsm));
+						colors[1] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:dk1", nsm));
+						colors[2] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:lt2", nsm));
+						colors[3] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:dk2", nsm));
+						colors[4] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:accent1", nsm));
+						colors[5] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:accent2", nsm));
+						colors[6] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:accent3", nsm));
+						colors[7] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:accent4", nsm));
+						colors[8] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:accent5", nsm));
+						colors[9] = ColorFromThemeXml(clrScheme.SelectSingleNode("a:accent6", nsm));
+
+						return colors;
+					}
+				}
+			}
+			catch { }
+			return null;
+		}
+		private static Color ColorFromThemeXml(XmlNode node)
+		{
+			node = node?.FirstChild;
+			string s = null;
+			if (node.LocalName == "sysClr")
+			{
+				s = node.Attributes["lastClr"].Value;
+			}
+			else if (node.LocalName == "srgbClr")
+			{
+				s = node.Attributes["val"].Value;
+			}
+			if (!string.IsNullOrEmpty(s))
+				return Color.FromArgb(int.Parse(s.Substring(0, 2), NumberStyles.HexNumber), int.Parse(s.Substring(2, 2), NumberStyles.HexNumber), int.Parse(s.Substring(4, 2), NumberStyles.HexNumber));
+			throw new ArgumentException();
+		}
+
+		/// <summary>
+		/// Create an empty VBA project.
+		/// </summary>
+		public void CreateVBAProject()
         {
             if (_vba != null || _package.Package.PartExists(new Uri(ExcelVbaProject.PartUri, UriKind.Relative)))
             {
@@ -803,6 +855,7 @@ namespace OfficeOpenXml
             }
 			
             UpdateDefinedNamesXml();
+			CleanAppXml();
 
 			// save the workbook
 			if (_workbookXml != null)
@@ -886,7 +939,18 @@ namespace OfficeOpenXml
                 if (firstSheet != null)
                     node.Attributes.Remove(firstSheet);
             }
-        }
+		}
+
+		private void CleanAppXml()
+		{
+			var props = Properties.ExtendedPropertiesXml.DocumentElement;
+			var titlesOfParts = props.SelectSingleNode("xp:TitlesOfParts", _namespaceManager);
+			var headingPairs = props.SelectSingleNode("xp:HeadingPairs", _namespaceManager);
+			if (titlesOfParts != null)
+				props.RemoveChild(titlesOfParts);
+			if (headingPairs != null)
+				props.RemoveChild(headingPairs);
+		}
 
 		private void ValidateDataValidations()
 		{
@@ -1080,12 +1144,22 @@ namespace OfficeOpenXml
 		{
 			foreach (var ws in Worksheets)
 			{
+				if (ws.GetType() != typeof(ExcelWorksheet)) continue;
 				if (ws.PivotTables._pivotTableNames.ContainsKey(Name))
 				{
 					return true;
 				}
 			}
 			return false;
+		}
+		internal void ResetNextPivotCacheId()
+		{
+			_nextPivotTableID = 0;
+			foreach (XmlNode node in WorkbookXml.SelectNodes("d:workbook/d:pivotCaches/d:pivotCache", NameSpaceManager))
+			{
+				_nextPivotTableID = Math.Max(_nextPivotTableID, int.Parse(node.Attributes["cacheId"].Value));
+			}
+			++_nextPivotTableID;
 		}
 		internal void AddPivotTable(string cacheID, Uri defUri)
 		{
@@ -1140,9 +1214,13 @@ namespace OfficeOpenXml
             {
                 _sharedStringsList.Clear();
                 _sharedStringsList = null;
-            }
-            _vba = null;
-            if (_worksheets != null)
+			}
+			if (_vba != null)
+			{
+				_vba.Dispose();
+				_vba = null;
+			}
+			if (_worksheets != null)
             {
                 _worksheets.Dispose();
                 _worksheets = null;

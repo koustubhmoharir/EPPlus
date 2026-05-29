@@ -969,7 +969,6 @@ namespace OfficeOpenXml.Packaging.Ionic.Zlib
 
                 } while (nextToWrite >= 0);
 
-            //} while (doAll && (_lastWritten != _latestCompressed));
             } while (doAll && (_lastWritten != _latestCompressed || _lastWritten != _lastFilled));
 
             emitting = false;

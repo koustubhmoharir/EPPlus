@@ -766,7 +766,7 @@ namespace OfficeOpenXml
                     string[] cells = address.Split(':');
                     if (cells.Length > 0)
                     {
-                        address = string.Format("'{0}'!{1}", worksheetName, cells[0]);
+                        address = string.Format("'{0}'!{1}", worksheetName.Replace("'", "''"), cells[0]);
                         if (cells.Length > 1)
                         {
                             address += string.Format(":{0}", cells[1]);
@@ -778,7 +778,7 @@ namespace OfficeOpenXml
                     var a = new ExcelAddressBase(address);
                     if ((a._fromRow == 1 && a._toRow == ExcelPackage.MaxRows) || (a._fromCol == 1 && a._toCol == ExcelPackage.MaxColumns))
                     {
-                        address = string.Format("'{0}'!{1}{2}:{3}{4}", worksheetName, ExcelAddress.GetColumnLetter(a._fromCol), a._fromRow, ExcelAddress.GetColumnLetter(a._toCol), a._toRow);
+                        address = string.Format("'{0}'!{1}{2}:{3}{4}", worksheetName.Replace("'", "''"), ExcelAddress.GetColumnLetter(a._fromCol), a._fromRow, ExcelAddress.GetColumnLetter(a._toCol), a._toRow);
                     }
                     else
                     {
@@ -953,7 +953,7 @@ namespace OfficeOpenXml
                         // Persist fully-qualified worksheet references.
                         if (!string.IsNullOrEmpty(a._ws))
                         {
-                            f += $"'{a._ws}'!";
+                            f += ExcelAddressBase.WorksheetPrefix(a._ws);
                         }
                         if (rowIncrement > 0)
                         {
@@ -1024,7 +1024,7 @@ namespace OfficeOpenXml
 
                         if (!string.IsNullOrEmpty(a._ws))
                         {
-                            f += "'" + a._ws.Replace("'", "''") + "'!";
+                            f += ExcelAddressBase.WorksheetPrefix(a._ws);
                         }
                         var collision = srcRange.Collide(a, true);
                         if (collision == ExcelAddressBase.eAddressCollition.Inside || collision == ExcelAddressBase.eAddressCollition.Equal)

@@ -793,7 +793,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Crc
             throw new NotSupportedException();
         }
 
-#if !Core
+
         void IDisposable.Dispose()
         {
             Close();
@@ -808,7 +808,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Crc
             if (!_leaveOpen)
                 _innerStream.Close();
         }
-#endif
+
     }
 
 }

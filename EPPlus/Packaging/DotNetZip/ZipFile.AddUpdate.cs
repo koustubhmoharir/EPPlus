@@ -1141,7 +1141,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 #else
             return AddEntry(entryName, content,
 #if Core
-                System.Text.Encoding.GetEncoding("UTF-8")
+                System.Text.Encoding.UTF8
 #else
                 System.Text.Encoding.Default
 #endif
@@ -1672,7 +1672,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
 #else
             return UpdateEntry(entryName, content,
 #if Core
-                System.Text.Encoding.GetEncoding("UTF-8")
+                System.Text.Encoding.UTF8
 #else
                 System.Text.Encoding.Default
 #endif
@@ -2079,6 +2079,8 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         internal void InternalAddEntry(String name, ZipEntry entry)
         {
             _entries.Add(name, entry);
+            if (!_entriesInsensitive.ContainsKey(name))
+                _entriesInsensitive.Add(name, entry);
             _zipEntriesAsList = null;
             _contentsChanged = true;
         }

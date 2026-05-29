@@ -158,11 +158,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         }
 
 
-#if (Core)
-        static System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("UTF-8");   
-#else
         static System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("IBM437");
-#endif
         static System.Text.Encoding utf8 = System.Text.Encoding.GetEncoding("UTF-8");
 
         internal static byte[] StringToByteArray(string value, System.Text.Encoding encoding)

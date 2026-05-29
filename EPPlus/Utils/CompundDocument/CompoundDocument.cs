@@ -51,6 +51,18 @@ namespace OfficeOpenXml.Utils.CompundDocument
             }
             internal Dictionary<string, StoragePart> SubStorage = new Dictionary<string, StoragePart>();
             internal Dictionary<string, Stream> DataStreams = new Dictionary<string, Stream>();
+
+            public void Dispose()
+            {
+                foreach (var part in SubStorage.Values)
+                {
+                    part.Dispose();
+                }
+                foreach (var stream in DataStreams.Values)
+                {
+                    stream.Dispose();
+                }
+            }
         }
         internal StoragePart Storage = null;
         private readonly string _tempFolder;
@@ -166,6 +178,11 @@ namespace OfficeOpenXml.Utils.CompundDocument
                 var c = new CompoundDocumentItem() { Name = item.Key, ObjectType = 2, Stream = stream, StreamSize = streamSize, Parent = parent };
                 parent.Children.Add(c);
             }
+        }
+
+        public void Dispose()
+        {
+            if (Storage != null) Storage.Dispose();
         }
     }
 }

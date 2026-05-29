@@ -1126,5 +1126,11 @@ namespace OfficeOpenXml.VBA
         {
             return Name;
         }
+
+        public void Dispose()
+        {
+            Document?.Dispose();
+            Document = null;
+        }
     }
 }

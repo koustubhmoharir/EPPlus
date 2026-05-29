@@ -364,6 +364,7 @@ namespace OfficeOpenXml
         #region Worksheet Private Properties
         internal ExcelPackage _package;
         private Uri _worksheetUri;
+        internal string _originalName;
         private string _name;
         private int _sheetID;
         private int _positionID;
@@ -393,7 +394,7 @@ namespace OfficeOpenXml
             _package = excelPackage;
             _relationshipID = relID;
             _worksheetUri = uriWorksheet;
-            _name = sheetName;
+            _originalName = _name = sheetName;
             _sheetID = sheetID;
             _positionID = positionID;
             Hidden = hide;
@@ -1746,7 +1747,7 @@ namespace OfficeOpenXml
                 if (_values.PrevCell(ref r, ref c))
                 {
                     column = GetValueInner(0, c) as ExcelColumn;
-                    int maxCol = column.ColumnMax;
+                    int maxCol = column?.ColumnMax ?? -1;
                     if (maxCol >= col)
                     {
                         column.ColumnMax = col - 1;
@@ -2580,7 +2581,10 @@ namespace OfficeOpenXml
                 Comments.Delete(0, columnFrom, 0, columns);
                 Workbook.Names.Delete(0, columnFrom, ExcelPackage.MaxRows, columns, n => n.Worksheet == this);
 
-                AdjustFormulasColumn(columnFrom, columns);
+                foreach (var worksheet in Workbook.Worksheets)
+                {
+                    worksheet.AdjustFormulasColumn(columnFrom, columns, this.Name);
+                }
                 FixMergedCellsColumn(columnFrom, columns, true);
 
                 var csec = new CellsStoreEnumerator<ExcelCoreValue>(_values, 0, columnFrom, 0, ExcelPackage.MaxColumns);
@@ -2644,24 +2648,29 @@ namespace OfficeOpenXml
                 }
             }
         }
-        internal void AdjustFormulasRow(int rowFrom, int rows)
+        internal void AdjustFormulasRow(int rowFrom, int rows, string sourceSheetName)
         {
+            bool self = sourceSheetName == this.Name;
             var delSF = new List<int>();
             foreach (var sf in _sharedFormulas.Values)
             {
-                var a = new ExcelAddress(sf.Address).DeleteRow(rowFrom, rows);
+                ExcelAddressBase a = new ExcelAddress(sf.Address);
+                if (self)
+                    a = a.DeleteRow(rowFrom, rows);
                 if (a==null)
                 {
                     delSF.Add(sf.Index);
                 }
                 else
                 {
-                    sf.Address = a.Address;
+                    if (self)
+                        sf.Address = a.Address;
                     if (sf.StartRow > rowFrom)
                     {
                         var r = Math.Min(sf.StartRow - rowFrom, rows);
-                        sf.Formula = ExcelCellBase.UpdateFormulaReferences(sf.Formula, -r, 0, rowFrom, 0, this.Name, this.Name);
-                        sf.StartRow -= r;
+                        sf.Formula = ExcelCellBase.UpdateFormulaReferences(sf.Formula, -r, 0, rowFrom, 0, this.Name, sourceSheetName);
+                        if (self)
+                            sf.StartRow -= r;
                     }
                 }
             }
@@ -2675,29 +2684,34 @@ namespace OfficeOpenXml
             {
                 if (cse.Value is string)
                 {
-                    cse.Value = ExcelCellBase.UpdateFormulaReferences(cse.Value.ToString(), -rows, 0, rowFrom, 0, this.Name, this.Name);
+                    cse.Value = ExcelCellBase.UpdateFormulaReferences(cse.Value.ToString(), -rows, 0, rowFrom, 0, this.Name, sourceSheetName);
                 }
             }
         }
-        internal void AdjustFormulasColumn(int columnFrom, int columns)
+        internal void AdjustFormulasColumn(int columnFrom, int columns, string sourceSheetName)
         {
+            bool self = sourceSheetName == this.Name;
             var delSF = new List<int>();
             foreach (var sf in _sharedFormulas.Values)
             {
-                var a = new ExcelAddress(sf.Address).DeleteColumn(columnFrom, columns);
+                ExcelAddressBase a = new ExcelAddress(sf.Address);
+                if (self)
+                    a = a.DeleteColumn(columnFrom, columns);
                 if (a == null)
                 {
                     delSF.Add(sf.Index);
                 }
                 else
                 {
-                    sf.Address = a.Address;
+                    if (self)
+                        sf.Address = a.Address;
                     //sf.Formula = ExcelCellBase.UpdateFormulaReferences(sf.Formula, 0, -columns, 0, columnFrom);
                     if (sf.StartCol > columnFrom)
                     {
                         var c = Math.Min(sf.StartCol - columnFrom, columns);
-                        sf.Formula = ExcelCellBase.UpdateFormulaReferences(sf.Formula, 0, -c, 0, 1, this.Name, this.Name);
-                        sf.StartCol-= c;
+                        sf.Formula = ExcelCellBase.UpdateFormulaReferences(sf.Formula, 0, -c, 0, 1, this.Name, sourceSheetName);
+                        if (self)
+                            sf.StartCol-= c;
                     }
 
                     //sf.Address = a.Address;
@@ -2718,7 +2732,22 @@ namespace OfficeOpenXml
             {
                 if (cse.Value is string)
                 {
-                    cse.Value = ExcelCellBase.UpdateFormulaReferences(cse.Value.ToString(), 0, -columns, 0, columnFrom, this.Name, this.Name);
+                    cse.Value = ExcelCellBase.UpdateFormulaReferences(cse.Value.ToString(), 0, -columns, 0, columnFrom, this.Name, sourceSheetName);
+                }
+            }
+        }
+        internal void MoveFormulaReferences(string sourceSheetName, int sourceRow, int sourceCol, int numRows, int numCols, int destRow, int destCol)
+        {
+            foreach (var sf in _sharedFormulas.Values)
+            {
+                sf.Formula = ExcelCellBase.MoveFormulaReferences(sf.Formula, sourceRow, sourceCol, numRows, numCols, destRow, destCol, this.Name, sourceSheetName);
+            }
+            var cse = new CellsStoreEnumerator<object>(_formulas, 1, 1, ExcelPackage.MaxRows, ExcelPackage.MaxColumns);
+            while (cse.Next())
+            {
+                if (cse.Value is string)
+                {
+                    cse.Value = ExcelCellBase.MoveFormulaReferences(cse.Value.ToString(), sourceRow, sourceCol, numRows, numCols, destRow, destCol, this.Name, sourceSheetName);
                 }
             }
         }
@@ -2754,8 +2783,11 @@ namespace OfficeOpenXml
                 _flags.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
                 _commentsStore.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
                 _hyperLinks.Delete(rowFrom, 0, rows, ExcelPackage.MaxColumns);
-                
-                AdjustFormulasRow(rowFrom, rows);
+
+                foreach (var worksheet in Workbook.Worksheets)
+                {
+                    worksheet.AdjustFormulasRow(rowFrom, rows, this.Name);
+                }
                 FixMergedCellsRow(rowFrom, rows, true);
 
                 foreach (var tbl in Tables)
@@ -2919,22 +2951,6 @@ namespace OfficeOpenXml
               {
                 cse.Value = ExcelCellBase.UpdateFormulaReferences(cse.Value.ToString(), rows, columns, rowFrom, columnFrom, this.Name, sheetWhoseReferencesShouldBeUpdated);
               }
-            }
-          }
-        }
-
-        internal void MoveFormulaReferences(string sourceSheetName, int sourceRow, int sourceCol, int numRows, int numCols, int destRow, int destCol)
-        {
-          foreach (var sf in _sharedFormulas.Values)
-          {
-            sf.Formula = ExcelCellBase.MoveFormulaReferences(sf.Formula, sourceRow, sourceCol, numRows, numCols, destRow, destCol, this.Name, sourceSheetName);
-          }
-          var cse = new CellsStoreEnumerator<object>(_formulas, 1, 1, ExcelPackage.MaxRows, ExcelPackage.MaxColumns);
-          while (cse.Next())
-          {
-            if (cse.Value is string)
-            {
-              cse.Value = ExcelCellBase.MoveFormulaReferences(cse.Value.ToString(), sourceRow, sourceCol, numRows, numCols, destRow, destCol, this.Name, sourceSheetName);
             }
           }
         }
@@ -3325,7 +3341,15 @@ namespace OfficeOpenXml
         //    SetStyleInner(row, col, value);
         //    if(!_values.Exists(row,col)) SetValueInner(row, col, null);
         //}
-        
+
+        private static string RemoveSheetPrefix(string name)
+        {
+            int i = name.LastIndexOf('!');
+            if (i >= 0)
+                return name.Substring(i + 1);
+            return name;
+        }
+
         private void SavePivotTables()
         {
             foreach (var pt in PivotTables)
@@ -3362,29 +3386,34 @@ namespace OfficeOpenXml
 
                 //Rewrite the pivottable address again if any rows or columns have been inserted or deleted
                 pt.SetXmlNodeString("d:location/@ref", pt.Address.Address);
-                var r = pt.CacheDefinition.SourceRange;
-                if (r != null)  //Source does not exist
+                var sourceRange = pt.CacheDefinition.SourceRange;
+                if (sourceRange != null)  //Source does not exist
                 {
                     ExcelTable t = null;
-                    if (pt.CacheDefinition.SourceRange.IsName)
+                    if (sourceRange.IsName)
                     {
+                        var sourceRangeName = (ExcelNamedRange)sourceRange;
                         //Named range, set name
                         pt.CacheDefinition.DeleteNode(ExcelPivotCacheDefinition._sourceAddressPath); //Remove any address if previously set.
-                        pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceNamePath, ((ExcelNamedRange)pt.CacheDefinition.SourceRange).Name);
+                        pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceNamePath, sourceRangeName.Name);
+                        if (sourceRangeName.LocalSheet != null)
+                            pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceWorksheetPath, sourceRangeName.LocalSheet.Name);
                     }
                     else
                     {
-                        var ws = Workbook.Worksheets[pt.CacheDefinition.SourceRange.WorkSheet];
-                        t = ws.Tables.GetFromRange(pt.CacheDefinition.SourceRange);
+                        var ws = sourceRange.Worksheet ?? Workbook.Worksheets[sourceRange.WorkSheet];
+                        t = ws.Tables.GetFromRange(sourceRange);
                         if (t == null)
                         {
                             //Address
                             pt.CacheDefinition.DeleteNode(ExcelPivotCacheDefinition._sourceNamePath); //Remove any name or table if previously set.
-                            pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceAddressPath, pt.CacheDefinition.SourceRange.Address);
+                            pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceAddressPath, sourceRange.Address);
+                            pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceWorksheetPath, ws.Name); //Remove any sheet if previously set.
                         }
                         else
                         {
                             //Table, set name
+                            pt.CacheDefinition.DeleteNode(ExcelPivotCacheDefinition._sourceWorksheetPath); //Remove any sheet if previously set.
                             pt.CacheDefinition.DeleteNode(ExcelPivotCacheDefinition._sourceAddressPath); //Remove any address if previously set.
                             pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceNamePath, t.Name);
                         }
@@ -3400,12 +3429,12 @@ namespace OfficeOpenXml
                         var flds = new HashSet<string>();
                         foreach (XmlElement node in fields)
                         {
-                            if (ix >= pt.CacheDefinition.SourceRange.Columns) break;
+                            if (ix >= sourceRange.Columns) break;
                             var fldName = node.GetAttribute("name");                        //Fixes issue 15295 dup name error
                             if (string.IsNullOrEmpty(fldName))
                             {
                                 fldName = (t == null
-                                    ? pt.CacheDefinition.SourceRange.Offset(0, ix++, 1, 1).Value.ToString()
+                                    ? sourceRange.Offset(0, ix++, 1, 1).Value.ToString()
                                     : t.Columns[ix++].Name);
                             }
                             if (flds.Contains(fldName))
