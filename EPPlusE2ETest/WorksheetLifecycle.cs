@@ -71,9 +71,9 @@ namespace EPPlusE2ETest
                 var wb = package.Workbook;
                 Assert.IsNull(wb.Worksheets["Sheet2"]);
                 
-                // Check order: NewFirst should be at index 1 (1-indexed in EPPlus)
-                Assert.AreEqual("NewFirst", wb.Worksheets[1].Name);
-                Assert.AreEqual("Sheet1", wb.Worksheets[2].Name);
+                // The collection is zero-based in this branch.
+                Assert.AreEqual("NewFirst", wb.Worksheets[0].Name);
+                Assert.AreEqual("Sheet1", wb.Worksheets[1].Name);
             });
         }
 

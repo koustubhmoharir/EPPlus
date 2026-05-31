@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OfficeOpenXml;
@@ -26,20 +25,20 @@ namespace EPPlusE2ETest
                 cell.Style.Font.Size = 14;
                 cell.Style.Font.Bold = true;
                 cell.Style.Font.Italic = true;
-                cell.Style.Font.Color.SetColor(Color.Red);
+                cell.Style.Font.Color.SetColor("FFFF0000");
 
                 // Set Fill styles
                 cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                cell.Style.Fill.BackgroundColor.SetColor(Color.Yellow);
+                cell.Style.Fill.BackgroundColor.SetColor("FFFFFF00");
 
                 // Set Number format
                 cell.Style.Numberformat.Format = "$#,##0.00";
 
                 // Set Borders
                 cell.Style.Border.Top.Style = ExcelBorderStyle.Medium;
-                cell.Style.Border.Top.Color.SetColor(Color.Blue);
+                cell.Style.Border.Top.Color.SetColor("FF0000FF");
                 cell.Style.Border.Bottom.Style = ExcelBorderStyle.Double;
-                cell.Style.Border.Bottom.Color.SetColor(Color.Green);
+                cell.Style.Border.Bottom.Color.SetColor("FF008000");
             });
         }
 
@@ -59,14 +58,14 @@ namespace EPPlusE2ETest
                 dest.Font.Italic = src.Font.Italic;
                 if (src.Font.Color.Rgb != null)
                 {
-                    dest.Font.Color.SetColor(ColorTranslator.FromHtml("#" + src.Font.Color.Rgb));
+                    dest.Font.Color.SetColor(src.Font.Color.Rgb);
                 }
 
                 // Copy Fill
                 dest.Fill.PatternType = src.Fill.PatternType;
                 if (src.Fill.BackgroundColor.Rgb != null)
                 {
-                    dest.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#" + src.Fill.BackgroundColor.Rgb));
+                    dest.Fill.BackgroundColor.SetColor(src.Fill.BackgroundColor.Rgb);
                 }
 
                 // Copy NumberFormat
@@ -76,12 +75,12 @@ namespace EPPlusE2ETest
                 dest.Border.Top.Style = src.Border.Top.Style;
                 if (src.Border.Top.Color.Rgb != null)
                 {
-                    dest.Border.Top.Color.SetColor(ColorTranslator.FromHtml("#" + src.Border.Top.Color.Rgb));
+                    dest.Border.Top.Color.SetColor(src.Border.Top.Color.Rgb);
                 }
                 dest.Border.Bottom.Style = src.Border.Bottom.Style;
                 if (src.Border.Bottom.Color.Rgb != null)
                 {
-                    dest.Border.Bottom.Color.SetColor(ColorTranslator.FromHtml("#" + src.Border.Bottom.Color.Rgb));
+                    dest.Border.Bottom.Color.SetColor(src.Border.Bottom.Color.Rgb);
                 }
             }, package =>
             {
