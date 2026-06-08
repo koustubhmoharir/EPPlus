@@ -3402,7 +3402,7 @@ namespace OfficeOpenXml
                         {
                             //Address
                             pt.CacheDefinition.DeleteNode(ExcelPivotCacheDefinition._sourceNamePath); //Remove any name or table if previously set.
-                            pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceAddressPath, sourceRange.Address);
+                            pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceAddressPath, RemoveSheetPrefix(sourceRange.Address));
                             pt.CacheDefinition.SetXmlNodeString(ExcelPivotCacheDefinition._sourceWorksheetPath, ws.Name); //Remove any sheet if previously set.
                         }
                         else
@@ -3691,9 +3691,6 @@ namespace OfficeOpenXml
             var styles = _package.Workbook.Styles;
             var cache = new StringBuilder();
             cache.Append("<sheetData>");
-
-
-            FixSharedFormulas(); //Fixes Issue #32
 
             columnStyles = new Dictionary<int, int>();
             var cse = new CellsStoreEnumerator<ExcelCoreValue>(_values, 1, 0, ExcelPackage.MaxRows, ExcelPackage.MaxColumns);

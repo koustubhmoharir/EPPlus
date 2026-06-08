@@ -106,7 +106,7 @@ namespace EPPlusE2ETest
                 
                 // 3. Assert that the pivot table actually references the new data range
                 Assert.IsNotNull(pt.CacheDefinition.SourceRange);
-                Assert.AreEqual("Sheet1!A1:B5", pt.CacheDefinition.SourceRange.Address);
+                Assert.AreEqual("A1:B5", pt.CacheDefinition.SourceRange.Address);
                 Assert.AreEqual("Sheet1", pt.CacheDefinition.SourceRange.Worksheet.Name);
             });
         }
