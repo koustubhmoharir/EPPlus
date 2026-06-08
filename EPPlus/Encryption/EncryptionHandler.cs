@@ -47,11 +47,11 @@ namespace OfficeOpenXml.Encryption
     /// <summary>
     /// Handels encrypted Excel documents 
     /// </summary>
-    internal class EncryptedPackageHandler
+    public class EncryptedPackageHandler
     {
         private readonly string tempFolder;
 
-        internal EncryptedPackageHandler(string tempFolder = null)
+        public EncryptedPackageHandler(string tempFolder = null)
         {
             this.tempFolder = tempFolder;
         }
@@ -121,6 +121,12 @@ namespace OfficeOpenXml.Encryption
         /// <param name="fi">The file</param>
         /// <param name="encryption"></param>
         /// <returns></returns>
+        public MemoryStream DecryptPackage(string fileName, string password)
+        {
+            var encryption = new ExcelEncryption { Password = password };
+            return DecryptPackage(new FileInfo(fileName), encryption);
+        }
+
         internal MemoryStream DecryptPackage(FileInfo fi, ExcelEncryption encryption)
         {
             var output = new MemoryStream();
