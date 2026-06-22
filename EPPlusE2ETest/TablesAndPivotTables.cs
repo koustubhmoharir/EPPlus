@@ -110,5 +110,21 @@ namespace EPPlusE2ETest
                 Assert.AreEqual("Sheet1", pt.CacheDefinition.SourceRange.Worksheet.Name);
             });
         }
+
+        [TestMethod]
+        public void TableOverlappingValidationThrowsArgumentException()
+        {
+            Test(template, null, "TablesAndPivotTables.TableOverlappingValidation.xlsx", null, package =>
+            {
+                var ws = package.Workbook.Worksheets["Sheet1"];
+                ws.Tables.Add(ws.Cells["A1:B2"], "Table1");
+                
+                // Attempting to add an overlapping table (e.g. A2:B3 overlaps row 2)
+                Assert.ThrowsException<ArgumentException>(() =>
+                {
+                    ws.Tables.Add(ws.Cells["A2:B3"], "Table2");
+                });
+            }, package => { });
+        }
     }
 }

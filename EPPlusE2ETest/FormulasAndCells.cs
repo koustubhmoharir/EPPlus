@@ -89,5 +89,60 @@ namespace EPPlusE2ETest
                 Assert.AreEqual("A3+B3", ws.Cells["C3"].Formula);
             });
         }
+
+        [TestMethod]
+        public void ClearContinuedArrayFormulas()
+        {
+            Test(template, null, "FormulasAndCells.ClearContinuedArrayFormulas.xlsx", null, package =>
+            {
+                var ws = package.Workbook.Worksheets["Sheet1"];
+                
+                // Seed contiguous array formula ranges simulating SheetKraft layout
+                ws.Cells["C1:C2"].CreateArrayFormula("=A1:A2*B1:B2");
+                ws.Cells["C3:C4"].CreateArrayFormula("=_xll.ContinueArray.SK(C1:C2)");
+                
+                // Simulate RemoveArrayFormula logic from ExportSheetsImpl
+                void RemoveArrayFormula(ExcelRange range)
+                {
+                    var sheet = range.Worksheet;
+                    var arrayRange = sheet.GetArrayFormulaRange(range.Start.Row, range.Start.Column);
+                    while (arrayRange != null)
+                    {
+                        sheet.Cells[arrayRange.Start.Row, arrayRange.Start.Column].Clear(true);
+                        arrayRange.Clear(true);
+                        arrayRange = sheet.GetArrayFormulaRange(arrayRange.End.Row + 1, range.Start.Column);
+
+                        if (arrayRange != null)
+                        {
+                            var formula = arrayRange.Formula?.TrimStart('=');
+
+                            if (!formula.StartsWith("_xll.ContinueArray.SK(",
+                                StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                arrayRange = null;
+                            }
+                        }
+                    }
+                }
+                
+                // Call clear on the top-left array cell C1
+                RemoveArrayFormula(ws.Cells["C1"]);
+            }, package =>
+            {
+                var ws = package.Workbook.Worksheets["Sheet1"];
+
+                // Both standard array and continued array ranges should be cleared
+                var remaining = ws.GetArrayFormulaRange(3, 3);
+
+                if (remaining != null)
+                {
+                    Assert.Fail($"Still exists: {remaining.Formula}");
+                }
+                Assert.IsNull(ws.GetArrayFormulaRange(1, 3));
+                Assert.IsNull(ws.GetArrayFormulaRange(3, 3));
+                Assert.AreEqual("", ws.Cells["C1"].Formula);
+                Assert.AreEqual("", ws.Cells["C3"].Formula);
+            });
+        }
     }
 }

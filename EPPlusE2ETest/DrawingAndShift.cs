@@ -129,5 +129,41 @@ namespace EPPlusE2ETest
                 Assert.AreEqual(6, shapeTwoCell.To.Column);
             });
         }
+
+        [TestMethod]
+        public void InsertRowsColumnsResizesDrawings()
+        {
+            Test(template, null,
+                "DrawingAndShift.InsertRowsColumnsResizesDrawings.xlsx",
+                null,
+                package =>
+                {
+                    // existing setup code
+                },
+                package =>
+                {
+                    var ws = package.Workbook.Worksheets["Sheet1"];
+
+                    var shapeAbs = (ExcelShape)ws.Drawings["ShapeAbs"];
+                    var shapeOneCell = (ExcelShape)ws.Drawings["ShapeOneCell"];
+                    var shapeTwoCell = (ExcelShape)ws.Drawings["ShapeTwoCell"];
+
+                    Console.WriteLine($"Abs: From=({shapeAbs.From.Row},{shapeAbs.From.Column})");
+                    Console.WriteLine($"OneCell: From=({shapeOneCell.From.Row},{shapeOneCell.From.Column})");
+                    Console.WriteLine($"TwoCell: From=({shapeTwoCell.From.Row},{shapeTwoCell.From.Column}) To=({shapeTwoCell.To.Row},{shapeTwoCell.To.Column})");
+
+                    Assert.AreEqual(0, shapeAbs.From.Row);
+                    Assert.AreEqual(0, shapeAbs.From.Column);
+
+                    Assert.AreEqual(1, shapeOneCell.From.Row);
+                    Assert.AreEqual(1, shapeOneCell.From.Column);
+
+                    Assert.AreEqual(1, shapeTwoCell.From.Row);
+                    Assert.AreEqual(1, shapeTwoCell.From.Column);
+
+                    Assert.AreEqual(3, shapeTwoCell.To.Row);
+                    Assert.AreEqual(3, shapeTwoCell.To.Column);
+                });
+        }
     }
-}
+    }

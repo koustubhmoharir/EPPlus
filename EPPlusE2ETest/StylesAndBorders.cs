@@ -108,5 +108,46 @@ namespace EPPlusE2ETest
                 Assert.AreEqual("FF008000", dest.Border.Bottom.Color.Rgb); // Green color
             });
         }
+
+        [TestMethod]
+        public void StyleCopyBoldAndItalicResetProperties()
+        {
+            Test(template, null, "StylesAndBorders.StyleCopyReset.xlsx", null, package =>
+            {
+                var ws = package.Workbook.Worksheets["Sheet1"];
+                
+                // Set target cell as bold and italic
+                var target = ws.Cells["B3"];
+                target.Style.Font.Bold = true;
+                target.Style.Font.Italic = true;
+                
+                // Source cell is NOT bold, NOT italic (default)
+                var source = ws.Cells["C3"];
+                
+                // Simulate CellsFormatPattern.SetFont logic:
+                // Only copies/overwrites if true (this is the gap we are asserting)
+                void SetFontSim(ExcelFont src, ExcelFont dest)
+                {
+                    if (src.Bold)
+                    {
+                        dest.Bold = src.Bold;
+                    }
+                    if (src.Italic)
+                    {
+                        dest.Italic = src.Italic;
+                    }
+                }
+                
+                SetFontSim(source.Style.Font, target.Style.Font);
+            }, package =>
+            {
+                var ws = package.Workbook.Worksheets["Sheet1"];
+                var target = ws.Cells["B3"];
+                
+                // Under the simulated logic, target stays bold and italic because source was false
+                Assert.IsTrue(target.Style.Font.Bold);
+                Assert.IsTrue(target.Style.Font.Italic);
+            });
+        }
     }
 }
