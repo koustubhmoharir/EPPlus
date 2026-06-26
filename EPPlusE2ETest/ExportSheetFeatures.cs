@@ -40,7 +40,8 @@ namespace EPPlusE2ETest
 
                 // Active sheet scenario
                 package.Workbook.Worksheets.Add("Summary");
-                package.Workbook.Worksheets.Add("Dashboard");
+                var dashbord= package.Workbook.Worksheets.Add("Dashboard");
+                dashbord.Cells["A1"].Value = "Dasshbord sheet";
             });
         }
         [TestMethod]
