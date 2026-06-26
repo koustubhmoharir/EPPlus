@@ -221,5 +221,76 @@ namespace EPPlusE2ETest
                         ws.Cells["F6"].Style.Numberformat.Format);
                 });
         }
+
+        [TestMethod]
+        public void AutoFitAndCopyWidths()
+        {
+            Test(template, null,
+                "FormattingAndBorders.AutoFitAndCopyWidths.xlsx",
+                null,
+                package =>
+                {
+                    var ws = package.Workbook.Worksheets.Add("AutoFitTest");
+
+                    // Write text with different lengths
+                    ws.Cells["A1"].Value = "Short";
+                    ws.Cells["B1"].Value = "This is a very long text to test AutoFit functionality";
+                    ws.Cells["C1"].Value = "Medium length";
+
+                    // AutoFit
+                    ws.Cells["A1:C1"].AutoFitColumns();
+
+                    // Verify AutoFit produced reasonable widths
+                    Assert.IsTrue(ws.Column(1).Width > 0);
+                    Assert.IsTrue(ws.Column(2).Width > ws.Column(1).Width);
+                    Assert.IsTrue(ws.Column(2).Width > ws.Column(3).Width);
+                    Assert.IsTrue(ws.Column(3).Width > ws.Column(1).Width);
+
+                    // Store AutoFit widths
+                    double autoWidthA = ws.Column(1).Width;
+                    double autoWidthB = ws.Column(2).Width;
+                    double autoWidthC = ws.Column(3).Width;
+
+                    // Change Column A width manually
+                    ws.Column(1).Width = 35;
+
+                    // Copy cells
+                    ws.Cells["A1:C1"].Copy(ws.Cells["E1"]);
+
+                    // Copy column widths
+                    ws.Column(5).Width = ws.Column(1).Width;
+                    ws.Column(6).Width = ws.Column(2).Width;
+                    ws.Column(7).Width = ws.Column(3).Width;
+
+                    // Save AutoFit widths for verification after reload
+                    package.Workbook.Properties.SetCustomPropertyValue("AutoWidthA", autoWidthA);
+                    package.Workbook.Properties.SetCustomPropertyValue("AutoWidthB", autoWidthB);
+                    package.Workbook.Properties.SetCustomPropertyValue("AutoWidthC", autoWidthC);
+                },
+                package =>
+                {
+                    var ws = package.Workbook.Worksheets["AutoFitTest"];
+                    Assert.IsNotNull(ws);
+
+                    // Verify AutoFit widths persisted
+                    double autoWidthA = Convert.ToDouble(package.Workbook.Properties.GetCustomPropertyValue("AutoWidthA"));
+                    double autoWidthB = Convert.ToDouble(package.Workbook.Properties.GetCustomPropertyValue("AutoWidthB"));
+                    double autoWidthC = Convert.ToDouble(package.Workbook.Properties.GetCustomPropertyValue("AutoWidthC"));
+
+                    Assert.AreEqual(35, ws.Column(1).Width, 0.01);
+                    Assert.AreEqual(autoWidthB, ws.Column(2).Width, 0.01);
+                    Assert.AreEqual(autoWidthC, ws.Column(3).Width, 0.01);
+
+                    // Verify copied widths
+                    Assert.AreEqual(ws.Column(1).Width, ws.Column(5).Width, 0.01);
+                    Assert.AreEqual(ws.Column(2).Width, ws.Column(6).Width, 0.01);
+                    Assert.AreEqual(ws.Column(3).Width, ws.Column(7).Width, 0.01);
+
+                    // Verify AutoFit relationship still holds
+                    Assert.IsTrue(ws.Column(2).Width > ws.Column(3).Width);
+                    Assert.IsTrue(ws.Column(3).Width > autoWidthA);
+                });
+        }
+
     }
 }
