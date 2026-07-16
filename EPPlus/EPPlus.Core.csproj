@@ -12,6 +12,15 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <DefineConstants>$(DefineConstants);Core</DefineConstants>
+
+    <PackageId>EPPlusNetSK</PackageId>
+    <authors>Koustubh Moharir, Chetan Lalwani, Swanand Nirgudkar, Jyoti Prakash, Pritee Shirsath</authors>
+    <Company>Quantum Phinance</Company>
+    <Description>EPPlus fork for SheetKraft ported to .NET 9</Description>
+    <PackageTags>Excel</PackageTags>
+    <RepositoryUrl>https://github.com/koustubhmoharir/epplus</RepositoryUrl>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +37,8 @@
     <Compile Remove="Compatibility\DateTimeExtensions.cs" />
     <Compile Remove="Compatibility\SecurityElement.cs" />
     <Compile Remove="Packaging\DotNetZip\ZipFile.SaveSelfExtractor.cs" />
+
+    <None Include="readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
